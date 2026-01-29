@@ -8,6 +8,7 @@ import {
   Scripts,
   createRootRouteWithContext,
   useRouteContext,
+  useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
@@ -65,6 +66,9 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   const context = useRouteContext({ from: Route.id });
+  const isHome = useRouterState({
+    select: (state) => state.location.pathname === "/",
+  });
   return (
     <ConvexBetterAuthProvider
       client={context.convexQueryClient.convexClient}
@@ -76,8 +80,14 @@ function RootDocument() {
           <HeadContent />
         </head>
         <body>
-          <div className="grid h-svh grid-rows-[auto_1fr]">
-            <Header />
+          <div
+            className={
+              isHome
+                ? "h-dvh overflow-hidden"
+                : "grid h-svh grid-rows-[auto_1fr]"
+            }
+          >
+            {!isHome ? <Header /> : null}
             <Outlet />
           </div>
           <Toaster richColors />

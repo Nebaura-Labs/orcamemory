@@ -1,6 +1,7 @@
 "use node";
 
 import { render } from "@react-email/render";
+import * as React from "react";
 import { v } from "convex/values";
 
 import { action } from "./_generated/server";
@@ -62,7 +63,7 @@ export const join = action({
       }
     }
 
-    const emailHtml = await render(<WaitlistConfirmationEmail />);
+    const emailHtml = await render(React.createElement(WaitlistConfirmationEmail));
     if (!alreadyExists) {
       const emailResponse = await fetch("https://api.resend.com/emails", {
         method: "POST",

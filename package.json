@@ -24,6 +24,7 @@
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F @moltcity/backend dev",
     "dev:setup": "turbo -F @moltcity/backend dev:setup",
+    "serve:host": "turbo -F web serve:host",
     "check": "ultracite check",
     "fix": "ultracite fix"
   },

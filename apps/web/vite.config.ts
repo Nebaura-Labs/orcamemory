@@ -9,6 +9,9 @@ export default defineConfig({
   server: {
     port: 3001,
   },
+  preview: {
+    allowedHosts: ["orcamemory.com"],
+  },
   ssr: {
     noExternal: ["@convex-dev/better-auth"],
   },

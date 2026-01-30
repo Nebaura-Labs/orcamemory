@@ -20,6 +20,10 @@
     "dev:setup": {
       "cache": false,
       "persistent": true
+    },
+    "serve:host": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

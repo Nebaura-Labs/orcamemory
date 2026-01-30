@@ -55,7 +55,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         name: "apple-mobile-web-app-title",
-        content: "MyWebSite",
+        content: "Orca Memory",
       },
       {
         title: "Orca Memory — Memory infrastructure for OpenClaw agents",
@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         property: "og:image",
-        content: "/og-image.png",
+        content: "https://orcamemory.com/og-image.png",
       },
       {
         name: "twitter:card",
@@ -113,7 +113,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         name: "twitter:image",
-        content: "/og-image.png",
+        content: "https://orcamemory.com/og-image.png",
       },
     ],
     links: [

@@ -1,6 +1,6 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Orca Memory",
+  "short_name": "Orca Memory",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

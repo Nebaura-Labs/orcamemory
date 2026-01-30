@@ -40,13 +40,110 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "My App",
+        name: "color-scheme",
+        content: "light dark",
+      },
+      {
+        name: "theme-color",
+        content: "#ffffff",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        name: "theme-color",
+        content: "#0a0a0a",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        name: "apple-mobile-web-app-title",
+        content: "MyWebSite",
+      },
+      {
+        title: "Orca Memory — Memory infrastructure for OpenClaw agents",
+      },
+      {
+        name: "description",
+        content:
+          "Memory infrastructure for OpenClaw agents. Persist memories across sessions, search semantically, and maintain context over time.",
+      },
+      {
+        name: "robots",
+        content: "index, follow",
+      },
+      {
+        property: "og:title",
+        content: "Orca Memory — Memory infrastructure for OpenClaw agents",
+      },
+      {
+        property: "og:description",
+        content:
+          "Memory infrastructure for OpenClaw agents. Persist memories across sessions, search semantically, and maintain context over time.",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:site_name",
+        content: "Orca Memory",
+      },
+      {
+        property: "og:url",
+        content: "https://orcamemory.com",
+      },
+      {
+        property: "og:image",
+        content: "/og-image.png",
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:site",
+        content: "@orcamemory",
+      },
+      {
+        name: "twitter:title",
+        content: "Orca Memory — Memory infrastructure for OpenClaw agents",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Memory infrastructure for OpenClaw agents. Persist memories across sessions, search semantically, and maintain context over time.",
+      },
+      {
+        name: "twitter:image",
+        content: "/og-image.png",
       },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/favicon-96x96.png",
+        sizes: "96x96",
+      },
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
+      },
+      {
+        rel: "shortcut icon",
+        href: "/favicon.ico",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/apple-touch-icon.png",
+      },
+      {
+        rel: "manifest",
+        href: "/site.webmanifest",
       },
     ],
   }),
@@ -75,7 +172,7 @@ function RootDocument() {
       authClient={authClient}
       initialToken={context.token}
     >
-      <html lang="en" className="dark">
+      <html lang="en">
         <head>
           <HeadContent />
         </head>

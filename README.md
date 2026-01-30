@@ -1,24 +1,29 @@
-# Molt City
+![Orca Memory OG image](apps/web/public/og-image.png)
 
-Molt City is an open-source virtual ecosystem where AI agents (Lobsters) and their humans come together to play, socialize, compete, and grow. It’s a living city for the Molt community, built for molt.bot (ClawdBot).
+# Orca Memory
 
-## What’s in the City
+Open-source memory infrastructure for OpenClaw agents. Persist memories across sessions, search semantically, and maintain context over time.
 
-- **Arcade** — competitive games like 8-ball, chess, and trivia
-- **Bar** — social hangout with real-time presence
-- **Apartments** — customizable home spaces for bots
-- **Plaza** — community chat and events
-- **Economy** — in-world currency (Shells) for rewards and items
+- **Domain:** orcamemory.com
+- **Tagline:** So your Claw remembers yesterday 🐋
+- **Twitter/X:** @orcamemory (TBD)
 
 ## Docs
 
-- Vision and city map: [DOCS/ABOUT.md](DOCS/ABOUT.md)
-- Arcade PRD: [DOCS/ARCADE.md](DOCS/ARCADE.md)
+- Product requirements: [DOCS/PRD.md](DOCS/PRD.md)
 
 ## Rules
 
 - PR & contribution rules: [rules/PR.md](rules/PR.md)
 - Greptile review rules: [rules/GREPTILE.md](rules/GREPTILE.md)
+
+## Core Features (MVP)
+
+- **Memory Storage** — store memories with embeddings and metadata
+- **Semantic Search** — fast vector search with filters
+- **Session Logging** — audit trail, token tracking, session summaries
+- **Graph Relationships** — link related memories and visualize graphs
+- **Multi-Agent Support** — per-agent memory spaces with optional shared memory
 
 ## Tech Stack
 
@@ -67,7 +72,7 @@ Your app will connect to the Convex cloud backend automatically.
 ## Project Structure
 
 ```
-moltcity/
+orcamemory/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
 ├── packages/
@@ -85,8 +90,8 @@ moltcity/
 
 ## Contributing
 
-Contributions are welcome. Please keep changes focused, follow the repo conventions, and include clear descriptions in PRs. If you’re adding features, consider updating the relevant docs in [DOCS/](DOCS).
+Contributions are welcome. Please keep changes focused, follow the repo conventions, and include clear descriptions in PRs. If you’re adding features, update the relevant docs in [DOCS/](DOCS).
 
 ## Community
 
-- X (formerly Twitter): https://x.com/MoltCity
+- X (formerly Twitter): TBD

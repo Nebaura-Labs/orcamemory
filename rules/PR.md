@@ -1,6 +1,6 @@
 # PR & Contribution Rules
 
-These rules apply to all contributions and pull requests.
+These rules apply to all contributions and pull requests for Orca Memory.
 
 ## Branch Naming
 
@@ -22,8 +22,14 @@ These rules apply to all contributions and pull requests.
 
 - Follow repo conventions and coding standards.
 - Add or update tests for non-trivial logic.
-- Update docs in `DOCS/` when behavior changes.
+- Update docs in `DOCS/` when behavior or APIs change.
 - Do not add dependencies without clear justification.
+
+## Product Alignment
+
+- Preserve Orca Memory goals: persistent memory, semantic search, session logging, graph links.
+- Keep OpenClaw agent usage in mind for APIs and naming.
+- Document API surface changes in `DOCS/PRD.md` when relevant.
 
 ## Readiness Checklist
 

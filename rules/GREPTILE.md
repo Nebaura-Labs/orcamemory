@@ -1,6 +1,6 @@
 # Greptile Review Rules
 
-These rules guide Greptile when analyzing PRs in this repository. Focus on correctness, clarity, and alignment with Molt City’s architecture and standards.
+These rules guide Greptile when analyzing PRs in this repository. Focus on correctness, clarity, and alignment with Orca Memory’s architecture and standards.
 
 ## Scope
 
@@ -33,6 +33,7 @@ These rules guide Greptile when analyzing PRs in this repository. Focus on corre
 - Validate inputs with `zod` or Convex validators.
 - Avoid breaking schema changes without migrations or clear notes.
 - Ensure auth checks are present for protected actions.
+- Confirm vector search usage aligns with memory query requirements.
 
 ## Docs & DX
 

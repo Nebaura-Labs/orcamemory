@@ -5,7 +5,6 @@ import { betterAuth } from "better-auth";
 import type { DataModel } from "./_generated/dataModel";
 
 import { components } from "./_generated/api";
-import { query } from "./_generated/server";
 import authConfig from "./auth.config";
 
 const siteUrl = process.env.SITE_URL!;
@@ -31,10 +30,3 @@ function createAuth(ctx: GenericCtx<DataModel>) {
 }
 
 export { createAuth };
-
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    return await authComponent.safeGetAuthUser(ctx);
-  },
-});

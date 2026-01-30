@@ -1,6 +1,7 @@
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import type { QueryClient } from "@tanstack/react-query";
 
+import { initBklit } from "@bklit/sdk";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import {
   HeadContent,
@@ -12,10 +13,12 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
+import { useEffect } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { authClient } from "@/lib/auth-client";
 import { getToken } from "@/lib/auth-server";
+import { env } from "@moltcity/env/web";
 
 import Header from "../components/header";
 import appCss from "../index.css?url";
@@ -166,6 +169,21 @@ function RootDocument() {
   const isHome = useRouterState({
     select: (state) => state.location.pathname === "/",
   });
+
+  useEffect(() => {
+    const environment =
+      env.VITE_BKLIT_ENVIRONMENT ?? (import.meta.env.DEV ? "development" : "production");
+    const debug = env.VITE_BKLIT_DEBUG === "true";
+
+    initBklit({
+      projectId: env.VITE_BKLIT_PROJECT_ID,
+      apiKey: env.VITE_BKLIT_API_KEY,
+      apiHost: env.VITE_BKLIT_API_HOST,
+      environment,
+      debug,
+    });
+  }, []);
+
   return (
     <ConvexBetterAuthProvider
       client={context.convexQueryClient.convexClient}

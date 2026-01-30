@@ -9,7 +9,9 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as emails_waitlistConfirmation from "../emails/waitlistConfirmation.js";
 import type * as http from "../http.js";
+import type * as waitlist from "../waitlist.js";
 
 import type {
   ApiFromModules,
@@ -19,7 +21,9 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "emails/waitlistConfirmation": typeof emails_waitlistConfirmation;
   http: typeof http;
+  waitlist: typeof waitlist;
 }>;
 
 /**

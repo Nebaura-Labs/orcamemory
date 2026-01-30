@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@convex-dev/better-auth": "catalog:",
+    "@react-email/components": "^1.0.6",
+    "@react-email/render": "^2.0.4",
     "better-auth": "catalog:",
     "convex": "catalog:",
     "dotenv": "catalog:",

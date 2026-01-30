@@ -6,7 +6,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "dev": "vite dev --host",
-    "serve:host": "vite preview --host --port 3068"
+    "serve:host": "vite preview --host --port 3001"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

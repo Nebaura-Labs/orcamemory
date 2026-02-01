@@ -286,7 +286,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
             </Label>
             <Input
               id="orca-key"
-              placeholder="om_live_..."
+              placeholder="oms_..."
               className="mt-2 border-dashed"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}

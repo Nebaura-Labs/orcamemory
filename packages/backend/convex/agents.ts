@@ -62,6 +62,9 @@ export const issueKey = mutation({
     if (!plan) {
       throw new Error("Unable to retrieve plan information.");
     }
+    if (plan.agentsPerProjectLimit <= 0) {
+      throw new Error("Agent limit reached for this project.");
+    }
     
     const existingAgents = await ctx.db
       .query("agents")
@@ -69,6 +72,10 @@ export const issueKey = mutation({
         queryBuilder.eq("projectId", args.projectId),
       )
       .collect();
+
+    if (existingAgents.length > plan.agentsPerProjectLimit) {
+      throw new Error("Agent limit exceeded for this project.");
+    }
 
     let agentId = existingAgents[0]?._id ?? null;
     if (!agentId) {

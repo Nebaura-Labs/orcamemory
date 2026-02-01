@@ -1,7 +1,7 @@
 import type { OrcaMemoryClient } from "../client.ts";
 import type { OrcaMemoryConfig } from "../config.ts";
 import { log } from "../logger.ts";
-import { buildSessionName, detectMemoryType } from "../memory.ts";
+import { buildSessionName } from "../memory.ts";
 
 function getLastTurn(messages: unknown[]): unknown[] {
   let lastUserIdx = -1;
@@ -100,7 +100,7 @@ export function buildCaptureHandler(
     try {
       await client.store({
         content,
-        memoryType: detectMemoryType(content),
+        memoryType: "conversations",
         metadata: {
           source: "openclaw",
           container: cfg.containerTag,

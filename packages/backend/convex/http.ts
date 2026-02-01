@@ -112,6 +112,11 @@ http.route({
   handler: profileAction,
 });
 http.route({
+  path: "/api/memory/profile",
+  method: "POST",
+  handler: profileAction,
+});
+http.route({
   path: "/api/sessions/start",
   method: "POST",
   handler: startSessionAction,

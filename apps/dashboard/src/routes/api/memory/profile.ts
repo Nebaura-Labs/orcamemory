@@ -40,6 +40,21 @@ export const Route = createFileRoute("/api/memory/profile")({
           },
         });
       },
+      POST: async ({ request }) => {
+        const targetUrl = resolveTargetUrl();
+        const response = await fetch(targetUrl, {
+          method: "POST",
+          headers: forwardHeaders(request),
+        });
+
+        const responseBody = await response.text();
+        return new Response(responseBody, {
+          status: response.status,
+          headers: {
+            "Content-Type": response.headers.get("content-type") ?? "application/json",
+          },
+        });
+      },
     },
   },
 });

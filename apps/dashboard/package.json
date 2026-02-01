@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "serve": "bunx serve -s dist -l 3002",
+    "serve": "node dist/server/server.js",
     "dev": "vite dev --host",
-    "serve:host": "bunx serve -s dist -l 3002"
+    "serve:host": "node dist/server/server.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

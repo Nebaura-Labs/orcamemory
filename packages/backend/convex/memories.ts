@@ -93,9 +93,58 @@ export const getById = query({
 
     const agent = await ctx.db.get(memory.agentId);
 
+    // Get session info if available
+    let session = null;
+    let sessionEvent = null;
+    if (memory.sessionId) {
+      session = await ctx.db.get(memory.sessionId);
+      
+      // Find the session event created around the same time as this memory
+      const events = await ctx.db
+        .query("sessionEvents")
+        .withIndex("sessionId", (q) => q.eq("sessionId", memory.sessionId!))
+        .collect();
+      
+      // Find the event closest to memory creation time (within 5 seconds)
+      sessionEvent = events.find(
+        (e) => Math.abs(e.createdAt - memory.createdAt) < 5000
+      ) ?? null;
+    }
+
+    // Get usage log for this memory (embedding tokens)
+    const usageLogs = await ctx.db
+      .query("usageLogs")
+      .withIndex("projectId", (q) => q.eq("projectId", memory.projectId))
+      .collect();
+    
+    const usageLog = usageLogs.find((log) => log.memoryId === memory._id) ?? null;
+
     return {
       ...memory,
       agentName: agent?.name ?? "Unknown",
+      session: session
+        ? {
+            name: session.name,
+            model: session.model ?? null,
+            startedAt: session.startedAt,
+          }
+        : null,
+      sessionEvent: sessionEvent
+        ? {
+            kind: sessionEvent.kind,
+            model: sessionEvent.model ?? null,
+            tokensPrompt: sessionEvent.tokensPrompt ?? null,
+            tokensCompletion: sessionEvent.tokensCompletion ?? null,
+            tokensTotal: sessionEvent.tokensTotal ?? null,
+          }
+        : null,
+      usage: usageLog
+        ? {
+            kind: usageLog.kind,
+            tokens: usageLog.tokens,
+            searches: usageLog.searches,
+          }
+        : null,
     };
   },
 });

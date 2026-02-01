@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { useQuery, useMutation } from "convex/react"
+import { Link } from "@tanstack/react-router"
 import {
   Brain,
   Search,
@@ -22,13 +23,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,17 +62,6 @@ const typeColors: Record<string, string> = {
   fact: "bg-green-500/10 text-green-500",
 }
 
-type Memory = {
-  _id: Id<"memories">
-  content: string
-  tags: string[]
-  memoryType: string | null
-  metadata: unknown
-  agentId: Id<"agents">
-  agentName: string
-  createdAt: number
-}
-
 interface MemoriesTableProps {
   projectId: Id<"projects">
 }
@@ -88,7 +71,6 @@ export function MemoriesTable({ projectId }: MemoriesTableProps) {
   const [agentFilter, setAgentFilter] = useState<string>("all")
   const [typeFilter, setTypeFilter] = useState<string>("all")
   const [cursor, setCursor] = useState<string | undefined>(undefined)
-  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
 
   const agents = useQuery(api.memories.getAgentsForProject, { projectId })
   const memoryTypes = useQuery(api.memories.getMemoryTypes, { projectId })
@@ -288,9 +270,11 @@ export function MemoriesTable({ projectId }: MemoriesTableProps) {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => setSelectedMemory(memory)}>
-                                <Eye className="mr-2 size-4" />
-                                View details
+                              <DropdownMenuItem asChild>
+                                <Link to="/memories/$memoryId" params={{ memoryId: memory._id }}>
+                                  <Eye className="mr-2 size-4" />
+                                  View details
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => handleDelete(memory._id)}
@@ -338,61 +322,6 @@ export function MemoriesTable({ projectId }: MemoriesTableProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Memory Detail Dialog */}
-      <Dialog open={!!selectedMemory} onOpenChange={() => setSelectedMemory(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Brain className="size-4 dark-icon" />
-              Memory Details
-            </DialogTitle>
-            <DialogDescription>
-              Created {selectedMemory && formatDistanceToNow(selectedMemory.createdAt, { addSuffix: true })}
-            </DialogDescription>
-          </DialogHeader>
-          {selectedMemory && (
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-medium mb-2">Content</h4>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap rounded-md border border-dashed p-3">
-                  {selectedMemory.content}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Agent</h4>
-                  <p className="text-sm text-muted-foreground">{selectedMemory.agentName}</p>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Type</h4>
-                  <p className="text-sm text-muted-foreground">{selectedMemory.memoryType ?? "—"}</p>
-                </div>
-              </div>
-              {selectedMemory.tags.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Tags</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedMemory.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {selectedMemory.metadata !== null && selectedMemory.metadata !== undefined && (
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Metadata</h4>
-                  <pre className="text-xs text-muted-foreground overflow-auto rounded-md border border-dashed p-3 max-h-40">
-                    {JSON.stringify(selectedMemory.metadata as Record<string, unknown>, null, 2)}
-                  </pre>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </>
   )
 }

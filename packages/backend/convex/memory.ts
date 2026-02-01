@@ -12,6 +12,7 @@ type AuthResult = {
 };
 
 const embeddingUrl = process.env.EMBEDDING_URL;
+const vectorScanLimit = Number(process.env.MEMORY_VECTOR_SCAN_LIMIT ?? "2000");
 
 const fetchEmbedding = async (input: string, inputType: "query" | "passage") => {
   if (!embeddingUrl) {
@@ -329,16 +330,24 @@ export const searchMemories = internalQuery({
     const limit = Math.max(1, Math.min(args.limit ?? 10, 50));
     const cutoff = resolveRetentionCutoff(project.memoryRetention);
     const tags = normalizeTags(args.tags ?? []);
+    const queryEmbedding = args.queryEmbedding ?? undefined;
+    const hasEmbeddingQuery = Array.isArray(queryEmbedding) && queryEmbedding.length > 0;
+
+    const scanLimit = Number.isFinite(vectorScanLimit)
+      ? Math.max(100, Math.min(vectorScanLimit, 20_000))
+      : 2000;
 
     const memories = await ctx.db
       .query("memories")
-      .withIndex("projectId", (queryBuilder) =>
-        queryBuilder.eq("projectId", args.projectId),
-      )
-      .collect();
-
-    const queryEmbedding = args.queryEmbedding ?? undefined;
-    const hasEmbeddingQuery = Array.isArray(queryEmbedding) && queryEmbedding.length > 0;
+      .withIndex("projectId_createdAt", (queryBuilder) => {
+        const scoped = queryBuilder.eq("projectId", args.projectId);
+        if (cutoff) {
+          return scoped.gt("createdAt", cutoff);
+        }
+        return scoped;
+      })
+      .order("desc")
+      .take(scanLimit);
 
     const filtered = memories.filter((memory) => {
       if (!matchesRetention(memory.createdAt, cutoff)) {
@@ -390,26 +399,18 @@ export const forgetMemories = internalMutation({
     ids: v.array(v.id("memories")),
   },
   handler: async (ctx, args) => {
-    const memories = await ctx.db
-      .query("memories")
-      .withIndex("projectId", (queryBuilder) =>
-        queryBuilder.eq("projectId", args.projectId),
-      )
-      .collect();
-
-    const allowed = new Set(
-      memories
-        .filter((memory) => memory.agentId === args.agentId)
-        .map((memory) => memory._id),
-    );
-
+    let deleted = 0;
+    
+    // Delete each memory directly instead of loading all memories
     for (const id of args.ids) {
-      if (allowed.has(id)) {
+      const memory = await ctx.db.get(id);
+      if (memory && memory.projectId === args.projectId && memory.agentId === args.agentId) {
         await ctx.db.delete(id);
+        deleted += 1;
       }
     }
 
-    return { deleted: args.ids.length };
+    return { deleted };
   },
 });
 

@@ -16,7 +16,7 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { ProjectSwitcher } from "@/components/project-switcher"
 
 const routeLabels: Record<string, string> = {
-  "": "Home",
+  "": "Dashboard",
   memories: "Memories",
   search: "Search",
   graph: "Graph",
@@ -64,12 +64,12 @@ export function SiteHeader() {
           <BreadcrumbList>
             {isHome ? (
               <BreadcrumbItem>
-                <BreadcrumbPage>Home</BreadcrumbPage>
+                <BreadcrumbPage>Dashboard</BreadcrumbPage>
               </BreadcrumbItem>
             ) : (
               <>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                  <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbs.map((crumb, index) => {
                   const isLast = index === breadcrumbs.length - 1

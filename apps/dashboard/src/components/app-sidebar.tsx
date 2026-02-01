@@ -5,7 +5,7 @@ import {
   Bot,
   Brain,
   History,
-  Home,
+  LayoutDashboard,
   Key,
   Settings2,
   BookOpen,
@@ -27,9 +27,9 @@ import {
 const data = {
   navMain: [
     {
-      title: "Home",
+      title: "Dashboard",
       url: "/",
-      icon: Home,
+      icon: LayoutDashboard,
     },
     {
       title: "Memories",

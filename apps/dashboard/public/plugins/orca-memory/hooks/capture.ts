@@ -55,19 +55,19 @@ function parseDiscordContext(text: string): DiscordContext {
     content = content.slice(userMatch[0].length);
   }
 
-  // Match trailing [from: DisplayName (userId)]
-  const fromMatch = content.match(/\s*\[from:\s*([^(]+)\s*\((\d+)\)\]$/);
+  // Match [message_id: 123] anywhere (could be on separate line)
+  const msgIdMatch = content.match(/\n?\[message_id:\s*(\d+)\]/);
+  if (msgIdMatch) {
+    context.messageId = msgIdMatch[1];
+    content = content.replace(msgIdMatch[0], "");
+  }
+
+  // Match trailing [from: DisplayName (userId)] - now at end after message_id removed
+  const fromMatch = content.match(/\s*\[from:\s*([^(]+)\s*\((\d+)\)\]\s*$/);
   if (fromMatch) {
     if (!context.displayName) context.displayName = fromMatch[1].trim();
     context.userId = fromMatch[2];
     content = content.slice(0, content.length - fromMatch[0].length);
-  }
-
-  // Match [message_id: 123]
-  const msgIdMatch = content.match(/\s*\[message_id:\s*(\d+)\]$/);
-  if (msgIdMatch) {
-    context.messageId = msgIdMatch[1];
-    content = content.slice(0, content.length - msgIdMatch[0].length);
   }
 
   context.cleanContent = content.trim();

@@ -15,6 +15,10 @@ function getLastTurn(messages: unknown[]): unknown[] {
   return lastUserIdx >= 0 ? messages.slice(lastUserIdx) : messages;
 }
 
+function sanitizeCapturedText(text: string): string {
+  return text.replace(/<orca-memory-context>[\s\S]*?<\/orca-memory-context>\s*/g, "").trim();
+}
+
 function findLastAssistantUsage(messages: unknown[]): Record<string, unknown> | null {
   for (let i = messages.length - 1; i >= 0; i -= 1) {
     const msg = messages[i];
@@ -51,7 +55,8 @@ export function buildCaptureHandler(
     }
 
     const lastTurn = getLastTurn(event.messages);
-    const texts: string[] = [];
+    const contentChunks: string[] = [];
+    const messagePayloads: Array<{ role: string; content: string }> = [];
 
     for (const msg of lastTurn) {
       if (!msg || typeof msg !== "object") continue;
@@ -75,18 +80,17 @@ export function buildCaptureHandler(
       }
 
       if (parts.length > 0) {
-        texts.push(`[role: ${role}]\n${parts.join("\n")}\n[${role}:end]`);
+        const text = parts.join("\n");
+        const label = role === "user" ? "User" : "Assistant";
+        messagePayloads.push({ role, content: sanitizeCapturedText(text) });
+        contentChunks.push(`${label}: ${sanitizeCapturedText(text)}`);
       }
     }
 
     const captured =
       cfg.captureMode === "all"
-        ? texts
-            .map((text) =>
-              text.replace(/<orca-memory-context>[\s\S]*?<\/orca-memory-context>\s*/g, "").trim(),
-            )
-            .filter((text) => text.length >= 10)
-        : texts;
+        ? contentChunks.filter((text) => text.length >= 10)
+        : contentChunks;
 
     if (captured.length === 0) return;
 
@@ -144,6 +148,7 @@ export function buildCaptureHandler(
         metadata: {
           source: "openclaw",
           container: cfg.containerTag,
+          messages: messagePayloads,
           model,
           tokensPrompt,
           tokensCompletion,

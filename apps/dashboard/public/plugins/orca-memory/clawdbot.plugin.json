@@ -34,8 +34,8 @@
     },
     "profileFrequency": {
       "label": "Profile Injection Frequency",
-      "placeholder": "50",
-      "help": "Inject the Memory Current list every N turns",
+      "placeholder": "1",
+      "help": "Inject the Memory Current list every N turns (default 1)",
       "advanced": true
     },
     "captureMode": {

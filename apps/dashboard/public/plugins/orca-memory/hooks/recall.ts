@@ -1,4 +1,4 @@
-import type { OrcaMemoryClient } from "../client.ts";
+import type { MemoryResult, OrcaMemoryClient } from "../client.ts";
 import type { OrcaMemoryConfig } from "../config.ts";
 import { log } from "../logger.ts";
 
@@ -68,6 +68,80 @@ function countUserTurns(messages: unknown[]): number {
   return count;
 }
 
+const STOPWORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "are",
+  "as",
+  "at",
+  "be",
+  "but",
+  "by",
+  "for",
+  "from",
+  "has",
+  "have",
+  "how",
+  "i",
+  "in",
+  "is",
+  "it",
+  "just",
+  "me",
+  "my",
+  "of",
+  "on",
+  "or",
+  "our",
+  "please",
+  "s",
+  "so",
+  "that",
+  "the",
+  "their",
+  "there",
+  "they",
+  "this",
+  "to",
+  "us",
+  "was",
+  "we",
+  "were",
+  "what",
+  "when",
+  "where",
+  "who",
+  "why",
+  "with",
+  "you",
+  "your",
+]);
+
+function buildKeywordQuery(prompt: string, limit = 8): string | null {
+  const words = prompt
+    .replace(/[^a-zA-Z0-9\s']/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const scored: { word: string; score: number }[] = [];
+  const seen = new Set<string>();
+  for (const raw of words) {
+    const lower = raw.toLowerCase();
+    if (STOPWORDS.has(lower)) continue;
+    const score = raw[0] === raw[0]?.toUpperCase() ? 2 : 1;
+    const normalized = lower;
+    if (!normalized || normalized.length < 3) continue;
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    scored.push({ word: raw, score });
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  const terms = scored.slice(0, limit).map((entry) => entry.word);
+  return terms.length > 0 ? terms.join(" ") : null;
+}
+
 export function buildRecallHandler(client: OrcaMemoryClient, cfg: OrcaMemoryConfig) {
   return async (event: Record<string, unknown>) => {
     const prompt =
@@ -106,11 +180,24 @@ export function buildRecallHandler(client: OrcaMemoryClient, cfg: OrcaMemoryConf
 
     try {
       const profile = includeProfile ? await client.profile() : null;
-      const searchResults = await client.search(prompt, cfg.maxRecallResults);
+      const keywordQuery = buildKeywordQuery(prompt);
+      const [searchResultsRaw, searchResultsKeywords] = await Promise.all([
+        client.search(prompt, cfg.maxRecallResults),
+        keywordQuery && keywordQuery !== prompt
+          ? client.search(keywordQuery, cfg.maxRecallResults)
+          : Promise.resolve([]),
+      ]);
+      const mergedResults = new Map<string, MemoryResult>();
+      for (const result of searchResultsRaw) {
+        mergedResults.set(result.id, result);
+      }
+      for (const result of searchResultsKeywords) {
+        mergedResults.set(result.id, result);
+      }
 
       const context = formatContext(
         profile?.current ?? [],
-        searchResults,
+        Array.from(mergedResults.values()),
         cfg.maxRecallResults,
       );
 

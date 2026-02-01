@@ -94,7 +94,7 @@ export function parseConfig(raw: unknown): OrcaMemoryConfig {
     autoRecall: (cfg.autoRecall as boolean) ?? true,
     autoCapture: (cfg.autoCapture as boolean) ?? true,
     maxRecallResults: (cfg.maxRecallResults as number) ?? 10,
-    profileFrequency: (cfg.profileFrequency as number) ?? 50,
+    profileFrequency: (cfg.profileFrequency as number) ?? 1,
     captureMode:
       cfg.captureMode === "everything" ? "everything" : "all",
     debug: (cfg.debug as boolean) ?? false,

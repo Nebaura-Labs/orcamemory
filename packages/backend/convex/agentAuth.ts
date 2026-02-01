@@ -48,6 +48,12 @@ const deriveHash = async (value: string, salt: ArrayBuffer, iterations: number) 
   return toHex(derivedBits);
 };
 
+const legacySha256 = async (value: string) => {
+  const data = textEncoder.encode(value);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return toHex(hashBuffer);
+};
+
 export const hashSecret = async (value: string) => {
   const saltBytes = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
   const hash = await deriveHash(value, saltBytes.buffer, PBKDF2_ITERATIONS);
@@ -55,6 +61,11 @@ export const hashSecret = async (value: string) => {
 };
 
 export const verifySecret = async (secret: string, expectedHash: string) => {
+  if (!expectedHash.includes("$")) {
+    const legacyHash = await legacySha256(secret);
+    return timingSafeEqual(legacyHash, expectedHash);
+  }
+
   const [scheme, iterationsRaw, saltHex, storedHash] = expectedHash.split("$");
   if (scheme !== "pbkdf2" || !iterationsRaw || !saltHex || !storedHash) {
     return false;

@@ -4,9 +4,9 @@
 
 Open-source memory infrastructure for AI agents. Persist memories across sessions, search semantically, and maintain context over time.
 
-- **Domains:** orcamemory.com (web) • app.orcamemory.com (dashboard)
+- **Domains:** [orcamemory.com](https://orcamemory.com) (web) • [app.orcamemory.com](https://app.orcamemory.com) (dashboard)
 - **Tagline:** So your Claw remembers yesterday 🐋
-- **Twitter/X:** @orcamemory (TBD)
+- **X/Twitter:** [@orcamemoryai](https://x.com/orcamemoryai)
 
 ## Docs
 
@@ -330,4 +330,5 @@ Contributions are welcome. Please keep changes focused, follow the repo conventi
 
 ## Community
 
-- X (formerly Twitter): TBD
+- **X (formerly Twitter):** [@orcamemoryai](https://x.com/orcamemoryai)
+- **GitHub:** [Nebaura-Labs/orcamemory](https://github.com/Nebaura-Labs/orcamemory)

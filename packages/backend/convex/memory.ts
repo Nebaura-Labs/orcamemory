@@ -13,6 +13,15 @@ type AuthResult = {
 
 const embeddingUrl = process.env.EMBEDDING_URL;
 const vectorScanLimit = Number(process.env.MEMORY_VECTOR_SCAN_LIMIT ?? "2000");
+const recentScanLimit = Number(process.env.MEMORY_RECENT_SCAN_LIMIT ?? "500");
+const memoryTypeScanLimit = Number(process.env.MEMORY_TYPE_SCAN_LIMIT ?? "300");
+
+const clampNumber = (value: number, min: number, max: number, fallback: number) => {
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(value, max));
+};
 
 const fetchEmbedding = async (input: string, inputType: "query" | "passage") => {
   if (!embeddingUrl) {
@@ -333,11 +342,28 @@ export const searchMemories = internalQuery({
     const queryEmbedding = args.queryEmbedding ?? undefined;
     const hasEmbeddingQuery = Array.isArray(queryEmbedding) && queryEmbedding.length > 0;
 
-    const scanLimit = Number.isFinite(vectorScanLimit)
-      ? Math.max(100, Math.min(vectorScanLimit, 20_000))
-      : 2000;
+    const maxScan = clampNumber(vectorScanLimit, 100, 20_000, 2000);
+    const recentLimit = Math.min(
+      clampNumber(recentScanLimit, 100, 5_000, 500),
+      maxScan
+    );
+    const typeLimit = Math.min(
+      clampNumber(memoryTypeScanLimit, 50, 5_000, 300),
+      maxScan
+    );
 
-    const memories = await ctx.db
+    const candidateMap = new Map<string, { memory: any; priority: number }>();
+    const addCandidates = (items: any[], priority: number) => {
+      for (const memory of items) {
+        const key = String(memory._id);
+        const existing = candidateMap.get(key);
+        if (!existing || priority > existing.priority) {
+          candidateMap.set(key, { memory, priority });
+        }
+      }
+    };
+
+    const recentMemories = await ctx.db
       .query("memories")
       .withIndex("projectId_createdAt", (queryBuilder) => {
         const scoped = queryBuilder.eq("projectId", args.projectId);
@@ -347,9 +373,65 @@ export const searchMemories = internalQuery({
         return scoped;
       })
       .order("desc")
-      .take(scanLimit);
+      .take(recentLimit);
 
-    const filtered = memories.filter((memory) => {
+    addCandidates(recentMemories, 1);
+
+    const importantTypes = ["facts", "decisions", "preferences"];
+    const enabledImportantTypes =
+      project.memoryTypes.length > 0
+        ? importantTypes.filter((type) => project.memoryTypes.includes(type))
+        : importantTypes;
+
+    if (!args.memoryType) {
+      for (const memoryType of enabledImportantTypes) {
+        const typedMemories = await ctx.db
+          .query("memories")
+          .withIndex("projectId_memoryType_createdAt", (queryBuilder) => {
+            const scoped = queryBuilder
+              .eq("projectId", args.projectId)
+              .eq("memoryType", memoryType);
+            if (cutoff) {
+              return scoped.gt("createdAt", cutoff);
+            }
+            return scoped;
+          })
+          .order("desc")
+          .take(typeLimit);
+
+        addCandidates(typedMemories, 2);
+      }
+    } else {
+      const typedMemories = await ctx.db
+        .query("memories")
+        .withIndex("projectId_memoryType_createdAt", (queryBuilder) => {
+          const scoped = queryBuilder
+            .eq("projectId", args.projectId)
+            .eq("memoryType", args.memoryType);
+          if (cutoff) {
+            return scoped.gt("createdAt", cutoff);
+          }
+          return scoped;
+        })
+        .order("desc")
+        .take(maxScan);
+
+      addCandidates(typedMemories, 2);
+    }
+
+    let candidates = Array.from(candidateMap.values());
+    if (candidates.length > maxScan) {
+      candidates = candidates
+        .sort((a, b) => {
+          if (b.priority !== a.priority) {
+            return b.priority - a.priority;
+          }
+          return b.memory.createdAt - a.memory.createdAt;
+        })
+        .slice(0, maxScan);
+    }
+
+    const filtered = candidates.map((entry) => entry.memory).filter((memory) => {
       if (!matchesRetention(memory.createdAt, cutoff)) {
         return false;
       }

@@ -64,7 +64,12 @@ export default defineSchema({
     .index("projectId", ["projectId"])
     .index("agentId", ["agentId"])
     .index("organizationId", ["organizationId"])
-    .index("projectId_createdAt", ["projectId", "createdAt"]),
+    .index("projectId_createdAt", ["projectId", "createdAt"])
+    .index("projectId_memoryType_createdAt", [
+      "projectId",
+      "memoryType",
+      "createdAt",
+    ]),
   sessions: defineTable({
     organizationId: v.string(),
     projectId: v.id("projects"),

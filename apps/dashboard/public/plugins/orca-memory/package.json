@@ -1,0 +1,36 @@
+{
+  "name": "@orcamemory/orca-memory",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OpenClaw Orca Memory plugin",
+  "license": "MIT",
+  "dependencies": {
+    "@sinclair/typebox": "0.34.47"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.1.29"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
+  "clawdbot": {
+    "extensions": ["./index.ts"]
+  },
+  "files": [
+    "index.ts",
+    "client.ts",
+    "config.ts",
+    "logger.ts",
+    "memory.ts",
+    "hooks/capture.ts",
+    "hooks/recall.ts",
+    "tools/search.ts",
+    "tools/store.ts",
+    "tools/forget.ts",
+    "tools/profile.ts",
+    "commands/cli.ts",
+    "commands/slash.ts",
+    "openclaw.plugin.json",
+    "skills/orca-memory/SKILL.md"
+  ]
+}

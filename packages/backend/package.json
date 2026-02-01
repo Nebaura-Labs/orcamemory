@@ -5,21 +5,26 @@
   "license": "ISC",
   "author": "",
   "scripts": {
-    "dev": "convex dev",
+    "dev": "CONVEX_DEPLOYMENT=https://orca-db.orcamemory.com convex dev --url https://orca-db.orcamemory.com --admin-key 'convex-self-hosted|011a212c05586c21fc4bd993fff9cac983151d50f0fe461dd787c53b89c6d85fcc163a9be5'",
     "dev:setup": "convex dev --configure --until-success"
   },
   "dependencies": {
     "@convex-dev/better-auth": "catalog:",
+    "@convex-dev/polar": "^0.7.3",
     "@react-email/components": "^1.0.6",
     "@react-email/render": "^2.0.4",
     "better-auth": "catalog:",
     "convex": "catalog:",
     "dotenv": "catalog:",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@moltcity/config": "workspace:*",
     "@types/node": "^24.3.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
     "typescript": "catalog:"
   }
 }

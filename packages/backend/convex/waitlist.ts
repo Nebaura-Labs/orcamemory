@@ -9,6 +9,9 @@ import WaitlistConfirmationEmail from "./emails/waitlistConfirmation";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const RATE_LIMIT_STATUS = 429;
+const CONTACT_EXISTS_STATUS = 409;
+
 export const join = action({
   args: {
     email: v.string(),
@@ -26,41 +29,29 @@ export const join = action({
       throw new Error("Missing Resend configuration.");
     }
 
-    const getResponse = await fetch(
-      `https://api.resend.com/audiences/${audienceId}/contacts/${encodeURIComponent(email)}`,
+    const contactResponse = await fetch(
+      `https://api.resend.com/audiences/${audienceId}/contacts`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${contactsApiKey}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email }),
       },
     );
 
-    if (!getResponse.ok && getResponse.status !== 404) {
-      const errorBody = await getResponse.text();
-      throw new Error(`Resend error: ${getResponse.status} ${errorBody}`);
+    if (contactResponse.status === RATE_LIMIT_STATUS) {
+      return { ok: false, status: "rate_limited" as const };
     }
 
-    const alreadyExists = getResponse.ok;
+    const contactErrorBody = contactResponse.ok ? "" : await contactResponse.text();
+    const alreadyExists =
+      contactResponse.status === CONTACT_EXISTS_STATUS ||
+      (contactResponse.status === 422 && contactErrorBody.toLowerCase().includes("exists"));
 
-    if (!alreadyExists) {
-      const contactResponse = await fetch(
-        `https://api.resend.com/audiences/${audienceId}/contacts`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${contactsApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        },
-      );
-
-      if (!contactResponse.ok) {
-        const errorBody = await contactResponse.text();
-        throw new Error(`Resend error: ${contactResponse.status} ${errorBody}`);
-      }
+    if (!contactResponse.ok && !alreadyExists) {
+      throw new Error(`Resend error: ${contactResponse.status} ${contactErrorBody}`);
     }
 
     const emailHtml = await render(React.createElement(WaitlistConfirmationEmail));
@@ -78,6 +69,10 @@ export const join = action({
           html: emailHtml,
         }),
       });
+
+      if (emailResponse.status === RATE_LIMIT_STATUS) {
+        return { ok: false, status: "rate_limited" as const };
+      }
 
       if (!emailResponse.ok) {
         const errorBody = await emailResponse.text();

@@ -20,7 +20,6 @@ import { authClient } from "@/lib/auth-client";
 import { getToken } from "@/lib/auth-server";
 import { env } from "@moltcity/env/web";
 
-import Header from "../components/header";
 import appCss from "../index.css?url";
 
 const getAuth = createServerFn({ method: "GET" }).handler(async () => {
@@ -153,10 +152,22 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
   component: RootDocument,
   beforeLoad: async (ctx) => {
-    const token = await getAuth();
+    let token: string | null = null;
+    try {
+      token = await Promise.race([
+        getAuth(),
+        new Promise<null>((resolve) => {
+          setTimeout(() => resolve(null), 3000);
+        }),
+      ]);
+    } catch {
+      token = null;
+    }
+
     if (token) {
       ctx.context.convexQueryClient.serverHttpClient?.setAuth(token);
     }
+
     return {
       isAuthenticated: !!token,
       token,
@@ -202,7 +213,6 @@ function RootDocument() {
                 : "grid h-svh grid-rows-[auto_1fr]"
             }
           >
-            {!isHome ? <Header /> : null}
             <Outlet />
           </div>
           <Toaster richColors />

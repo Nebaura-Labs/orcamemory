@@ -40,6 +40,10 @@ function HomeComponent() {
       setStatusMessage(null);
       try {
         const result = await joinWaitlist({ email: value.email.trim() });
+        if (result?.status === "rate_limited") {
+          setStatusMessage("We’re getting a lot of requests. Try again in a moment.");
+          return { status: "error" as const };
+        }
         if (result?.status === "exists") {
           setModalTitle("You're already on the list");
           setModalDescription("No action needed. We’ll email you when early access opens.");

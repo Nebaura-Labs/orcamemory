@@ -1,0 +1,67 @@
+{
+  "id": "orca-memory",
+  "kind": "memory",
+  "uiHints": {
+    "apiUrl": {
+      "label": "Orca Memory API URL",
+      "placeholder": "https://app.orcamemory.com/api",
+      "help": "Your Orca Memory API base URL (or use ${ORCA_MEMORY_API_URL})"
+    },
+    "keyId": {
+      "label": "Key ID",
+      "placeholder": "omk_...",
+      "help": "Agent key id issued in the Orca Memory dashboard (or use ${ORCA_MEMORY_KEY_ID})"
+    },
+    "apiKey": {
+      "label": "API Key",
+      "sensitive": true,
+      "placeholder": "oms_...",
+      "help": "Agent API key issued in the Orca Memory dashboard (or use ${ORCA_MEMORY_API_KEY})"
+    },
+    "autoRecall": {
+      "label": "Auto-Recall",
+      "help": "Inject relevant memories before every AI turn"
+    },
+    "autoCapture": {
+      "label": "Auto-Capture",
+      "help": "Automatically store important information after each turn"
+    },
+    "maxRecallResults": {
+      "label": "Max Recall Results",
+      "placeholder": "10",
+      "help": "Maximum memories injected per turn",
+      "advanced": true
+    },
+    "profileFrequency": {
+      "label": "Profile Injection Frequency",
+      "placeholder": "50",
+      "help": "Inject the Memory Current list every N turns",
+      "advanced": true
+    },
+    "captureMode": {
+      "label": "Capture Mode",
+      "help": "'all' (default) = filter injected context + short text, 'everything' = capture all messages",
+      "advanced": true
+    },
+    "debug": {
+      "label": "Debug Logging",
+      "advanced": true
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiUrl": { "type": "string" },
+      "keyId": { "type": "string" },
+      "apiKey": { "type": "string" },
+      "autoRecall": { "type": "boolean" },
+      "autoCapture": { "type": "boolean" },
+      "maxRecallResults": { "type": "number", "minimum": 1, "maximum": 20 },
+      "profileFrequency": { "type": "number", "minimum": 1, "maximum": 500 },
+      "captureMode": { "type": "string", "enum": ["everything", "all"] },
+      "debug": { "type": "boolean" }
+    },
+    "required": []
+  }
+}

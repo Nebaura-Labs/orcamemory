@@ -70,6 +70,18 @@ export function buildCaptureHandler(
     const sessionKey = getSessionKey();
     const sessionName = sessionKey ? buildSessionName(sessionKey) : undefined;
     const sessionId = getSessionId();
+    const model = typeof event.model === "string" ? event.model : undefined;
+    const usage = event.usage as
+      | { input?: number; output?: number; total?: number }
+      | undefined;
+    const tokensPrompt = typeof usage?.input === "number" ? usage?.input : undefined;
+    const tokensCompletion = typeof usage?.output === "number" ? usage?.output : undefined;
+    const tokensTotal =
+      typeof usage?.total === "number"
+        ? usage?.total
+        : typeof tokensPrompt === "number" || typeof tokensCompletion === "number"
+          ? (tokensPrompt ?? 0) + (tokensCompletion ?? 0)
+          : undefined;
 
     log.debug(`capture: ${captured.length} texts (${content.length} chars)`);
 
@@ -80,10 +92,32 @@ export function buildCaptureHandler(
         metadata: {
           source: "openclaw",
           container: cfg.containerTag,
+          model,
+          tokensPrompt,
+          tokensCompletion,
+          tokensTotal,
         },
         sessionId: sessionId ?? undefined,
         sessionName,
+        model,
+        tokensPrompt,
+        tokensCompletion,
+        tokensTotal,
+        eventKind: "conversation",
+        eventContent: content,
       });
+
+      if (sessionId) {
+        await client.recordSessionEvent({
+          sessionId,
+          kind: "conversation",
+          model,
+          content,
+          tokensPrompt,
+          tokensCompletion,
+          tokensTotal,
+        });
+      }
     } catch (err) {
       log.error("capture failed", err);
     }

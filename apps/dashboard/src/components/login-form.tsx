@@ -1,7 +1,6 @@
 import type { ComponentProps } from "react";
 
 import { useRef, useState } from "react";
-import { useConvex } from "convex/react";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import {
@@ -25,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { saveOtpContext } from "@/lib/otp-context";
-import { api } from "@moltcity/backend/convex/_generated/api";
 import { toast } from "sonner";
 
 type LoginFormProps = ComponentProps<"form">;
@@ -34,7 +32,6 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const navigate = useNavigate();
-  const convex = useConvex();
   const identifierRef = useRef<HTMLInputElement | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm({
@@ -74,16 +71,6 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     setIsSubmitting(true);
 
     try {
-      const exists = await convex.query(api.users.userExists, {
-        email: currentIdentifier,
-      });
-      if (!exists) {
-        const message = "No account found. Create one to continue.";
-        setStatusMessage(message);
-        toast.error(message);
-        return;
-      }
-
       await sendOtp(currentIdentifier);
       toast.success("Verification code sent to email.");
       saveOtpContext({
@@ -92,8 +79,11 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         email: currentIdentifier,
       });
       await navigate({ to: "/otp" });
-    } catch {
-      const message = "Unable to send a code. Please try again.";
+    } catch (error) {
+      const rawMessage = error instanceof Error ? error.message : "";
+      const message = rawMessage.toLowerCase().includes("not found")
+        ? "No account found. Create one to continue."
+        : "Unable to send a code. Please try again.";
       setStatusMessage(message);
       toast.error(message);
     } finally {

@@ -82,6 +82,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
   const [keyId, setKeyId] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [isGeneratingKey, setIsGeneratingKey] = useState(false);
   const [polledConnected, setPolledConnected] = useState(false);
   const issueKey = useMutation(api.agents.issueKey);
@@ -114,6 +115,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
   const handleGenerateKey = async (rotate: boolean) => {
     if (!projectId || isGeneratingKey) return;
     setStatusMessage(null);
+    setInfoMessage(null);
     setIsGeneratingKey(true);
     try {
       const response = await issueKey({ projectId, rotate });
@@ -147,7 +149,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
 
       setKeyId(nextKeyId);
       setApiKey(nextSecret);
-      toast.success(rotate ? "New agent key generated." : "Agent key loaded.");
+      toast.success(rotate ? "New agent key generated." : "Agent key generated.");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unable to create agent key.";
@@ -161,6 +163,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
   useEffect(() => {
     if (!open) {
       setStatusMessage(null);
+      setInfoMessage(null);
       setIsGeneratingKey(false);
     }
   }, [open]);
@@ -195,12 +198,10 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
 
   useEffect(() => {
     if (!open || !activeKey || apiKey) return;
-    if (activeKey.secret) {
-      setKeyId(activeKey.keyId);
-      setApiKey(activeKey.secret);
-      return;
-    }
-    void handleGenerateKey(true);
+    setKeyId(activeKey.keyId);
+    setInfoMessage(
+      "For security, the API key is shown only once. Generate a new key to get a fresh secret.",
+    );
   }, [activeKey, apiKey, open]);
 
   useEffect(() => {
@@ -250,14 +251,21 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
           {statusMessage ? (
             <p className="text-xs text-destructive">{statusMessage}</p>
           ) : null}
+          {infoMessage ? (
+            <p className="text-xs text-muted-foreground">{infoMessage}</p>
+          ) : null}
           {!apiKey ? (
             <Button
               type="button"
               className="w-full"
               disabled={!projectId || isGeneratingKey}
-              onClick={() => void handleGenerateKey(false)}
+              onClick={() => void handleGenerateKey(Boolean(activeKey))}
             >
-              {isGeneratingKey ? "Generating key..." : "Generate agent key"}
+              {isGeneratingKey
+                ? "Generating key..."
+                : activeKey
+                  ? "Rotate agent key"
+                  : "Generate agent key"}
             </Button>
           ) : null}
           <div className="min-w-0">

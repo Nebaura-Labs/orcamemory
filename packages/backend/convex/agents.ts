@@ -92,8 +92,8 @@ export const issueKey = mutation({
       .filter((queryBuilder) => queryBuilder.eq(queryBuilder.field("revokedAt"), undefined))
       .first();
 
-    if (!args.rotate && activeKey?.secret) {
-      return { agentId, keyId: activeKey.keyId, secret: activeKey.secret };
+    if (!args.rotate && activeKey) {
+      return { agentId, keyId: activeKey.keyId, secret: null };
     }
 
     const keyId = createKeyId();
@@ -116,7 +116,6 @@ export const issueKey = mutation({
       agentId,
       keyId,
       secretHash,
-      secret,
       createdAt: Date.now(),
     });
 
@@ -158,7 +157,7 @@ export const getActiveKeyByProject = query({
       return null;
     }
 
-    return { keyId: key.keyId, secret: key.secret ?? null };
+    return { keyId: key.keyId };
   },
 });
 

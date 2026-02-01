@@ -3,8 +3,8 @@ const PBKDF2_ITERATIONS = 150_000;
 const PBKDF2_HASH = "SHA-256";
 const SALT_BYTES = 16;
 
-const toHex = (buffer: ArrayBuffer) =>
-  Array.from(new Uint8Array(buffer))
+const toHex = (buffer: ArrayBuffer | Uint8Array) =>
+  Array.from(buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
 
@@ -27,7 +27,7 @@ const timingSafeEqual = (left: string, right: string) => {
   return diff === 0;
 };
 
-const deriveHash = async (value: string, salt: Uint8Array, iterations: number) => {
+const deriveHash = async (value: string, salt: ArrayBuffer, iterations: number) => {
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     textEncoder.encode(value),
@@ -49,9 +49,9 @@ const deriveHash = async (value: string, salt: Uint8Array, iterations: number) =
 };
 
 export const hashSecret = async (value: string) => {
-  const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
-  const hash = await deriveHash(value, salt, PBKDF2_ITERATIONS);
-  return `pbkdf2$${PBKDF2_ITERATIONS}$${toHex(salt)}$${hash}`;
+  const saltBytes = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
+  const hash = await deriveHash(value, saltBytes.buffer, PBKDF2_ITERATIONS);
+  return `pbkdf2$${PBKDF2_ITERATIONS}$${toHex(saltBytes)}$${hash}`;
 };
 
 export const verifySecret = async (secret: string, expectedHash: string) => {
@@ -64,6 +64,6 @@ export const verifySecret = async (secret: string, expectedHash: string) => {
     return false;
   }
   const salt = fromHex(saltHex);
-  const computedHash = await deriveHash(secret, salt, iterations);
+  const computedHash = await deriveHash(secret, salt.buffer, iterations);
   return timingSafeEqual(computedHash, storedHash);
 };

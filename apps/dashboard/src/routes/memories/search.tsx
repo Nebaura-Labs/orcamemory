@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { useQuery } from "convex/react"
-import { Search, Clock, Tag, Bot, FileText, ArrowRight, Sparkles } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Search, Clock, Tag, Bot, FileText, ArrowRight, Sparkles, Loader2 } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -56,9 +56,25 @@ function MemorySearchPage() {
 
   const [activeProjectId, setActiveProjectId] = useState<Id<"projects"> | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeSearch, setActiveSearch] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const [agentFilter, setAgentFilter] = useState<string>("all")
   const [typeFilter, setTypeFilter] = useState<string>("all")
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Debounce search query
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+    debounceRef.current = setTimeout(() => {
+      setDebouncedQuery(searchQuery.trim())
+    }, 300)
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [searchQuery])
 
   // Redirect to onboarding if no organizations
   useEffect(() => {
@@ -88,13 +104,13 @@ function MemorySearchPage() {
     activeProjectId ? { projectId: activeProjectId } : "skip"
   ) as string[] | undefined
 
-  // Search results - only search when activeSearch is set
+  // Search results - live search with debounce
   const searchResults = useQuery(
     api.dashboard.searchMemories,
-    activeProjectId && activeSearch
+    activeProjectId && debouncedQuery
       ? {
           projectId: activeProjectId,
-          search: activeSearch,
+          search: debouncedQuery,
           agentId: agentFilter !== "all" ? (agentFilter as Id<"agents">) : undefined,
           memoryType: typeFilter !== "all" ? typeFilter : undefined,
           limit: 50,
@@ -102,10 +118,7 @@ function MemorySearchPage() {
       : "skip"
   ) as { memories: Memory[]; nextCursor: string | null; total: number } | undefined
 
-  const handleSearch = (event?: React.FormEvent) => {
-    event?.preventDefault()
-    setActiveSearch(searchQuery.trim())
-  }
+  const isSearching = searchQuery.trim() !== debouncedQuery
 
   const isLoading = isPending || projects === undefined || !activeProjectId
 
@@ -128,7 +141,7 @@ function MemorySearchPage() {
             <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Sparkles className="size-5 dark:text-primary" />
+                  <Search className="size-5" />
                   Search Memories
                 </CardTitle>
                 <CardDescription>
@@ -136,20 +149,18 @@ function MemorySearchPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSearch} className="space-y-4">
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                      <Input
-                        className="pl-9"
-                        placeholder="What are you looking for?"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-                    <Button type="submit" disabled={!searchQuery.trim()}>
-                      Search
-                    </Button>
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                    <Input
+                      className="pl-9 pr-9"
+                      placeholder="Start typing to search..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {isSearching && (
+                      <Loader2 className="text-muted-foreground absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin" />
+                    )}
                   </div>
 
                   {/* Filters */}
@@ -186,16 +197,16 @@ function MemorySearchPage() {
                       </Select>
                     )}
                   </div>
-                </form>
+                </div>
               </CardContent>
             </Card>
 
             {/* Results */}
-            {activeSearch && (
+            {debouncedQuery && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-medium">
-                    Results for "{activeSearch}"
+                    Results for "{debouncedQuery}"
                   </h2>
                   {searchResults && (
                     <span className="text-muted-foreground text-sm">
@@ -218,7 +229,7 @@ function MemorySearchPage() {
                     <CardContent className="flex flex-col items-center justify-center py-12">
                       <Search className="text-muted-foreground mb-4 size-12" />
                       <p className="text-muted-foreground text-center">
-                        No memories found matching "{activeSearch}"
+                        No memories found matching "{debouncedQuery}"
                       </p>
                       <p className="text-muted-foreground mt-1 text-center text-sm">
                         Try adjusting your search query or filters
@@ -228,7 +239,7 @@ function MemorySearchPage() {
                 ) : (
                   <div className="space-y-3">
                     {searchResults.memories.map((memory: Memory) => (
-                      <SearchResultCard key={memory._id} memory={memory} searchQuery={activeSearch} />
+                      <SearchResultCard key={memory._id} memory={memory} searchQuery={debouncedQuery} />
                     ))}
                   </div>
                 )}
@@ -236,7 +247,7 @@ function MemorySearchPage() {
             )}
 
             {/* Empty State - No search yet */}
-            {!activeSearch && (
+            {!debouncedQuery && (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16">
                   <div className="bg-muted mb-4 rounded-full p-4">
@@ -286,7 +297,7 @@ function SearchResultCard({ memory, searchQuery }: SearchResultCardProps) {
       <>
         {parts.map((part, i) =>
           part.toLowerCase() === query.toLowerCase() ? (
-            <mark key={i} className="rounded-none bg-yellow-200 px-0.5 dark:bg-yellow-800">
+            <mark key={i} className="bg-primary text-primary-foreground rounded-none px-0.5">
               {part}
             </mark>
           ) : (
@@ -300,15 +311,15 @@ function SearchResultCard({ memory, searchQuery }: SearchResultCardProps) {
   return (
     <Card className="transition-colors hover:bg-accent/50">
       <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0 flex-1 space-y-2">
-            {/* Content with highlighting */}
-            <p className="text-sm leading-relaxed">
-              {highlightText(memory.content, searchQuery)}
-            </p>
+        <div className="space-y-3">
+          {/* Content with highlighting */}
+          <p className="text-sm leading-relaxed">
+            {highlightText(memory.content, searchQuery)}
+          </p>
 
-            {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-3 text-xs">
+          {/* Meta info */}
+          <div className="flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
               <span className="text-muted-foreground flex items-center gap-1">
                 <Bot className="size-3" />
                 {memory.agentName}
@@ -320,6 +331,11 @@ function SearchResultCard({ memory, searchQuery }: SearchResultCardProps) {
                 </Badge>
               )}
 
+              <span className="text-muted-foreground flex items-center gap-1">
+                <Clock className="size-3" />
+                {new Date(memory.createdAt).toLocaleDateString()}
+              </span>
+
               {memory.tags.length > 0 && (
                 <span className="text-muted-foreground flex items-center gap-1">
                   <Tag className="size-3" />
@@ -327,21 +343,16 @@ function SearchResultCard({ memory, searchQuery }: SearchResultCardProps) {
                   {memory.tags.length > 3 && ` +${memory.tags.length - 3}`}
                 </span>
               )}
-
-              <span className="text-muted-foreground flex items-center gap-1">
-                <Clock className="size-3" />
-                {new Date(memory.createdAt).toLocaleDateString()}
-              </span>
             </div>
-          </div>
 
-          {/* View Details Button */}
-          <a href={`/memories/${memory._id}`}>
-            <Button variant="ghost" size="sm" className="shrink-0">
-              View
-              <ArrowRight className="ml-1 size-3" />
-            </Button>
-          </a>
+            {/* View Details Button */}
+            <a href={`/memories/${memory._id}`}>
+              <Button size="sm">
+                View
+                <ArrowRight className="ml-1 size-3" />
+              </Button>
+            </a>
+          </div>
         </div>
       </CardContent>
     </Card>

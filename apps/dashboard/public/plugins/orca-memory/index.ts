@@ -49,12 +49,14 @@ export default {
 
     if (cfg.autoRecall) {
       const recallHandler = buildRecallHandler(client, cfg);
-      api.on("before_agent_start", async (event, ctx) => {
+      const handleRecall = async (event: unknown, ctx: { sessionKey?: string }) => {
         if (ctx.sessionKey) {
           await ensureSession(ctx.sessionKey);
         }
         return recallHandler(event as Record<string, unknown>);
-      });
+      };
+      api.on("before_agent_start", handleRecall);
+      api.on("message_received", handleRecall);
     }
 
     if (cfg.autoCapture) {

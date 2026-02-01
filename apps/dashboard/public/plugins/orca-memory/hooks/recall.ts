@@ -70,7 +70,32 @@ function countUserTurns(messages: unknown[]): number {
 
 export function buildRecallHandler(client: OrcaMemoryClient, cfg: OrcaMemoryConfig) {
   return async (event: Record<string, unknown>) => {
-    const prompt = event.prompt as string | undefined;
+    const prompt =
+      (event.prompt as string | undefined) ??
+      (typeof event.message === "object" && event.message
+        ? ((event.message as Record<string, unknown>).content as string | undefined)
+        : undefined) ??
+      (typeof event.input === "object" && event.input
+        ? ((event.input as Record<string, unknown>).content as string | undefined) ??
+          ((event.input as Record<string, unknown>).prompt as string | undefined)
+        : undefined) ??
+      (() => {
+        const messages = Array.isArray(event.messages) ? event.messages : [];
+        for (let index = messages.length - 1; index >= 0; index -= 1) {
+          const msg = messages[index];
+          if (
+            msg &&
+            typeof msg === "object" &&
+            (msg as Record<string, unknown>).role === "user"
+          ) {
+            const content = (msg as Record<string, unknown>).content;
+            if (typeof content === "string") {
+              return content;
+            }
+          }
+        }
+        return undefined;
+      })();
     if (!prompt || prompt.length < 3) return;
 
     const messages = Array.isArray(event.messages) ? event.messages : [];

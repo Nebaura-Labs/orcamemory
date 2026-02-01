@@ -481,18 +481,19 @@ export const forgetMemories = internalMutation({
     ids: v.array(v.id("memories")),
   },
   handler: async (ctx, args) => {
-    let deleted = 0;
-    
-    // Delete each memory directly instead of loading all memories
-    for (const id of args.ids) {
-      const memory = await ctx.db.get(id);
-      if (memory && memory.projectId === args.projectId && memory.agentId === args.agentId) {
-        await ctx.db.delete(id);
-        deleted += 1;
-      }
-    }
+    const memories = await Promise.all(args.ids.map((id) => ctx.db.get(id)));
+    const deletable = args.ids.filter((id, index) => {
+      const memory = memories[index];
+      return (
+        memory &&
+        memory.projectId === args.projectId &&
+        memory.agentId === args.agentId
+      );
+    });
 
-    return { deleted };
+    await Promise.all(deletable.map((id) => ctx.db.delete(id)));
+
+    return { deleted: deletable.length };
   },
 });
 

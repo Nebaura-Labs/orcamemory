@@ -1,5 +1,7 @@
 {
   "id": "orca-memory",
+  "name": "Orca Memory",
+  "version": "0.2.0",
   "kind": "memory",
   "uiHints": {
     "apiUrl": {

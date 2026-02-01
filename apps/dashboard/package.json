@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "serve": "vite preview",
+    "serve": "serve -s dist -l 3002",
     "dev": "vite dev --host",
-    "serve:host": "vite preview --host --port 3002"
+    "serve:host": "serve -s dist -l 3002",
+    "postinstall": "which serve || bun add -g serve"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

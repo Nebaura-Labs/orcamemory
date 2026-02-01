@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => {
     preview: {
       allowedHosts: ["dev.orcamemory.com", "app.orcamemory.com", "orcamemory.com"],
     },
+    build: {
+      outDir: "dist",
+      sourcemap: false,
+      minify: true,
+    },
     ssr: {
       noExternal: ["@convex-dev/better-auth"],
     },

@@ -12,6 +12,18 @@ export default defineConfig({
   preview: {
     allowedHosts: ["orcamemory.com"],
   },
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    minify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
+  },
   ssr: {
     noExternal: ["@convex-dev/better-auth"],
   },

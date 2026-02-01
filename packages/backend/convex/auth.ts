@@ -11,6 +11,10 @@ import betterAuthSchema from "./betterAuth/schema";
 
 const siteUrl = process.env.SITE_URL!;
 const frontendUrl = process.env.FRONTEND_URL!;
+const frontendUrls = (process.env.FRONTEND_URLS ?? "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
 const githubClientId = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
 
@@ -127,9 +131,10 @@ const sendOtpEmail = async (email: string, otp: string, type: VerificationType) 
 
 
 function createAuth(ctx: GenericCtx<DataModel>) {
+  const trustedOrigins = [siteUrl, frontendUrl, ...frontendUrls].filter(Boolean);
   return betterAuth({
     baseURL: siteUrl,
-    trustedOrigins: [siteUrl, frontendUrl],
+    trustedOrigins,
     advanced: {
       useSecureCookies: siteUrl.startsWith("https"),
       crossSubdomainCookies: {

@@ -64,33 +64,34 @@ const cosineSimilarity = (a: number[], b: number[]) => {
   return dot / denom;
 };
 
-const logUsage = async (
-  ctx: { db: any },
-  params: {
-    organizationId: string;
-    projectId: string;
-    agentId: string;
-    kind: string;
-    tokens: number;
-    searches: number;
-    memoryId?: string;
-    query?: string;
-    metadata?: unknown;
+export const logUsage = internalMutation({
+  args: {
+    organizationId: v.string(),
+    projectId: v.id("projects"),
+    agentId: v.id("agents"),
+    kind: v.string(),
+    tokens: v.number(),
+    searches: v.number(),
+    memoryId: v.optional(v.id("memories")),
+    query: v.optional(v.string()),
+    metadata: v.optional(v.any()),
   },
-) => {
-  await ctx.db.insert("usageLogs", {
-    organizationId: params.organizationId,
-    projectId: params.projectId as any,
-    agentId: params.agentId as any,
-    kind: params.kind,
-    tokens: params.tokens,
-    searches: params.searches,
-    createdAt: Date.now(),
-    memoryId: params.memoryId as any,
-    query: params.query,
-    metadata: params.metadata ?? undefined,
-  });
-};
+  handler: async (ctx, args) => {
+    await ctx.db.insert("usageLogs", {
+      organizationId: args.organizationId,
+      projectId: args.projectId,
+      agentId: args.agentId,
+      kind: args.kind,
+      tokens: args.tokens,
+      searches: args.searches,
+      createdAt: Date.now(),
+      memoryId: args.memoryId ?? undefined,
+      query: args.query ?? undefined,
+      metadata: args.metadata ?? undefined,
+    });
+    return { ok: true };
+  },
+});
 
 const RETENTION_WINDOWS: Record<string, number | null> = {
   "Keep Forever": null,
@@ -646,14 +647,14 @@ export const storeMemoryAction = httpAction(async (ctx, request) => {
     embedding: embedding ?? undefined,
   });
 
-  await logUsage(ctx, {
+  await ctx.runMutation(internal.memory.logUsage, {
     organizationId: auth.organizationId,
-    projectId: auth.projectId,
-    agentId: auth.agentId,
+    projectId: auth.projectId as any,
+    agentId: auth.agentId as any,
     kind: "embedding_store",
     tokens: embeddingTokens,
     searches: 0,
-    memoryId: result.id,
+    memoryId: result.id as any,
     metadata: {
       model: payload.model ?? undefined,
       memoryType: payload.memoryType ?? undefined,
@@ -715,10 +716,10 @@ export const searchMemoriesAction = httpAction(async (ctx, request) => {
     queryEmbedding: queryEmbedding ?? undefined,
   });
 
-  await logUsage(ctx, {
+  await ctx.runMutation(internal.memory.logUsage, {
     organizationId: auth.organizationId,
-    projectId: auth.projectId,
-    agentId: auth.agentId,
+    projectId: auth.projectId as any,
+    agentId: auth.agentId as any,
     kind: "embedding_search",
     tokens: embeddingTokens,
     searches: 1,

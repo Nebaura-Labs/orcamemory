@@ -64,6 +64,34 @@ const cosineSimilarity = (a: number[], b: number[]) => {
   return dot / denom;
 };
 
+const logUsage = async (
+  ctx: { db: any },
+  params: {
+    organizationId: string;
+    projectId: string;
+    agentId: string;
+    kind: string;
+    tokens: number;
+    searches: number;
+    memoryId?: string;
+    query?: string;
+    metadata?: unknown;
+  },
+) => {
+  await ctx.db.insert("usageLogs", {
+    organizationId: params.organizationId,
+    projectId: params.projectId as any,
+    agentId: params.agentId as any,
+    kind: params.kind,
+    tokens: params.tokens,
+    searches: params.searches,
+    createdAt: Date.now(),
+    memoryId: params.memoryId as any,
+    query: params.query,
+    metadata: params.metadata ?? undefined,
+  });
+};
+
 const RETENTION_WINDOWS: Record<string, number | null> = {
   "Keep Forever": null,
   "One Year": 365,
@@ -618,6 +646,20 @@ export const storeMemoryAction = httpAction(async (ctx, request) => {
     embedding: embedding ?? undefined,
   });
 
+  await logUsage(ctx, {
+    organizationId: auth.organizationId,
+    projectId: auth.projectId,
+    agentId: auth.agentId,
+    kind: "embedding_store",
+    tokens: embeddingTokens,
+    searches: 0,
+    memoryId: result.id,
+    metadata: {
+      model: payload.model ?? undefined,
+      memoryType: payload.memoryType ?? undefined,
+    },
+  });
+
   return Response.json(result);
 });
 
@@ -671,6 +713,16 @@ export const searchMemoriesAction = httpAction(async (ctx, request) => {
     memoryType: payload.memoryType ?? undefined,
     tags: payload.tags ?? undefined,
     queryEmbedding: queryEmbedding ?? undefined,
+  });
+
+  await logUsage(ctx, {
+    organizationId: auth.organizationId,
+    projectId: auth.projectId,
+    agentId: auth.agentId,
+    kind: "embedding_search",
+    tokens: embeddingTokens,
+    searches: 1,
+    query: payload.query,
   });
 
   return Response.json({ results });

@@ -15,6 +15,7 @@ import { Route as OtpRouteImport } from './routes/otp'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MemoriesIndexRouteImport } from './routes/memories/index'
+import { Route as MemoriesSearchRouteImport } from './routes/memories/search'
 import { Route as MemoriesMemoryIdRouteImport } from './routes/memories/$memoryId'
 import { Route as ApiSessionsStartRouteImport } from './routes/api/sessions/start'
 import { Route as ApiSessionsRecordRouteImport } from './routes/api/sessions/record'
@@ -54,6 +55,11 @@ const IndexRoute = IndexRouteImport.update({
 const MemoriesIndexRoute = MemoriesIndexRouteImport.update({
   id: '/memories/',
   path: '/memories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoriesSearchRoute = MemoriesSearchRouteImport.update({
+  id: '/memories/search',
+  path: '/memories/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoriesMemoryIdRoute = MemoriesMemoryIdRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
+  '/memories/search': typeof MemoriesSearchRoute
   '/memories/': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
+  '/memories/search': typeof MemoriesSearchRoute
   '/memories': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
+  '/memories/search': typeof MemoriesSearchRoute
   '/memories/': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/memories/$memoryId'
+    | '/memories/search'
     | '/memories/'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/memories/$memoryId'
+    | '/memories/search'
     | '/memories'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/memories/$memoryId'
+    | '/memories/search'
     | '/memories/'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -226,6 +238,7 @@ export interface RootRouteChildren {
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   MemoriesMemoryIdRoute: typeof MemoriesMemoryIdRoute
+  MemoriesSearchRoute: typeof MemoriesSearchRoute
   MemoriesIndexRoute: typeof MemoriesIndexRoute
   ApiAgentsConnectRoute: typeof ApiAgentsConnectRoute
   ApiAgentsHealthRoute: typeof ApiAgentsHealthRoute
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/memories'
       fullPath: '/memories/'
       preLoaderRoute: typeof MemoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memories/search': {
+      id: '/memories/search'
+      path: '/memories/search'
+      fullPath: '/memories/search'
+      preLoaderRoute: typeof MemoriesSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memories/$memoryId': {
@@ -362,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   MemoriesMemoryIdRoute: MemoriesMemoryIdRoute,
+  MemoriesSearchRoute: MemoriesSearchRoute,
   MemoriesIndexRoute: MemoriesIndexRoute,
   ApiAgentsConnectRoute: ApiAgentsConnectRoute,
   ApiAgentsHealthRoute: ApiAgentsHealthRoute,

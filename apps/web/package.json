@@ -4,10 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "serve": "serve -s dist -l 3001",
+    "serve": "bunx serve -s dist -l 3001",
     "dev": "vite dev --host",
-    "serve:host": "serve -s dist -l 3001",
-    "postinstall": "which serve || bun add -g serve"
+    "serve:host": "bunx serve -s dist -l 3001"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

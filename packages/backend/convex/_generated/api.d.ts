@@ -22,6 +22,7 @@ import type * as polar_actions from "../polar_actions.js";
 import type * as projects from "../projects.js";
 import type * as users from "../users.js";
 import type * as waitlist from "../waitlist.js";
+import type * as workspaces from "../workspaces.js";
 
 import type {
   ApiFromModules,
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   projects: typeof projects;
   users: typeof users;
   waitlist: typeof waitlist;
+  workspaces: typeof workspaces;
 }>;
 
 /**

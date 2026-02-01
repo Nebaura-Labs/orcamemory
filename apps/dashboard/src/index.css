@@ -341,3 +341,12 @@ input:-webkit-autofill:active {
     background-color: rgb(0 0 0 / 0.5);
   }
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -15,7 +15,10 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { getToken } from "@/lib/auth-server";
 import { env } from "@moltcity/env/web";
@@ -174,9 +177,12 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   const context = useRouteContext({ from: Route.id });
-  const isHome = useRouterState({
-    select: (state) => state.location.pathname === "/",
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
   });
+
+  const excludedPaths = ["/sign-in", "/sign-up", "/otp", "/onboarding"];
+  const showSidebar = !excludedPaths.some((path) => pathname.startsWith(path));
 
   useEffect(() => {
     const environment =
@@ -203,15 +209,19 @@ function RootDocument() {
           <HeadContent />
         </head>
         <body>
-          <div
-            className={
-              isHome
-                ? "h-dvh overflow-hidden"
-                : "grid h-svh grid-rows-[auto_1fr]"
-            }
-          >
-            <Outlet />
-          </div>
+          {showSidebar ? (
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <SiteHeader />
+                <Outlet />
+              </SidebarInset>
+            </SidebarProvider>
+          ) : (
+            <div className="h-dvh overflow-hidden">
+              <Outlet />
+            </div>
+          )}
           <Toaster position="bottom-right" richColors />
           <TanStackRouterDevtools position="bottom-left" />
           <Scripts />

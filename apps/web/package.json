@@ -3,11 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "serve": "serve -s dist -l 3001",
+    "build": "vite build && mkdir -p .output/server/node_modules/react-dom && cp -r node_modules/react-dom/* .output/server/node_modules/react-dom/",
+    "serve": "bun .output/server/index.mjs",
     "dev": "vite dev --host",
-    "serve:host": "serve -s dist -l 3001",
-    "postinstall": "which serve || bun add -g serve"
+    "serve:host": "bun .output/server/index.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -26,6 +25,7 @@
     "@tanstack/react-start": "^1.141.1",
     "@tanstack/router-plugin": "^1.141.1",
     "better-auth": "catalog:",
+    "nitro": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

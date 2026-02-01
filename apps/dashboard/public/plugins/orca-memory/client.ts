@@ -67,6 +67,11 @@ export class OrcaMemoryClient {
     sessionId?: string;
     sessionName?: string;
     model?: string;
+    tokensPrompt?: number;
+    tokensCompletion?: number;
+    tokensTotal?: number;
+    eventKind?: string;
+    eventContent?: string;
   }): Promise<{ id: string; sessionId?: string | null }> {
     log.debug(`store: ${args.content.slice(0, 80)}`);
     return await this.post("/memory/store", args);

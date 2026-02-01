@@ -71,17 +71,29 @@ export function buildCaptureHandler(
     const sessionName = sessionKey ? buildSessionName(sessionKey) : undefined;
     const sessionId = getSessionId();
     const model = typeof event.model === "string" ? event.model : undefined;
-    const usage = event.usage as
-      | { input?: number; output?: number; total?: number }
-      | undefined;
-    const tokensPrompt = typeof usage?.input === "number" ? usage?.input : undefined;
-    const tokensCompletion = typeof usage?.output === "number" ? usage?.output : undefined;
+    const usage =
+      (event.usage as Record<string, unknown> | undefined) ??
+      (event.metrics as Record<string, unknown> | undefined) ??
+      (event.tokenUsage as Record<string, unknown> | undefined);
+
+    const readNumber = (value: unknown) => (typeof value === "number" ? value : undefined);
+    const tokensPrompt =
+      readNumber(usage?.input) ??
+      readNumber(usage?.prompt) ??
+      readNumber(usage?.inputTokens) ??
+      readNumber(usage?.promptTokens);
+    const tokensCompletion =
+      readNumber(usage?.output) ??
+      readNumber(usage?.completion) ??
+      readNumber(usage?.outputTokens) ??
+      readNumber(usage?.completionTokens);
     const tokensTotal =
-      typeof usage?.total === "number"
-        ? usage?.total
-        : typeof tokensPrompt === "number" || typeof tokensCompletion === "number"
-          ? (tokensPrompt ?? 0) + (tokensCompletion ?? 0)
-          : undefined;
+      readNumber(usage?.total) ??
+      readNumber(usage?.totalTokens) ??
+      readNumber(usage?.tokensTotal) ??
+      (typeof tokensPrompt === "number" || typeof tokensCompletion === "number"
+        ? (tokensPrompt ?? 0) + (tokensCompletion ?? 0)
+        : undefined);
 
     log.debug(`capture: ${captured.length} texts (${content.length} chars)`);
 

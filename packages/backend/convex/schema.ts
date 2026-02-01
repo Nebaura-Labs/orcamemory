@@ -94,4 +94,20 @@ export default defineSchema({
     .index("sessionId", ["sessionId"])
     .index("agentId", ["agentId"])
     .index("projectId", ["projectId"]),
+  usageLogs: defineTable({
+    organizationId: v.string(),
+    projectId: v.id("projects"),
+    agentId: v.id("agents"),
+    kind: v.string(),
+    tokens: v.number(),
+    searches: v.number(),
+    createdAt: v.number(),
+    memoryId: v.optional(v.id("memories")),
+    query: v.optional(v.string()),
+    metadata: v.optional(v.any()),
+  })
+    .index("organizationId", ["organizationId"])
+    .index("projectId", ["projectId"])
+    .index("agentId", ["agentId"])
+    .index("kind", ["kind"]),
 });

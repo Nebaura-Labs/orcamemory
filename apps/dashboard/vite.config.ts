@@ -15,9 +15,10 @@ export default defineConfig(({ mode }) => {
     plugins: [tsconfigPaths(), tailwindcss(), tanstackStart(), viteReact()],
     server: {
       port: 3002,
+      allowedHosts: ["dev.orcamemory.com", "app.orcamemory.com", "orcamemory.com"],
     },
     preview: {
-      allowedHosts: ["orcamemory.com", "app.orcamemory.com"],
+      allowedHosts: ["dev.orcamemory.com", "app.orcamemory.com", "orcamemory.com"],
     },
     ssr: {
       noExternal: ["@convex-dev/better-auth"],

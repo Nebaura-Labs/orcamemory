@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && cp -r node_modules/react-dom/* .output/server/node_modules/react-dom/",
+    "build": "vite build && mkdir -p .output/server/node_modules/react-dom && cp -r node_modules/react-dom/* .output/server/node_modules/react-dom/",
     "serve": "bun .output/server/index.mjs",
     "dev": "vite dev --host",
     "serve:host": "bun .output/server/index.mjs"

@@ -58,6 +58,7 @@ export default defineSchema({
     metadata: v.optional(v.any()),
     memoryType: v.optional(v.string()),
     sessionId: v.optional(v.id("sessions")),
+    embedding: v.optional(v.array(v.number())),
     createdAt: v.number(),
   })
     .index("projectId", ["projectId"])

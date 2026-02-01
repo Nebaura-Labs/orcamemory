@@ -15,6 +15,7 @@ const frontendUrls = (process.env.FRONTEND_URLS ?? "")
   .split(",")
   .map((value) => value.trim())
   .filter(Boolean);
+const cookieDomain = process.env.COOKIE_DOMAIN;
 const githubClientId = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
 
@@ -138,7 +139,8 @@ function createAuth(ctx: GenericCtx<DataModel>) {
     advanced: {
       useSecureCookies: siteUrl.startsWith("https"),
       crossSubdomainCookies: {
-        enabled: false,
+        enabled: Boolean(cookieDomain),
+        domain: cookieDomain,
       },
       generateId: undefined,
     },

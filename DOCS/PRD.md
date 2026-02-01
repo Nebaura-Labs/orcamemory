@@ -141,6 +141,41 @@ await orca.link({
 - Configure memory retention policies
 - Manual memory editing
 
+#### Project Configuration (Onboarding)
+The onboarding flow collects a few core settings that define how memory behaves per project:
+
+- **Memory Retention Policy**
+  - **Keep Forever / One Year / Six Months / 90 Days / 30 Days**
+  - Determines when memories are automatically purged. Shorter windows reduce storage and keep context fresh; longer windows preserve long‑term recall.
+
+- **Memory Categories**
+  - **Conversations / Decisions / Preferences / Facts**
+  - Controls which types are allowed to be stored and returned in searches. Disabled categories are rejected on write and filtered on read.
+
+- **Session Logging & Token Tracking**
+  - When enabled, records per‑session actions, costs, and token usage for audit trails and debugging. When disabled, those logs are not written.
+
+- **Memory Current**
+  - Shared memory across agents in a project. When enabled, all agents read/write the same memory pool; when disabled, memory is isolated per agent.
+
+#### Additional Configuration (Not in Onboarding Yet)
+These options are planned but not surfaced in the onboarding UI yet:
+
+- **Semantic Search Defaults**
+  - Default filters (time range, memory type, tags) and result limits.
+
+- **Graph Relationships**
+  - Whether to store and visualize memory links (decision → outcome).
+
+- **Agent Profiles**
+  - Per‑agent persona and preferences metadata.
+
+- **Access Controls**
+  - Role‑based access, invitations, and team scopes for orgs.
+
+- **Retention Rules by Category**
+  - Different retention windows per memory type (e.g., conversations = 30 days, preferences = keep forever).
+
 ---
 
 ## Deployment Options

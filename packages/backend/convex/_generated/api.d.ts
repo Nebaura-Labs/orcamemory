@@ -16,6 +16,7 @@ import type * as crons from "../crons.js";
 import type * as dashboard from "../dashboard.js";
 import type * as emails_waitlistConfirmation from "../emails/waitlistConfirmation.js";
 import type * as http from "../http.js";
+import type * as memories from "../memories.js";
 import type * as memory from "../memory.js";
 import type * as plans from "../plans.js";
 import type * as polar from "../polar.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   dashboard: typeof dashboard;
   "emails/waitlistConfirmation": typeof emails_waitlistConfirmation;
   http: typeof http;
+  memories: typeof memories;
   memory: typeof memory;
   plans: typeof plans;
   polar: typeof polar;

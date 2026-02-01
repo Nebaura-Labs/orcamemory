@@ -14,6 +14,7 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MemoriesIndexRouteImport } from './routes/memories/index'
 import { Route as ApiSessionsStartRouteImport } from './routes/api/sessions/start'
 import { Route as ApiSessionsRecordRouteImport } from './routes/api/sessions/record'
 import { Route as ApiMemoryStoreRouteImport } from './routes/api/memory/store'
@@ -47,6 +48,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoriesIndexRoute = MemoriesIndexRouteImport.update({
+  id: '/memories/',
+  path: '/memories/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSessionsStartRoute = ApiSessionsStartRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/memories/': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/memories': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/memories/': typeof MemoriesIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/sign-in'
     | '/sign-up'
+    | '/memories/'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/sign-in'
     | '/sign-up'
+    | '/memories'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/otp'
     | '/sign-in'
     | '/sign-up'
+    | '/memories/'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   OtpRoute: typeof OtpRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
+  MemoriesIndexRoute: typeof MemoriesIndexRoute
   ApiAgentsConnectRoute: typeof ApiAgentsConnectRoute
   ApiAgentsHealthRoute: typeof ApiAgentsHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memories/': {
+      id: '/memories/'
+      path: '/memories'
+      fullPath: '/memories/'
+      preLoaderRoute: typeof MemoriesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/sessions/start': {
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   OtpRoute: OtpRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
+  MemoriesIndexRoute: MemoriesIndexRoute,
   ApiAgentsConnectRoute: ApiAgentsConnectRoute,
   ApiAgentsHealthRoute: ApiAgentsHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "serve": "bun dist/server/server.js",
+    "build": "vite build && cp -r node_modules/react-dom/* .output/server/node_modules/react-dom/",
+    "serve": "bun .output/server/index.mjs",
     "dev": "vite dev --host",
-    "serve:host": "bun dist/server/server.js"
+    "serve:host": "bun .output/server/index.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

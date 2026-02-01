@@ -1,6 +1,7 @@
 import { PanelLeftIcon } from "lucide-react"
 import { useLocation } from "@tanstack/react-router"
 
+import { authClient } from "@/lib/auth-client"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
+import { ProjectSwitcher } from "@/components/project-switcher"
 
 const routeLabels: Record<string, string> = {
   "": "Home",
@@ -33,6 +35,8 @@ const routeLabels: Record<string, string> = {
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
   const location = useLocation()
+  const organizations = authClient.useListOrganizations()
+  const activeOrganization = organizations.data?.[0]
 
   const pathSegments = location.pathname.split("/").filter(Boolean)
   const breadcrumbs = pathSegments.map((segment, index) => {
@@ -45,7 +49,7 @@ export function SiteHeader() {
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b border-dashed transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      <div className="flex items-center gap-2 px-4">
+      <div className="flex w-full items-center gap-2 px-4">
         <Button
           variant="ghost"
           size="icon"
@@ -86,6 +90,11 @@ export function SiteHeader() {
             )}
           </BreadcrumbList>
         </Breadcrumb>
+        {activeOrganization && (
+          <div className="ml-auto">
+            <ProjectSwitcher organizationId={activeOrganization.id} />
+          </div>
+        )}
       </div>
     </header>
   )

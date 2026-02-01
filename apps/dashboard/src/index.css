@@ -4,6 +4,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@media (prefers-color-scheme: dark) {
+  .dark-icon {
+    color: var(--primary);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .dark-icon {
+    color: var(--foreground);
+  }
+}
+
 :root {
   --background: oklch(0.9900 0 0);
   --foreground: oklch(0 0 0);

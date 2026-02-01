@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "serve": "node dist/server/server.js",
+    "serve": "bun dist/server/server.js",
     "dev": "vite dev --host",
-    "serve:host": "node dist/server/server.js"
+    "serve:host": "bun dist/server/server.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

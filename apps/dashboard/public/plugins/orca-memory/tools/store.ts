@@ -13,7 +13,8 @@ export function registerStoreTool(
     {
       name: "orca_memory_store",
       label: "Memory Store",
-      description: "Save important information in long-term memory.",
+      description:
+        "Conversations are auto-captured automatically. Use this tool to manually store important information with proper categorization. Choose memoryType based on content: 'preferences' for user likes/dislikes/wants, 'decisions' for choices and commitments made, 'facts' for identities/contact info/names, 'conversations' for general context. Write clean, searchable content rather than raw conversation text.",
       parameters: Type.Object({
         content: Type.String({ description: "Information to remember" }),
         memoryType: Type.Optional(Type.String()),

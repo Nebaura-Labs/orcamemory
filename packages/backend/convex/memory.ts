@@ -3,12 +3,65 @@ import { v } from "convex/values";
 import { httpAction, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { verifySecret } from "./agentAuth";
-import { getOrCreatePlan } from "./plans";
+import { getOrCreatePlan, isEmbeddingsEnabled, type PlanId } from "./plans";
 
 type AuthResult = {
   agentId: string;
   projectId: string;
   organizationId: string;
+};
+
+const embeddingUrl = process.env.EMBEDDING_URL;
+
+const fetchEmbedding = async (input: string, inputType: "query" | "passage") => {
+  if (!embeddingUrl) {
+    return null;
+  }
+
+  const base = embeddingUrl.replace(/\/$/, "");
+  const response = await fetch(`${base}/embed`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      input,
+      input_type: inputType,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Embedding service error (${response.status})`);
+  }
+
+  const payload = (await response.json()) as {
+    data?: Array<{ embedding?: number[]; tokens?: number }>;
+    usage?: { total_tokens?: number };
+  };
+
+  const vector = payload.data?.[0]?.embedding;
+  const tokens = payload.data?.[0]?.tokens ?? payload.usage?.total_tokens ?? 0;
+  if (!vector || vector.length === 0) {
+    return null;
+  }
+  return { vector, tokens };
+};
+
+const cosineSimilarity = (a: number[], b: number[]) => {
+  const len = Math.min(a.length, b.length);
+  let dot = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < len; i += 1) {
+    const av = a[i] ?? 0;
+    const bv = b[i] ?? 0;
+    dot += av * bv;
+    normA += av * av;
+    normB += bv * bv;
+  }
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  if (!denom) {
+    return 0;
+  }
+  return dot / denom;
 };
 
 const RETENTION_WINDOWS: Record<string, number | null> = {
@@ -154,6 +207,7 @@ export const storeMemory = internalMutation({
     tokensPrompt: v.optional(v.number()),
     tokensCompletion: v.optional(v.number()),
     tokensTotal: v.optional(v.number()),
+    embedding: v.optional(v.array(v.number())),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
@@ -181,14 +235,6 @@ export const storeMemory = internalMutation({
     const tokensTotal =
       args.tokensTotal ??
       (args.tokensPrompt ?? 0) + (args.tokensCompletion ?? 0);
-
-    if (tokensTotal > 0) {
-      await ctx.runMutation(internal.plans.recordUsage, {
-        organizationId: args.organizationId,
-        tokens: tokensTotal,
-        searches: 0,
-      });
-    }
 
     const sessionId = project.sessionLoggingEnabled
       ? await ensureSession(ctx, {
@@ -226,6 +272,7 @@ export const storeMemory = internalMutation({
       metadata: args.metadata ?? undefined,
       memoryType: args.memoryType ?? undefined,
       sessionId: sessionId ?? undefined,
+      embedding: args.embedding ?? undefined,
       createdAt: now,
     });
 
@@ -241,6 +288,7 @@ export const searchMemories = internalQuery({
     limit: v.optional(v.number()),
     memoryType: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
+    queryEmbedding: v.optional(v.array(v.number())),
   },
   handler: async (ctx, args) => {
     const project = await ctx.db.get(args.projectId);
@@ -260,6 +308,9 @@ export const searchMemories = internalQuery({
       )
       .collect();
 
+    const queryEmbedding = args.queryEmbedding ?? undefined;
+    const hasEmbeddingQuery = Array.isArray(queryEmbedding) && queryEmbedding.length > 0;
+
     const filtered = memories.filter((memory) => {
       if (!matchesRetention(memory.createdAt, cutoff)) {
         return false;
@@ -270,12 +321,29 @@ export const searchMemories = internalQuery({
       if (tags.length > 0 && tags.every((tag) => !memory.tags.includes(tag))) {
         return false;
       }
-      return memory.content.toLowerCase().includes(queryLower);
+      if (!hasEmbeddingQuery) {
+        return memory.content.toLowerCase().includes(queryLower);
+      }
+      return true;
     });
 
-    const sorted = filtered.sort((a, b) => b.createdAt - a.createdAt);
+    const scored = filtered.map((memory) => {
+      const matchesText = memory.content.toLowerCase().includes(queryLower);
+      let score = matchesText ? 0.05 : 0;
+      if (hasEmbeddingQuery && memory.embedding && memory.embedding.length > 0) {
+        score = cosineSimilarity(queryEmbedding as number[], memory.embedding);
+      }
+      return { memory, score };
+    });
 
-    return sorted.slice(0, limit).map((memory) => ({
+    const sorted = hasEmbeddingQuery
+      ? scored.sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return b.memory.createdAt - a.memory.createdAt;
+        })
+      : scored.sort((a, b) => b.memory.createdAt - a.memory.createdAt);
+
+    return sorted.slice(0, limit).map(({ memory }) => ({
       id: memory._id,
       content: memory.content,
       tags: memory.tags,
@@ -428,14 +496,6 @@ export const recordSessionEvent = internalMutation({
       args.tokensTotal ??
       (args.tokensPrompt ?? 0) + (args.tokensCompletion ?? 0);
 
-    if (tokensTotal > 0) {
-      await ctx.runMutation(internal.plans.recordUsage, {
-        organizationId: args.organizationId,
-        tokens: tokensTotal,
-        searches: 0,
-      });
-    }
-
     await ctx.db.patch(args.sessionId, {
       lastActivityAt: now,
       model: args.model ?? undefined,
@@ -516,6 +576,29 @@ export const storeMemoryAction = httpAction(async (ctx, request) => {
     return new Response("Missing content", { status: 400 });
   }
 
+  const plan = await ctx.runMutation(internal.plans.getOrCreatePlanInternal, {
+    organizationId: auth.organizationId,
+  });
+  const embeddingsEnabled = isEmbeddingsEnabled(plan.plan as PlanId);
+
+  let embedding: number[] | undefined;
+  let embeddingTokens = 0;
+  if (embeddingsEnabled && embeddingUrl) {
+    try {
+      const result = await fetchEmbedding(payload.content, "passage");
+      embedding = result?.vector ?? undefined;
+      embeddingTokens = result?.tokens ?? 0;
+    } catch {
+      embedding = undefined;
+    }
+  }
+
+  await ctx.runMutation(internal.plans.recordUsage, {
+    organizationId: auth.organizationId,
+    tokens: embeddingTokens,
+    searches: 0,
+  });
+
   const result = await ctx.runMutation(internal.memory.storeMemory, {
     agentId: auth.agentId as any,
     projectId: auth.projectId as any,
@@ -532,6 +615,7 @@ export const storeMemoryAction = httpAction(async (ctx, request) => {
     tokensPrompt: payload.tokensPrompt ?? undefined,
     tokensCompletion: payload.tokensCompletion ?? undefined,
     tokensTotal: payload.tokensTotal ?? undefined,
+    embedding: embedding ?? undefined,
   });
 
   return Response.json(result);
@@ -556,19 +640,28 @@ export const searchMemoriesAction = httpAction(async (ctx, request) => {
     return new Response("Missing query", { status: 400 });
   }
 
-  if (payload.tokensTotal && payload.tokensTotal > 0) {
-    await ctx.runMutation(internal.plans.recordUsage, {
-      organizationId: auth.organizationId,
-      tokens: payload.tokensTotal,
-      searches: 1,
-    });
-  } else {
-    await ctx.runMutation(internal.plans.recordUsage, {
-      organizationId: auth.organizationId,
-      tokens: 0,
-      searches: 1,
-    });
+  const plan = await ctx.runMutation(internal.plans.getOrCreatePlanInternal, {
+    organizationId: auth.organizationId,
+  });
+  const embeddingsEnabled = isEmbeddingsEnabled(plan.plan as PlanId);
+
+  let queryEmbedding: number[] | undefined;
+  let embeddingTokens = 0;
+  if (embeddingsEnabled && embeddingUrl) {
+    try {
+      const result = await fetchEmbedding(payload.query, "query");
+      queryEmbedding = result?.vector ?? undefined;
+      embeddingTokens = result?.tokens ?? 0;
+    } catch {
+      queryEmbedding = undefined;
+    }
   }
+
+  await ctx.runMutation(internal.plans.recordUsage, {
+    organizationId: auth.organizationId,
+    tokens: embeddingTokens,
+    searches: 1,
+  });
 
   const results = await ctx.runQuery(internal.memory.searchMemories, {
     agentId: auth.agentId as any,
@@ -577,6 +670,7 @@ export const searchMemoriesAction = httpAction(async (ctx, request) => {
     limit: payload.limit ?? undefined,
     memoryType: payload.memoryType ?? undefined,
     tags: payload.tags ?? undefined,
+    queryEmbedding: queryEmbedding ?? undefined,
   });
 
   return Response.json({ results });

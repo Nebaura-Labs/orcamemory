@@ -11,6 +11,7 @@ export type PlanLimits = {
   agentsPerProjectLimit: number;
   tokensLimit: number;
   searchesLimit: number;
+  embeddingsEnabled: boolean;
 };
 
 const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
@@ -20,6 +21,7 @@ const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
     agentsPerProjectLimit: 1,
     tokensLimit: 500_000,
     searchesLimit: 5_000,
+    embeddingsEnabled: true,
   },
   tide: {
     plan: "tide",
@@ -27,6 +29,7 @@ const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
     agentsPerProjectLimit: 5,
     tokensLimit: 5_000_000,
     searchesLimit: 200_000,
+    embeddingsEnabled: true,
   },
   abyss: {
     plan: "abyss",
@@ -34,10 +37,16 @@ const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
     agentsPerProjectLimit: 20,
     tokensLimit: 25_000_000,
     searchesLimit: 2_000_000,
+    embeddingsEnabled: true,
   },
 };
 
 const getDefaultPlan = () => PLAN_LIMITS.surface;
+
+export const isEmbeddingsEnabled = (plan: PlanId) =>
+  PLAN_LIMITS[plan]?.embeddingsEnabled ?? false;
+
+export const getPlanConfig = (plan: PlanId) => PLAN_LIMITS[plan] ?? getDefaultPlan();
 
 export const getForOrganization = query({
   args: {
@@ -139,6 +148,15 @@ export const ensurePlanForOrganization = mutation({
   },
 });
 
+export const getOrCreatePlanInternal = internalMutation({
+  args: {
+    organizationId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await getOrCreatePlan(ctx, args.organizationId);
+  },
+});
+
 export const recordUsage = internalMutation({
   args: {
     organizationId: v.string(),
@@ -220,12 +238,14 @@ export const resolvePlanLimits = async (
   const planDoc = await getPlanDoc(db, organizationId);
 
   if (planDoc) {
+    const planId = planDoc.plan as PlanId;
     return {
-      plan: planDoc.plan as PlanId,
+      plan: planId,
       projectsLimit: planDoc.projectsLimit,
       agentsPerProjectLimit: planDoc.agentsPerProjectLimit,
       tokensLimit: planDoc.tokensLimit,
       searchesLimit: planDoc.searchesLimit,
+      embeddingsEnabled: isEmbeddingsEnabled(planId),
     } satisfies PlanLimits;
   }
 

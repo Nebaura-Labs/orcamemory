@@ -20,23 +20,52 @@ function formatRelativeTime(timestamp?: number): string {
   return `${dt.getDate()} ${month}`;
 }
 
+type RecallEntry = {
+  content: string;
+  createdAt?: number;
+  memoryType?: string | null;
+  metadata?: Record<string, unknown> | null;
+};
+
+function formatUsage(entry: RecallEntry): string {
+  const meta = entry.metadata ?? undefined;
+  if (!meta) return "";
+  const model = typeof meta.model === "string" ? meta.model : "";
+  const tokensPrompt =
+    typeof meta.tokensPrompt === "number" ? meta.tokensPrompt : undefined;
+  const tokensCompletion =
+    typeof meta.tokensCompletion === "number" ? meta.tokensCompletion : undefined;
+  const tokensTotal =
+    typeof meta.tokensTotal === "number" ? meta.tokensTotal : undefined;
+  const parts: string[] = [];
+  if (model) parts.push(model);
+  if (typeof tokensPrompt === "number" || typeof tokensCompletion === "number") {
+    parts.push(`${tokensPrompt ?? 0} in / ${tokensCompletion ?? 0} out`);
+  } else if (typeof tokensTotal === "number") {
+    parts.push(`${tokensTotal} tokens`);
+  }
+  return parts.length > 0 ? ` (${parts.join(", ")})` : "";
+}
+
 function formatContext(
-  current: { content: string; createdAt?: number; memoryType?: string | null }[],
-  searchResults: { content: string; createdAt?: number; memoryType?: string | null }[],
+  current: RecallEntry[],
+  searchResults: RecallEntry[],
   maxResults: number,
 ): string | null {
   const currentLines = current.slice(0, maxResults).map((entry) => {
     const time = formatRelativeTime(entry.createdAt);
     const type = entry.memoryType ? `[${entry.memoryType}] ` : "";
     const prefix = time ? `[${time}] ` : "";
-    return `- ${prefix}${type}${entry.content}`;
+    const usage = formatUsage(entry);
+    return `- ${prefix}${type}${entry.content}${usage}`;
   });
 
   const searchLines = searchResults.slice(0, maxResults).map((entry) => {
     const time = formatRelativeTime(entry.createdAt);
     const type = entry.memoryType ? `[${entry.memoryType}] ` : "";
     const prefix = time ? `[${time}] ` : "";
-    return `- ${prefix}${type}${entry.content}`;
+    const usage = formatUsage(entry);
+    return `- ${prefix}${type}${entry.content}${usage}`;
   });
 
   if (currentLines.length === 0 && searchLines.length === 0) {

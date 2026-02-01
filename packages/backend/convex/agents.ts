@@ -123,6 +123,27 @@ export const issueKey = mutation({
   },
 });
 
+export const clearPlaintextSecrets = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthorized");
+    }
+
+    const keys = await ctx.db.query("agentKeys").collect();
+    let cleared = 0;
+    for (const key of keys) {
+      if (key.secret) {
+        await ctx.db.patch(key._id, { secret: undefined });
+        cleared += 1;
+      }
+    }
+
+    return { cleared };
+  },
+});
+
 export const getActiveKeyByProject = query({
   args: {
     projectId: v.id("projects"),

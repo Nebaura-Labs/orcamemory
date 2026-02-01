@@ -18,6 +18,7 @@ export default defineSchema({
     agentId: v.id("agents"),
     keyId: v.string(),
     secretHash: v.string(),
+    secret: v.optional(v.string()),
     createdAt: v.number(),
     revokedAt: v.optional(v.number()),
   })

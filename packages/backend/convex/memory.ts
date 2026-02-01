@@ -576,6 +576,22 @@ export const createSession = internalMutation({
   },
   handler: async (ctx, args) => {
     const now = Date.now();
+    const existing = await ctx.db
+      .query("sessions")
+      .withIndex("agentId_name", (queryBuilder) =>
+        queryBuilder.eq("agentId", args.agentId).eq("name", args.name),
+      )
+      .order("desc")
+      .first();
+
+    if (existing && !existing.endedAt) {
+      await ctx.db.patch(existing._id, {
+        lastActivityAt: now,
+        model: args.model ?? existing.model,
+      });
+      return { sessionId: existing._id };
+    }
+
     const sessionId = await ctx.db.insert("sessions", {
       organizationId: args.organizationId,
       projectId: args.projectId,

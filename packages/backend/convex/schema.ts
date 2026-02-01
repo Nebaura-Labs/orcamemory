@@ -82,7 +82,8 @@ export default defineSchema({
   })
     .index("projectId", ["projectId"])
     .index("agentId", ["agentId"])
-    .index("organizationId", ["organizationId"]),
+    .index("organizationId", ["organizationId"])
+    .index("agentId_name", ["agentId", "name"]),
   sessionEvents: defineTable({
     organizationId: v.string(),
     projectId: v.id("projects"),

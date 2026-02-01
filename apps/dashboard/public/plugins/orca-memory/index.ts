@@ -12,6 +12,7 @@ import { registerForgetTool } from "./tools/forget.ts";
 import { registerProfileTool } from "./tools/profile.ts";
 import { registerSearchTool } from "./tools/search.ts";
 import { registerStoreTool } from "./tools/store.ts";
+import { PLUGIN_VERSION } from "./version.ts";
 
 export default {
   id: "orca-memory",
@@ -23,6 +24,7 @@ export default {
   register(api: OpenClawPluginApi) {
     const cfg = parseConfig(api.pluginConfig);
     initLogger(api.logger, cfg.debug);
+    api.logger.info?.(`orca-memory: v${PLUGIN_VERSION} loaded`);
 
     const client = new OrcaMemoryClient(cfg.apiUrl, cfg.keyId, cfg.apiKey);
     let sessionKey: string | undefined;

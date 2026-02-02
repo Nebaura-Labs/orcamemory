@@ -150,8 +150,8 @@ function AgentRow({
 					<div>
 						<p className="font-medium">{agent.name}</p>
 						<p className="text-muted-foreground text-xs">
-								Created{" "}
-								{formatDistanceToNow(agent.createdAt, { addSuffix: true })}
+							Created{" "}
+							{formatDistanceToNow(agent.createdAt, { addSuffix: true })}
 						</p>
 					</div>
 				</div>
@@ -259,24 +259,37 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 	);
 	const [loading, setLoading] = useState<string | null>(null);
 
-	const handleIssueKey = async (isRotate: boolean) => {
+	const handleIssueKey = async (isRotate: boolean, agentId?: Id<"agents">) => {
 		setLoading(isRotate ? "rotate" : "issue");
 		try {
-			const result = await issueKey({ projectId, rotate: isRotate });
+			const result = await issueKey({
+				projectId,
+				rotate: isRotate,
+				agentId,
+			});
 			if (result.secret) {
 				setVisibleSecrets((prev) => ({
 					...prev,
 					[result.agentId]: result.secret as string,
 				}));
+				toast.success("API key rotated successfully");
 			}
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : "Failed to issue key";
+			toast.error(message);
 		} finally {
 			setLoading(null);
 		}
 	};
 
-	const handleCopy = (text: string) => {
-		navigator.clipboard.writeText(text);
-		toast.success("Copied to clipboard");
+	const handleCopy = async (text: string) => {
+		try {
+			await navigator.clipboard.writeText(text);
+			toast.success("Copied to clipboard");
+		} catch {
+			toast.error("Failed to copy to clipboard");
+		}
 	};
 
 	const toggleSecretVisibility = (agentId: string) => {
@@ -321,7 +334,7 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 								key={agent._id}
 								loading={loading}
 								onCopy={handleCopy}
-								onRotateKey={() => handleIssueKey(true)}
+								onRotateKey={() => handleIssueKey(true, agent._id)}
 								onToggleVisibility={toggleSecretVisibility}
 								visibleSecrets={visibleSecrets}
 							/>

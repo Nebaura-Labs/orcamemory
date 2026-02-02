@@ -1,0 +1,129 @@
+---
+title: FAQ
+description: Frequently asked questions about OrcaMemory
+---
+
+## General
+
+<AccordionGroup>
+  <Accordion title="What is OrcaMemory?">
+    OrcaMemory is a memory layer for AI coding agents. It enables agents like Cursor, Claude Code, Windsurf, and others to remember context across sessions — your preferences, past decisions, code patterns, and project knowledge.
+  </Accordion>
+  
+  <Accordion title="Which AI agents work with OrcaMemory?">
+    Any AI agent that supports custom prompts or rules files can use OrcaMemory, including:
+    - Cursor
+    - Claude Code
+    - Windsurf
+    - Cline
+    - GitHub Copilot
+    - Custom agents using LLM APIs
+  </Accordion>
+  
+  <Accordion title="Is my data secure?">
+    Yes. All data is encrypted in transit (TLS) and at rest. We use Convex for data storage, which provides enterprise-grade security. For maximum control, you can self-host OrcaMemory.
+  </Accordion>
+  
+  <Accordion title="Can I use OrcaMemory offline?">
+    The cloud version requires internet connectivity. For offline use, you can self-host OrcaMemory on your local network.
+  </Accordion>
+</AccordionGroup>
+
+## Cloud
+
+<AccordionGroup>
+  <Accordion title="How do I get started?">
+    1. Sign up at [app.orcamemory.com](https://app.orcamemory.com)
+    2. Create a project
+    3. Copy the connection prompt
+    4. Paste it into your agent's rules file
+    
+    See the [Quickstart](/cloud/quickstart) for details.
+  </Accordion>
+  
+  <Accordion title="What happens if I hit my plan limits?">
+    On the Free plan, requests beyond the daily limit will be rejected. Consider upgrading to Pro for unlimited API calls.
+  </Accordion>
+  
+  <Accordion title="Can I delete my data?">
+    Yes. You can delete individual memories, entire projects, or your account. All data is permanently removed within 30 days per our retention policy.
+  </Accordion>
+  
+  <Accordion title="Do you offer a free trial of Pro?">
+    New accounts start with a 14-day Pro trial. No credit card required.
+  </Accordion>
+</AccordionGroup>
+
+## Self-Hosting
+
+<AccordionGroup>
+  <Accordion title="What do I need to self-host?">
+    - A Convex account (free tier works)
+    - Docker and Docker Compose
+    - A server with at least 1GB RAM
+    
+    See [Requirements](/self-hosting/requirements) for full details.
+  </Accordion>
+  
+  <Accordion title="Is self-hosting free?">
+    The OrcaMemory software is open source and free to self-host. You'll only pay for your own infrastructure (hosting, Convex usage if beyond free tier).
+  </Accordion>
+  
+  <Accordion title="Can I use my own embedding model?">
+    Yes. The embeddings service supports any sentence-transformer model. Configure it via the `EMBEDDING_MODEL` environment variable.
+  </Accordion>
+  
+  <Accordion title="How do I update self-hosted OrcaMemory?">
+    Pull the latest code and rebuild:
+    ```bash
+    git pull origin main
+    docker-compose build
+    docker-compose up -d
+    npx convex deploy
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My agent isn't storing memories">
+    Check that:
+    1. The API key is correct in your rules file
+    2. The endpoint URL is correct (`https://orcamemory.com/v1`)
+    3. Your plan hasn't exceeded its limits
+    4. The agent is actually calling the OrcaMemory API (check network requests)
+  </Accordion>
+  
+  <Accordion title="Search isn't returning relevant results">
+    Semantic search works best with:
+    - Descriptive, natural language queries
+    - Memories that have clear, detailed content
+    - Appropriate tags for filtering
+    
+    Try rephrasing your query or lowering the similarity threshold.
+  </Accordion>
+  
+  <Accordion title="I'm getting rate limited">
+    If you're hitting rate limits:
+    - Free plan: 60 requests/minute, 1,000/day
+    - Upgrade to Pro for higher limits
+    - Batch your operations when possible
+    - Implement exponential backoff for retries
+  </Accordion>
+  
+  <Accordion title="The dashboard is slow">
+    Large numbers of memories can slow down the dashboard. Try:
+    - Filtering by memory type or date range
+    - Archiving old memories you don't need
+    - Using the search feature instead of scrolling
+  </Accordion>
+</AccordionGroup>
+
+## Contact
+
+Still have questions? Reach out:
+
+- **Discord**: [Join our community](https://discord.gg/gVWzPuWa3N)
+- **Email**: support@orcamemory.com
+- **GitHub**: [Open an issue](https://github.com/Nebaura-Labs/orcamemory/issues)

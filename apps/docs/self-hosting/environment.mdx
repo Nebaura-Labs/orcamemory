@@ -1,0 +1,105 @@
+---
+title: Environment Variables
+description: Configure your OrcaMemory deployment
+---
+
+## Required Variables
+
+These must be set for OrcaMemory to function:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `CONVEX_URL` | Your Convex deployment URL | `https://your-project.convex.cloud` |
+| `CONVEX_DEPLOY_KEY` | Convex deploy key for backend | `prod:your-key` |
+
+## Authentication
+
+Better Auth configuration:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BETTER_AUTH_SECRET` | Secret for signing tokens | Random 32+ char string |
+| `BETTER_AUTH_URL` | Your app's base URL | `https://app.yourdomain.com` |
+
+### OAuth Providers (Optional)
+
+Enable social login by adding provider credentials:
+
+```bash
+# Google
+GOOGLE_CLIENT_ID=your_client_id
+GOOGLE_CLIENT_SECRET=your_client_secret
+
+# GitHub
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
+```
+
+## Embeddings Service
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `EMBEDDING_MODEL` | Sentence transformer model | `all-MiniLM-L6-v2` |
+| `EMBEDDING_DEVICE` | Device for inference | `cpu` |
+| `EMBEDDING_PORT` | Port for the service | `8000` |
+
+### Model Options
+
+| Model | Size | Quality | Speed |
+|-------|------|---------|-------|
+| `all-MiniLM-L6-v2` | 80MB | Good | Fast |
+| `all-mpnet-base-v2` | 420MB | Better | Medium |
+| `instructor-large` | 1.3GB | Best | Slow |
+
+## Email (Optional)
+
+For email notifications and magic links:
+
+| Variable | Description |
+|----------|-------------|
+| `RESEND_API_KEY` | Resend API key for sending emails |
+| `EMAIL_FROM` | Sender email address |
+
+## Payments (Optional)
+
+For billing integration:
+
+| Variable | Description |
+|----------|-------------|
+| `POLAR_ACCESS_TOKEN` | Polar API token |
+| `POLAR_WEBHOOK_SECRET` | Webhook verification secret |
+
+## Example .env File
+
+```bash
+# Convex
+CONVEX_URL=https://your-project.convex.cloud
+CONVEX_DEPLOY_KEY=prod:your-deploy-key
+
+# Auth
+BETTER_AUTH_SECRET=your-super-secret-key-at-least-32-chars
+BETTER_AUTH_URL=https://app.yourdomain.com
+
+# Embeddings
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+EMBEDDING_DEVICE=cpu
+
+# Optional: Email
+RESEND_API_KEY=re_xxxxx
+EMAIL_FROM=noreply@yourdomain.com
+
+# Optional: OAuth
+GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxxxx
+```
+
+## Security Notes
+
+<Warning>
+  Never commit `.env` files to version control. Add `.env` to your `.gitignore`.
+</Warning>
+
+- Use strong, random values for secrets
+- Rotate keys periodically
+- Use different values for development and production
+- Consider using a secrets manager (Vault, AWS Secrets Manager, etc.) in production

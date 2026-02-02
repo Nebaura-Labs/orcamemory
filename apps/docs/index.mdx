@@ -1,97 +1,58 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: Introduction
+description: Give your AI agents persistent memory across sessions
 ---
 
-## Setting up
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.png"
+  alt="OrcaMemory"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.png"
+  alt="OrcaMemory"
+/>
 
-Get your documentation site up and running in minutes.
+## What is OrcaMemory?
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+OrcaMemory is a memory layer for AI coding agents. It allows agents like Cursor, Claude Code, Windsurf, Cline, and others to remember context across sessions — your preferences, past decisions, code patterns, and project knowledge.
 
-## Make it yours
+Without memory, AI agents start fresh every conversation. They forget your coding style, repeat mistakes, and ask the same questions. OrcaMemory fixes this.
 
-Design a docs site that looks great and empowers your users.
+## Key Features
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Persistent Memory" icon="brain">
+    Agents remember your preferences, decisions, and context across all sessions
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Four Memory Types" icon="layer-group">
+    Episodic, semantic, procedural, and working memory for complete context
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Session Logging" icon="clock-rotate-left">
+    Automatic logging of conversations for future reference
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Semantic Search" icon="magnifying-glass">
+    Find relevant memories using natural language queries
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Memory Types
 
-Everything you need to create world-class documentation.
+| Type | Purpose | Example |
+|------|---------|---------|
+| **Episodic** | Past events and conversations | "Last week we debugged the auth flow" |
+| **Semantic** | Facts and knowledge | "This project uses Convex for the backend" |
+| **Procedural** | Patterns and preferences | "User prefers arrow functions over function declarations" |
+| **Working** | Active session context | Current task and recent decisions |
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Get Started
 
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Cloud Quickstart" icon="cloud" href="/cloud/quickstart">
+    Get started with the hosted version in under 5 minutes
+  </Card>
+  <Card title="Self-Host" icon="server" href="/self-hosting/requirements">
+    Deploy OrcaMemory on your own infrastructure
+  </Card>
+</CardGroup>

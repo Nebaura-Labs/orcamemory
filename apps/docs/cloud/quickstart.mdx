@@ -1,0 +1,73 @@
+---
+title: Quickstart
+description: Get started with OrcaMemory Cloud in under 5 minutes
+---
+
+## 1. Create an Account
+
+Go to [app.orcamemory.com](https://app.orcamemory.com) and sign up with your email.
+
+## 2. Create a Project
+
+After signing in, you'll be prompted to create your first project.
+
+1. Click **Create Project**
+2. Enter a project name (e.g., "My App")
+3. Click **Create**
+
+Your project comes pre-configured with all four memory types enabled.
+
+## 3. Connect Your Agent
+
+Click **Link Agent** on your project to get the connection prompt.
+
+<Steps>
+  <Step title="Copy the prompt">
+    Click the copy button to copy the OrcaMemory prompt to your clipboard. This includes your API key and endpoint.
+  </Step>
+  <Step title="Add to your agent's rules">
+    Paste the prompt into your AI agent's rules file:
+    
+    | Agent | Rules File |
+    |-------|------------|
+    | Cursor | `.cursor/rules` or `.cursorrules` |
+    | Claude Code | `CLAUDE.md` |
+    | Windsurf | `.windsurfrules` |
+    | Cline | `.clinerules` |
+    | GitHub Copilot | `.github/copilot-instructions.md` |
+  </Step>
+  <Step title="Start coding">
+    Your agent now has memory! It will automatically store and retrieve context as you work.
+  </Step>
+</Steps>
+
+## What Gets Stored?
+
+When connected, your agent will:
+
+- **Remember your preferences** — coding style, frameworks, conventions
+- **Track decisions** — why you chose certain approaches
+- **Store project knowledge** — architecture, patterns, gotchas
+- **Log sessions** — full conversation history for reference
+
+## Environment Variables
+
+The prompt includes two key values:
+
+```bash
+ORCA_API_KEY=your_api_key_here
+ORCA_ENDPOINT=https://orcamemory.com/v1
+```
+
+These are embedded in the prompt, but you can also set them as environment variables if your agent supports it.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Guide" icon="gauge" href="/cloud/dashboard">
+    Learn how to manage memories and view analytics
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/authentication">
+    Integrate OrcaMemory directly via API
+  </Card>
+</CardGroup>

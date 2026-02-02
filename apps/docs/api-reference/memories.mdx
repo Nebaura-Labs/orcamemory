@@ -1,0 +1,238 @@
+---
+title: Memories API
+description: Create, retrieve, update, and delete memories
+---
+
+## Create Memory
+
+Create a new memory for your project.
+
+<ParamField body="content" type="string" required>
+  The content of the memory
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  Memory type: `episodic`, `semantic`, `procedural`, or `working`
+</ParamField>
+
+<ParamField body="tags" type="string[]">
+  Optional tags for organization
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata object
+</ParamField>
+
+### Request
+
+```bash
+curl -X POST https://orcamemory.com/v1/memories \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "User prefers TypeScript with strict mode enabled",
+    "type": "procedural",
+    "tags": ["preferences", "typescript"]
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "mem_abc123",
+    "content": "User prefers TypeScript with strict mode enabled",
+    "type": "procedural",
+    "tags": ["preferences", "typescript"],
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+---
+
+## List Memories
+
+Retrieve all memories for your project.
+
+<ParamField query="type" type="string">
+  Filter by memory type
+</ParamField>
+
+<ParamField query="limit" type="number" default="50">
+  Number of results to return (max 100)
+</ParamField>
+
+<ParamField query="offset" type="number" default="0">
+  Pagination offset
+</ParamField>
+
+### Request
+
+```bash
+curl https://orcamemory.com/v1/memories?type=procedural&limit=10 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "memories": [
+      {
+        "id": "mem_abc123",
+        "content": "User prefers TypeScript with strict mode",
+        "type": "procedural",
+        "tags": ["preferences"],
+        "createdAt": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "total": 1,
+    "hasMore": false
+  }
+}
+```
+
+---
+
+## Get Memory
+
+Retrieve a specific memory by ID.
+
+### Request
+
+```bash
+curl https://orcamemory.com/v1/memories/mem_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "mem_abc123",
+    "content": "User prefers TypeScript with strict mode",
+    "type": "procedural",
+    "tags": ["preferences"],
+    "metadata": {},
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+---
+
+## Update Memory
+
+Update an existing memory.
+
+### Request
+
+```bash
+curl -X PATCH https://orcamemory.com/v1/memories/mem_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "User prefers TypeScript with strict mode and explicit return types",
+    "tags": ["preferences", "typescript", "code-style"]
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "mem_abc123",
+    "content": "User prefers TypeScript with strict mode and explicit return types",
+    "type": "procedural",
+    "tags": ["preferences", "typescript", "code-style"],
+    "updatedAt": "2024-01-15T11:00:00Z"
+  }
+}
+```
+
+---
+
+## Delete Memory
+
+Delete a memory by ID.
+
+### Request
+
+```bash
+curl -X DELETE https://orcamemory.com/v1/memories/mem_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "deleted": true
+  }
+}
+```
+
+---
+
+## Search Memories
+
+Search memories using semantic similarity.
+
+<ParamField body="query" type="string" required>
+  Natural language search query
+</ParamField>
+
+<ParamField body="type" type="string">
+  Filter by memory type
+</ParamField>
+
+<ParamField body="limit" type="number" default="10">
+  Number of results
+</ParamField>
+
+<ParamField body="threshold" type="number" default="0.7">
+  Minimum similarity score (0-1)
+</ParamField>
+
+### Request
+
+```bash
+curl -X POST https://orcamemory.com/v1/memories/search \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What are the coding preferences?",
+    "limit": 5
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "id": "mem_abc123",
+        "content": "User prefers TypeScript with strict mode",
+        "type": "procedural",
+        "score": 0.92,
+        "tags": ["preferences"]
+      }
+    ]
+  }
+}
+```

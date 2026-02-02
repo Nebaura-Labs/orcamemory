@@ -1,17 +1,23 @@
 ---
 title: Memories API
-description: Create, retrieve, update, and delete memories
+description: Store, search, and delete memories
 ---
 
-## Create Memory
+<Note>
+Most users don't need to call the API directly. The OpenClaw plugin handles memory operations automatically via Auto-Recall, Auto-Capture, and built-in tools.
+</Note>
 
-Create a new memory for your project.
+## Store Memory
+
+Store a new memory for your project.
+
+**Endpoint:** `POST /memory/store`
 
 <ParamField body="content" type="string" required>
   The content of the memory
 </ParamField>
 
-<ParamField body="type" type="string" required>
+<ParamField body="memoryType" type="string">
   Memory type: `episodic`, `semantic`, `procedural`, or `working`
 </ParamField>
 
@@ -26,12 +32,13 @@ Create a new memory for your project.
 ### Request
 
 ```bash
-curl -X POST https://orcamemory.com/v1/memories \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST https://app.orcamemory.com/api/v1/memory/store \
+  -H "X-Key-Id: omk_your_key_id" \
+  -H "X-Api-Key: oms_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
     "content": "User prefers TypeScript with strict mode enabled",
-    "type": "procedural",
+    "memoryType": "procedural",
     "tags": ["preferences", "typescript"]
   }'
 ```
@@ -42,144 +49,11 @@ curl -X POST https://orcamemory.com/v1/memories \
 {
   "success": true,
   "data": {
-    "id": "mem_abc123",
+    "id": "jh77abc123xyz",
     "content": "User prefers TypeScript with strict mode enabled",
-    "type": "procedural",
+    "memoryType": "procedural",
     "tags": ["preferences", "typescript"],
-    "createdAt": "2024-01-15T10:30:00Z"
-  }
-}
-```
-
----
-
-## List Memories
-
-Retrieve all memories for your project.
-
-<ParamField query="type" type="string">
-  Filter by memory type
-</ParamField>
-
-<ParamField query="limit" type="number" default="50">
-  Number of results to return (max 100)
-</ParamField>
-
-<ParamField query="offset" type="number" default="0">
-  Pagination offset
-</ParamField>
-
-### Request
-
-```bash
-curl https://orcamemory.com/v1/memories?type=procedural&limit=10 \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "memories": [
-      {
-        "id": "mem_abc123",
-        "content": "User prefers TypeScript with strict mode",
-        "type": "procedural",
-        "tags": ["preferences"],
-        "createdAt": "2024-01-15T10:30:00Z"
-      }
-    ],
-    "total": 1,
-    "hasMore": false
-  }
-}
-```
-
----
-
-## Get Memory
-
-Retrieve a specific memory by ID.
-
-### Request
-
-```bash
-curl https://orcamemory.com/v1/memories/mem_abc123 \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "id": "mem_abc123",
-    "content": "User prefers TypeScript with strict mode",
-    "type": "procedural",
-    "tags": ["preferences"],
-    "metadata": {},
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-01-15T10:30:00Z"
-  }
-}
-```
-
----
-
-## Update Memory
-
-Update an existing memory.
-
-### Request
-
-```bash
-curl -X PATCH https://orcamemory.com/v1/memories/mem_abc123 \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "content": "User prefers TypeScript with strict mode and explicit return types",
-    "tags": ["preferences", "typescript", "code-style"]
-  }'
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "id": "mem_abc123",
-    "content": "User prefers TypeScript with strict mode and explicit return types",
-    "type": "procedural",
-    "tags": ["preferences", "typescript", "code-style"],
-    "updatedAt": "2024-01-15T11:00:00Z"
-  }
-}
-```
-
----
-
-## Delete Memory
-
-Delete a memory by ID.
-
-### Request
-
-```bash
-curl -X DELETE https://orcamemory.com/v1/memories/mem_abc123 \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "deleted": true
+    "createdAt": 1705312200000
   }
 }
 ```
@@ -190,27 +64,26 @@ curl -X DELETE https://orcamemory.com/v1/memories/mem_abc123 \
 
 Search memories using semantic similarity.
 
+**Endpoint:** `POST /memory/search`
+
 <ParamField body="query" type="string" required>
   Natural language search query
 </ParamField>
 
-<ParamField body="type" type="string">
+<ParamField body="memoryType" type="string">
   Filter by memory type
 </ParamField>
 
 <ParamField body="limit" type="number" default="10">
-  Number of results
-</ParamField>
-
-<ParamField body="threshold" type="number" default="0.7">
-  Minimum similarity score (0-1)
+  Number of results (max 20)
 </ParamField>
 
 ### Request
 
 ```bash
-curl -X POST https://orcamemory.com/v1/memories/search \
-  -H "Authorization: Bearer YOUR_API_KEY" \
+curl -X POST https://app.orcamemory.com/api/v1/memory/search \
+  -H "X-Key-Id: omk_your_key_id" \
+  -H "X-Api-Key: oms_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What are the coding preferences?",
@@ -226,13 +99,87 @@ curl -X POST https://orcamemory.com/v1/memories/search \
   "data": {
     "results": [
       {
-        "id": "mem_abc123",
+        "id": "jh77abc123xyz",
         "content": "User prefers TypeScript with strict mode",
-        "type": "procedural",
+        "memoryType": "procedural",
         "score": 0.92,
         "tags": ["preferences"]
       }
     ]
+  }
+}
+```
+
+---
+
+## Get Recent Memories
+
+Retrieve the most recent memories.
+
+**Endpoint:** `POST /memory/recent`
+
+<ParamField body="limit" type="number" default="20">
+  Number of results
+</ParamField>
+
+<ParamField body="memoryType" type="string">
+  Filter by memory type
+</ParamField>
+
+### Request
+
+```bash
+curl -X POST https://app.orcamemory.com/api/v1/memory/recent \
+  -H "X-Key-Id: omk_your_key_id" \
+  -H "X-Api-Key: oms_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "limit": 10
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "memories": [
+      {
+        "id": "jh77abc123xyz",
+        "content": "User prefers TypeScript with strict mode",
+        "memoryType": "procedural",
+        "tags": ["preferences"],
+        "createdAt": 1705312200000
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Delete Memory
+
+Delete a memory by ID.
+
+**Endpoint:** `DELETE /memory/:id`
+
+### Request
+
+```bash
+curl -X DELETE https://app.orcamemory.com/api/v1/memory/jh77abc123xyz \
+  -H "X-Key-Id: omk_your_key_id" \
+  -H "X-Api-Key: oms_your_api_key"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "deleted": true
   }
 }
 ```

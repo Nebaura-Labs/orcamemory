@@ -1,96 +1,125 @@
 ---
 title: Environment Variables
-description: Configure your OrcaMemory deployment
+description: Configure your Orca Memory deployment
 ---
 
-## Required Variables
+## Backend (Convex)
 
-These must be set for OrcaMemory to function:
+These go in `packages/backend/.env.local`:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `CONVEX_URL` | Your Convex deployment URL | `https://your-project.convex.cloud` |
-| `CONVEX_DEPLOY_KEY` | Convex deploy key for backend | `prod:your-key` |
-
-## Authentication
-
-Better Auth configuration:
+### Core
 
 | Variable | Description | Example |
 |----------|-------------|---------|
+| `SITE_URL` | Your dashboard URL | `https://app.yourdomain.com` |
+| `FRONTEND_URL` | Same as SITE_URL | `https://app.yourdomain.com` |
+| `COOKIE_DOMAIN` | Domain for cookies | `.yourdomain.com` |
 | `BETTER_AUTH_SECRET` | Secret for signing tokens | Random 32+ char string |
-| `BETTER_AUTH_URL` | Your app's base URL | `https://app.yourdomain.com` |
 
-### OAuth Providers (Optional)
+### Embeddings Service
 
-Enable social login by adding provider credentials:
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `EMBEDDING_URL` | Embeddings service URL | `http://localhost:8008` |
+| `EMBEDDING_MODEL` | Model to use | `intfloat/e5-base-v2` |
+| `MEMORY_VECTOR_SCAN_LIMIT` | Max vectors to scan | `2000` |
+
+### Authentication (OAuth)
 
 ```bash
-# Google
-GOOGLE_CLIENT_ID=your_client_id
-GOOGLE_CLIENT_SECRET=your_client_secret
+# GitHub OAuth
+GITHUB_CLIENT_ID=your-github-oauth-id
+GITHUB_CLIENT_SECRET=your-github-oauth-secret
+```
 
-# GitHub
-GITHUB_CLIENT_ID=your_client_id
-GITHUB_CLIENT_SECRET=your_client_secret
+### OTP via Twilio (Optional)
+
+```bash
+TWILIO_ACCOUNT_SID=your-twilio-sid
+TWILIO_AUTH_TOKEN=your-twilio-token
+TWILIO_VERIFY_SERVICE_SID=your-verify-service
+```
+
+### Email via Resend (Optional)
+
+```bash
+RESEND_SEND_API_KEY=your-resend-api-key
+RESEND_CONTACTS_API_KEY=your-contacts-key
+RESEND_AUDIENCE_ID=your-audience-id
+```
+
+### Billing via Polar (Optional)
+
+```bash
+POLAR_ORGANIZATION_TOKEN=your-polar-token
+POLAR_WEBHOOK_SECRET=your-webhook-secret
+POLAR_PRODUCT_SURFACE_ID=prod_xxx
+POLAR_PRODUCT_TIDE_ID=prod_xxx
+POLAR_PRODUCT_ABYSS_ID=prod_xxx
+```
+
+## Frontend (Dashboard)
+
+These go in `apps/dashboard/.env`:
+
+```bash
+# Convex
+VITE_CONVEX_URL=https://your-deployment.convex.cloud
+VITE_CONVEX_SITE_URL=https://your-deployment.convex.site
+VITE_INTERNAL_SITE_URL=http://localhost:3002
+
+# Analytics (Bklit) - Optional
+VITE_BKLIT_PROJECT_ID=your-project-id
+VITE_BKLIT_API_KEY=your-api-key
+VITE_BKLIT_API_HOST=https://analytics.nebaura.studio
+VITE_BKLIT_ENVIRONMENT=production
+VITE_BKLIT_DEBUG=false
 ```
 
 ## Embeddings Service
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `EMBEDDING_MODEL` | Sentence transformer model | `all-MiniLM-L6-v2` |
-| `EMBEDDING_DEVICE` | Device for inference | `cpu` |
-| `EMBEDDING_PORT` | Port for the service | `8000` |
+These go in `apps/embeddings/.env`:
+
+```bash
+EMBEDDING_MODEL=intfloat/e5-base-v2
+EMBEDDING_MAX_BATCH=32
+```
 
 ### Model Options
 
 | Model | Size | Quality | Speed |
 |-------|------|---------|-------|
+| `intfloat/e5-base-v2` | 438MB | Best | Medium |
 | `all-MiniLM-L6-v2` | 80MB | Good | Fast |
 | `all-mpnet-base-v2` | 420MB | Better | Medium |
-| `instructor-large` | 1.3GB | Best | Slow |
 
-## Email (Optional)
+## Example Complete Setup
 
-For email notifications and magic links:
-
-| Variable | Description |
-|----------|-------------|
-| `RESEND_API_KEY` | Resend API key for sending emails |
-| `EMAIL_FROM` | Sender email address |
-
-## Payments (Optional)
-
-For billing integration:
-
-| Variable | Description |
-|----------|-------------|
-| `POLAR_ACCESS_TOKEN` | Polar API token |
-| `POLAR_WEBHOOK_SECRET` | Webhook verification secret |
-
-## Example .env File
-
+**packages/backend/.env.local:**
 ```bash
-# Convex
-CONVEX_URL=https://your-project.convex.cloud
-CONVEX_DEPLOY_KEY=prod:your-deploy-key
-
-# Auth
+# Core
+SITE_URL=https://app.yourdomain.com
+FRONTEND_URL=https://app.yourdomain.com
+COOKIE_DOMAIN=.yourdomain.com
 BETTER_AUTH_SECRET=your-super-secret-key-at-least-32-chars
-BETTER_AUTH_URL=https://app.yourdomain.com
 
 # Embeddings
-EMBEDDING_MODEL=all-MiniLM-L6-v2
-EMBEDDING_DEVICE=cpu
+EMBEDDING_URL=http://localhost:8008
+EMBEDDING_MODEL=intfloat/e5-base-v2
+MEMORY_VECTOR_SCAN_LIMIT=2000
 
-# Optional: Email
-RESEND_API_KEY=re_xxxxx
-EMAIL_FROM=noreply@yourdomain.com
+# OAuth
+GITHUB_CLIENT_ID=xxxxx
+GITHUB_CLIENT_SECRET=xxxxx
 
-# Optional: OAuth
-GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=xxxxx
+# Email (optional)
+RESEND_SEND_API_KEY=re_xxxxx
+```
+
+**apps/dashboard/.env:**
+```bash
+VITE_CONVEX_URL=https://your-project.convex.cloud
+VITE_CONVEX_SITE_URL=https://your-project.convex.site
 ```
 
 ## Security Notes
@@ -102,4 +131,4 @@ GOOGLE_CLIENT_SECRET=xxxxx
 - Use strong, random values for secrets
 - Rotate keys periodically
 - Use different values for development and production
-- Consider using a secrets manager (Vault, AWS Secrets Manager, etc.) in production
+- Consider using a secrets manager in production

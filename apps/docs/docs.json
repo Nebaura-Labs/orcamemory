@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "almond",
-  "name": "OrcaMemory",
+  "name": "Orca Memory",
   "colors": {
     "primary": "#5AABF0",
     "light": "#7BBFF5",

@@ -1,11 +1,11 @@
 ---
 title: Dashboard
-description: Managing your memories, sessions, and analytics
+description: Managing your memories, agents, and analytics
 ---
 
 ## Overview
 
-The OrcaMemory dashboard at [app.orcamemory.com](https://app.orcamemory.com) provides a complete view of your project's memory and usage.
+The Orca Memory dashboard at [app.orcamemory.com](https://app.orcamemory.com) provides a complete view of your project's memory and usage.
 
 ## Memories
 
@@ -14,10 +14,10 @@ The **Memories** page displays all stored memories for your project.
 ### Viewing Memories
 
 Each memory card shows:
-- **Content** — The stored information
-- **Type** — Episodic, semantic, procedural, or working
-- **Tags** — Associated labels for organization
-- **Created** — When the memory was stored
+- **Content** - The stored information
+- **Type** - Episodic, semantic, procedural, or working
+- **Tags** - Associated labels for organization
+- **Created** - When the memory was stored
 
 ### Searching Memories
 
@@ -36,6 +36,22 @@ Click any memory to view its full details, including:
 - Related memories
 - Edit/delete options
 
+## Agents
+
+The **Agents** page shows all connected Claws and their activity.
+
+For each agent, you can see:
+- Last active time
+- Memory operations (reads/writes)
+- Connection status
+
+### Linking a New Agent
+
+Click **Link Agent** to get your credentials for the OpenClaw plugin:
+- API URL
+- Key ID
+- API Key
+
 ## Sessions
 
 When session logging is enabled, the **Sessions** page shows your conversation history.
@@ -51,36 +67,28 @@ Sessions help you:
 - Find when decisions were made
 - Track project evolution
 
-## Agents
-
-The **Agents** page shows all connected agents and their activity.
-
-For each agent, you can see:
-- Last active time
-- Memory operations (reads/writes)
-- Connection status
-
 ## Analytics
 
 The **Analytics** page provides insights into your memory usage:
 
-- **Memory count** — Total memories by type
-- **API calls** — Reads, writes, and searches over time
-- **Storage used** — Current usage vs. plan limits
+- **Memory count** - Total memories by type
+- **Token usage** - Tokens used this billing period
+- **Search usage** - Searches performed this period
+- **Storage used** - Current usage vs. plan limits
 
 ## Settings
 
 ### General
 
-- View your API key
-- Copy the agent connection prompt
+- View your API credentials
+- Copy the configuration for OpenClaw
 - Rename or delete the project
 
 ### Retention
 
 Configure how long memories are kept:
-- Set retention periods per memory type
-- Auto-cleanup old working memories
+- Set retention period (30 days to Forever, based on plan)
+- Auto-cleanup expired memories
 - Archive vs. delete policies
 
 ### Team

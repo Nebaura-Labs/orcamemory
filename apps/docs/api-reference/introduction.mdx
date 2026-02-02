@@ -1,6 +1,6 @@
 ---
 title: API Overview
-description: Integrate OrcaMemory directly into your applications
+description: Integrate Orca Memory directly via API
 ---
 
 ## Base URL
@@ -8,38 +8,44 @@ description: Integrate OrcaMemory directly into your applications
 All API requests use the following base URL:
 
 ```
-https://orcamemory.com/v1
+https://app.orcamemory.com/api/v1
 ```
 
 For self-hosted deployments, replace with your own domain.
 
 ## Authentication
 
-All API endpoints require authentication via API key. Include your key in the `Authorization` header:
+All API endpoints require authentication via API key. Include your credentials in the headers:
 
 ```bash
-Authorization: Bearer YOUR_API_KEY
+X-Key-Id: omk_your_key_id
+X-Api-Key: oms_your_api_key
 ```
 
-Get your API key from the dashboard at **Settings → General**.
+Get your credentials from the dashboard at **Link Agent** or **Settings → General**.
+
+## Plugin vs Direct API
+
+Most users don't need to call the API directly. The [OpenClaw plugin](https://docs.openclaw.ai/plugin#plugins) handles everything automatically:
+
+- **Auto-Recall** - Fetches relevant memories before each turn
+- **Auto-Capture** - Stores important info after each turn
+- **Tools** - Your Claw can call `orca_memory_store`, `orca_memory_search`, etc.
+
+Use the direct API only if you're building custom integrations or non-OpenClaw applications.
 
 ## Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/memories` | Create a new memory |
-| `GET` | `/memories` | List memories |
-| `GET` | `/memories/:id` | Get a specific memory |
-| `PATCH` | `/memories/:id` | Update a memory |
-| `DELETE` | `/memories/:id` | Delete a memory |
-| `POST` | `/memories/search` | Search memories semantically |
-| `POST` | `/sessions` | Create a session |
-| `GET` | `/sessions` | List sessions |
-| `GET` | `/sessions/:id` | Get session details |
+| `POST` | `/memory/store` | Store a new memory |
+| `POST` | `/memory/search` | Search memories semantically |
+| `POST` | `/memory/recent` | Get recent memories |
+| `DELETE` | `/memory/:id` | Delete a memory |
 
 ## Response Format
 
-All responses are JSON with this structure:
+All responses are JSON:
 
 ```json
 {
@@ -62,27 +68,17 @@ Error responses:
 
 ## Rate Limits
 
-| Plan | Requests/minute | Requests/day |
-|------|-----------------|--------------|
-| Free | 60 | 1,000 |
-| Pro | 300 | Unlimited |
-| Team | 600 | Unlimited |
+Rate limits are based on your plan's token and search quotas:
 
-Rate limit headers are included in responses:
-
-```
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 58
-X-RateLimit-Reset: 1699900000
-```
-
-## SDKs
-
-Official SDKs are coming soon. For now, use the REST API directly or see our agent prompt for integration.
+| Plan | Tokens/month | Searches/month |
+|------|--------------|----------------|
+| Surface | 500K | 5K |
+| Tide | 5M | 200K |
+| Abyss | 25M | 2M |
 
 <CardGroup cols={2}>
   <Card title="Memories API" icon="brain" href="/api-reference/memories">
-    Create, read, update, delete memories
+    Store, search, and delete memories
   </Card>
   <Card title="Sessions API" icon="clock" href="/api-reference/sessions">
     Manage conversation sessions

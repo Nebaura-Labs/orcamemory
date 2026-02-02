@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Get started with OrcaMemory Cloud in under 5 minutes
+description: Get started with Orca Memory Cloud in under 5 minutes
 ---
 
 ## 1. Create an Account
@@ -17,49 +17,75 @@ After signing in, you'll be prompted to create your first project.
 
 Your project comes pre-configured with all four memory types enabled.
 
-## 3. Connect Your Agent
+## 3. Get Your API Keys
 
-Click **Link Agent** on your project to get the connection prompt.
+Click **Link Agent** on your project to get your credentials:
+
+- **API URL**: `https://app.orcamemory.com/api/v1`
+- **Key ID**: `omk_...`
+- **API Key**: `oms_...`
+
+## 4. Install the Plugin
+
+In OpenClaw, install the Orca Memory plugin:
 
 <Steps>
-  <Step title="Copy the prompt">
-    Click the copy button to copy the OrcaMemory prompt to your clipboard. This includes your API key and endpoint.
+  <Step title="Open Plugin Settings">
+    Go to your OpenClaw settings and find the Plugins section.
   </Step>
-  <Step title="Add to your agent's rules">
-    Paste the prompt into your AI agent's rules file:
+  <Step title="Add Orca Memory">
+    Add the Orca Memory plugin from the plugin registry, or install from URL:
+    ```
+    https://app.orcamemory.com/plugins/orca-memory
+    ```
+  </Step>
+  <Step title="Configure">
+    Enter your credentials:
     
-    | Agent | Rules File |
-    |-------|------------|
-    | Cursor | `.cursor/rules` or `.cursorrules` |
-    | Claude Code | `CLAUDE.md` |
-    | Windsurf | `.windsurfrules` |
-    | Cline | `.clinerules` |
-    | GitHub Copilot | `.github/copilot-instructions.md` |
+    | Setting | Value |
+    |---------|-------|
+    | API URL | `https://app.orcamemory.com/api/v1` |
+    | Key ID | Your `omk_...` key |
+    | API Key | Your `oms_...` secret |
+    | Auto-Recall | ✓ Enabled |
+    | Auto-Capture | ✓ Enabled |
   </Step>
-  <Step title="Start coding">
-    Your agent now has memory! It will automatically store and retrieve context as you work.
+  <Step title="Start Coding">
+    Your Claw now has memory! It will automatically store and retrieve context as you work.
   </Step>
 </Steps>
 
-## What Gets Stored?
-
-When connected, your agent will:
-
-- **Remember your preferences** — coding style, frameworks, conventions
-- **Track decisions** — why you chose certain approaches
-- **Store project knowledge** — architecture, patterns, gotchas
-- **Log sessions** — full conversation history for reference
-
 ## Environment Variables
 
-The prompt includes two key values:
+You can also configure via environment variables:
 
 ```bash
-ORCA_API_KEY=your_api_key_here
-ORCA_ENDPOINT=https://orcamemory.com/v1
+ORCA_MEMORY_API_URL=https://app.orcamemory.com/api/v1
+ORCA_MEMORY_KEY_ID=omk_...
+ORCA_MEMORY_API_KEY=oms_...
 ```
 
-These are embedded in the prompt, but you can also set them as environment variables if your agent supports it.
+## Plugin Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `autoRecall` | `true` | Inject relevant memories before every AI turn |
+| `autoCapture` | `true` | Automatically store important information after each turn |
+| `maxRecallResults` | `10` | Maximum memories injected per turn |
+| `profileFrequency` | `1` | Inject memory profile every N turns |
+| `captureMode` | `all` | `all` filters noise, `everything` captures all |
+| `debug` | `false` | Enable debug logging |
+
+## Available Tools
+
+Once installed, your Claw has access to these tools:
+
+| Tool | Description |
+|------|-------------|
+| `orca_memory_store` | Manually store a memory |
+| `orca_memory_search` | Search existing memories |
+| `orca_memory_forget` | Delete a specific memory |
+| `orca_memory_profile` | View the current memory profile |
 
 ## Next Steps
 
@@ -67,7 +93,7 @@ These are embedded in the prompt, but you can also set them as environment varia
   <Card title="Dashboard Guide" icon="gauge" href="/cloud/dashboard">
     Learn how to manage memories and view analytics
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/authentication">
-    Integrate OrcaMemory directly via API
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Integrate Orca Memory directly via API
   </Card>
 </CardGroup>

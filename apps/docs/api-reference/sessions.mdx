@@ -18,7 +18,7 @@ Start a new session to log a conversation.
 ### Request
 
 ```bash
-curl -X POST https://orcamemory.com/v1/sessions \
+curl -X POST https://app.orcamemory.com/api/v1/sessions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -59,7 +59,7 @@ Retrieve all sessions for your project.
 ### Request
 
 ```bash
-curl https://orcamemory.com/v1/sessions?limit=10 \
+curl https://app.orcamemory.com/api/v1/sessions?limit=10 \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -93,7 +93,7 @@ Retrieve a specific session with full conversation transcript.
 ### Request
 
 ```bash
-curl https://orcamemory.com/v1/sessions/sess_xyz789 \
+curl https://app.orcamemory.com/api/v1/sessions/sess_xyz789 \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -143,7 +143,7 @@ Append a message to an active session.
 ### Request
 
 ```bash
-curl -X POST https://orcamemory.com/v1/sessions/sess_xyz789/messages \
+curl -X POST https://app.orcamemory.com/api/v1/sessions/sess_xyz789/messages \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -173,7 +173,7 @@ Mark a session as completed.
 ### Request
 
 ```bash
-curl -X POST https://orcamemory.com/v1/sessions/sess_xyz789/end \
+curl -X POST https://app.orcamemory.com/api/v1/sessions/sess_xyz789/end \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

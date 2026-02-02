@@ -1,41 +1,49 @@
 ---
 title: Introduction
-description: Give your AI agents persistent memory across sessions
+description: Persistent memory for your OpenClaw agents
 ---
 
 <img
   className="block dark:hidden"
   src="/images/hero-light.png"
-  alt="OrcaMemory"
+  alt="Orca Memory"
 />
 <img
   className="hidden dark:block"
   src="/images/hero-dark.png"
-  alt="OrcaMemory"
+  alt="Orca Memory"
 />
 
-## What is OrcaMemory?
+## What is Orca Memory?
 
-OrcaMemory is a memory layer for AI coding agents. It allows agents like Cursor, Claude Code, Windsurf, Cline, and others to remember context across sessions — your preferences, past decisions, code patterns, and project knowledge.
+Orca Memory is a memory plugin for [OpenClaw](https://openclaw.ai). It gives your Claw persistent memory across sessions - so it remembers your preferences, past decisions, code patterns, and project knowledge.
 
-Without memory, AI agents start fresh every conversation. They forget your coding style, repeat mistakes, and ask the same questions. OrcaMemory fixes this.
+Without memory, your Claw starts fresh every conversation. It forgets your coding style, repeats mistakes, and asks the same questions. Orca Memory fixes this.
 
 ## Key Features
 
 <CardGroup cols={2}>
   <Card title="Persistent Memory" icon="brain">
-    Agents remember your preferences, decisions, and context across all sessions
+    Your Claw remembers preferences, decisions, and context across all sessions
   </Card>
-  <Card title="Four Memory Types" icon="layer-group">
-    Episodic, semantic, procedural, and working memory for complete context
+  <Card title="Auto-Recall" icon="rotate">
+    Relevant memories are automatically injected before every AI turn
   </Card>
-  <Card title="Session Logging" icon="clock-rotate-left">
-    Automatic logging of conversations for future reference
+  <Card title="Auto-Capture" icon="camera">
+    Important information is automatically stored after each turn
   </Card>
   <Card title="Semantic Search" icon="magnifying-glass">
     Find relevant memories using natural language queries
   </Card>
 </CardGroup>
+
+## How It Works
+
+Orca Memory is an [OpenClaw plugin](https://docs.openclaw.ai/plugin#plugins). Once installed:
+
+1. **Auto-Recall** - Before each AI response, relevant memories are injected as context
+2. **Auto-Capture** - After each turn, important information is extracted and stored
+3. **Tools** - Your Claw can manually store, search, and manage memories
 
 ## Memory Types
 
@@ -43,7 +51,7 @@ Without memory, AI agents start fresh every conversation. They forget your codin
 |------|---------|---------|
 | **Episodic** | Past events and conversations | "Last week we debugged the auth flow" |
 | **Semantic** | Facts and knowledge | "This project uses Convex for the backend" |
-| **Procedural** | Patterns and preferences | "User prefers arrow functions over function declarations" |
+| **Procedural** | Patterns and preferences | "User prefers arrow functions" |
 | **Working** | Active session context | Current task and recent decisions |
 
 ## Get Started
@@ -53,6 +61,6 @@ Without memory, AI agents start fresh every conversation. They forget your codin
     Get started with the hosted version in under 5 minutes
   </Card>
   <Card title="Self-Host" icon="server" href="/self-hosting/requirements">
-    Deploy OrcaMemory on your own infrastructure
+    Deploy Orca Memory on your own infrastructure
   </Card>
 </CardGroup>

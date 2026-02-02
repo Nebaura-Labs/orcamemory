@@ -1,15 +1,15 @@
 ---
 title: Core Concepts
-description: Understanding how OrcaMemory works
+description: Understanding how Orca Memory works
 ---
 
 ## Overview
 
-OrcaMemory provides AI agents with persistent memory through a simple API. Agents store and retrieve memories to maintain context across sessions.
+Orca Memory is an [OpenClaw plugin](https://docs.openclaw.ai/plugin#plugins) that provides persistent memory for your Claw. It stores and retrieves memories automatically to maintain context across sessions.
 
 ## Projects
 
-A **project** is your workspace in OrcaMemory. Each project has:
+A **project** is your workspace in Orca Memory. Each project has:
 
 - A unique API key for authentication
 - Its own set of memories
@@ -20,15 +20,49 @@ You can create multiple projects for different codebases or use cases.
 
 ## Agents
 
-An **agent** is any AI assistant that connects to your project. When you add the OrcaMemory prompt to your agent's rules file, it becomes capable of:
+An **agent** represents your Claw connected to a project. When you install the Orca Memory plugin, your Claw becomes capable of:
 
 - Storing new memories via the API
 - Retrieving relevant memories before responding
 - Updating existing memories as context changes
 
+## Plugin Features
+
+### Auto-Recall
+
+When enabled, relevant memories are automatically injected into the conversation before each AI turn. The plugin:
+
+1. Takes the current conversation context
+2. Searches for semantically similar memories
+3. Injects them as system context
+
+Configure with `maxRecallResults` (default: 10) and `profileFrequency`.
+
+### Auto-Capture
+
+When enabled, important information is automatically extracted and stored after each turn. The plugin analyzes the conversation and stores:
+
+- User preferences mentioned
+- Decisions made
+- Facts learned
+- Patterns observed
+
+Configure with `captureMode`: `all` (default, filters noise) or `everything`.
+
+### Tools
+
+Your Claw also has manual control via tools:
+
+| Tool | Description |
+|------|-------------|
+| `orca_memory_store` | Store a new memory |
+| `orca_memory_search` | Search existing memories |
+| `orca_memory_forget` | Delete a memory |
+| `orca_memory_profile` | View memory profile |
+
 ## Memory Types
 
-OrcaMemory uses four distinct memory types, inspired by human cognition:
+Orca Memory uses four distinct memory types, inspired by human cognition:
 
 ### Episodic Memory
 
@@ -37,14 +71,6 @@ Stores specific events and conversations. Useful for:
 - Remembering previous discussions about architecture
 - Tracking decision history
 
-```json
-{
-  "type": "episodic",
-  "content": "Debugged authentication issue - root cause was expired JWT tokens",
-  "tags": ["auth", "debugging", "jwt"]
-}
-```
-
 ### Semantic Memory
 
 Stores facts and knowledge about your project. Useful for:
@@ -52,28 +78,12 @@ Stores facts and knowledge about your project. Useful for:
 - Technology stack information
 - Business logic rules
 
-```json
-{
-  "type": "semantic",
-  "content": "This project uses Convex for the backend with Better Auth for authentication",
-  "tags": ["stack", "backend"]
-}
-```
-
 ### Procedural Memory
 
 Stores patterns, preferences, and how-to knowledge. Useful for:
 - Coding style preferences
 - Workflow patterns
 - Repeated procedures
-
-```json
-{
-  "type": "procedural",
-  "content": "User prefers TypeScript strict mode and explicit return types on all functions",
-  "tags": ["preferences", "typescript"]
-}
-```
 
 ### Working Memory
 
@@ -84,30 +94,22 @@ Stores active, short-term context. Useful for:
 
 Working memory is typically cleared or updated more frequently than other types.
 
-## Sessions
-
-A **session** represents a conversation between you and an agent. When session logging is enabled:
-
-- Each conversation is automatically recorded
-- Sessions are searchable for future reference
-- You can review past interactions in the dashboard
-
 ## How It Works
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Agent
-    participant OrcaMemory
+    participant Claw
+    participant Orca Memory
     
-    User->>Agent: Ask a question
-    Agent->>OrcaMemory: Retrieve relevant memories
-    OrcaMemory-->>Agent: Return matching memories
-    Agent->>User: Respond with context
-    Agent->>OrcaMemory: Store new memories
+    User->>Claw: Ask a question
+    Claw->>Orca Memory: Auto-Recall: fetch relevant memories
+    Orca Memory-->>Claw: Return matching memories
+    Claw->>User: Respond with context
+    Claw->>Orca Memory: Auto-Capture: store new learnings
 ```
 
-1. **User interacts** with their AI agent
-2. **Agent retrieves** relevant memories from OrcaMemory
-3. **Agent responds** using retrieved context
-4. **Agent stores** new learnings as memories
+1. **User interacts** with their Claw
+2. **Auto-Recall** fetches relevant memories from Orca Memory
+3. **Claw responds** using retrieved context
+4. **Auto-Capture** stores new learnings as memories

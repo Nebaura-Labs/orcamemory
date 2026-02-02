@@ -25,6 +25,7 @@ import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { saveOtpContext } from "@/lib/otp-context";
 import { toast } from "sonner";
+import { env } from "@moltcity/env/web";
 
 type LoginFormProps = ComponentProps<"form">;
 
@@ -201,27 +202,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={async () => {
-                  setStatusMessage(null);
-                  try {
-                    const result = await authClient.signIn.social({
-                      provider: "github",
-                      callbackURL: "/",
-                      disableRedirect: true,
-                    });
-                    const redirectUrl = result?.data?.url;
-                    if (redirectUrl) {
-                      window.location.href = redirectUrl;
-                      return;
-                    }
-                    setStatusMessage("Unable to start GitHub sign-in.");
-                  } catch (error) {
-                    setStatusMessage(
-                      `GitHub sign-in failed: ${
-                        error instanceof Error ? error.message : "Unknown error"
-                      }`,
-                    );
-                  }
+                onClick={() => {
+                  // Redirect directly to avoid CORS issues
+                  const callbackURL = encodeURIComponent(window.location.origin);
+                  window.location.href = `${env.VITE_CONVEX_SITE_URL}/api/auth/sign-in/social?provider=github&callbackURL=${callbackURL}`;
                 }}
               >
                 <GithubLogo className="mr-2 h-4 w-4" weight="fill" />

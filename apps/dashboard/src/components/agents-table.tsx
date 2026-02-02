@@ -56,10 +56,10 @@ interface Agent {
 function getKeyDisplayText(
 	agentId: string,
 	keyId: string | null,
-	visibleSecrets: Record<string, string>
+	visibleSecrets: Record<string, { keyId: string; secret: string }>
 ): string {
 	if (visibleSecrets[agentId]) {
-		return visibleSecrets[agentId];
+		return `${visibleSecrets[agentId].keyId} / ${visibleSecrets[agentId].secret}`;
 	}
 	if (keyId) {
 		return `${keyId}...`;
@@ -74,19 +74,19 @@ function AgentKeyActions({
 	onToggleVisibility,
 }: {
 	agent: Agent;
-	visibleSecrets: Record<string, string>;
+	visibleSecrets: Record<string, { keyId: string; secret: string }>;
 	onCopy: (text: string) => void;
 	onToggleVisibility: (agentId: string) => void;
 }) {
-	const hasVisibleSecret = Boolean(visibleSecrets[agent._id]);
+	const visibleData = visibleSecrets[agent._id];
 
-	if (hasVisibleSecret) {
+	if (visibleData) {
 		return (
 			<div className="flex gap-1">
 				<Button
-					onClick={() => onCopy(visibleSecrets[agent._id])}
+					onClick={() => onCopy(`Key ID: ${visibleData.keyId}\nAPI Key: ${visibleData.secret}`)}
 					size="icon-sm"
-					title="Copy secret"
+					title="Copy credentials"
 					variant="ghost"
 				>
 					<Copy className="size-3.5" />
@@ -94,7 +94,7 @@ function AgentKeyActions({
 				<Button
 					onClick={() => onToggleVisibility(agent._id)}
 					size="icon-sm"
-					title="Hide secret"
+					title="Hide credentials"
 					variant="ghost"
 				>
 					<EyeOff className="size-3.5" />
@@ -128,7 +128,7 @@ function AgentRow({
 	onRotateKey,
 }: {
 	agent: Agent;
-	visibleSecrets: Record<string, string>;
+	visibleSecrets: Record<string, { keyId: string; secret: string }>;
 	loading: string | null;
 	onCopy: (text: string) => void;
 	onToggleVisibility: (agentId: string) => void;
@@ -254,7 +254,7 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 		| Agent[]
 		| undefined;
 	const issueKey = useMutation(api.agents.issueKey);
-	const [visibleSecrets, setVisibleSecrets] = useState<Record<string, string>>(
+	const [visibleSecrets, setVisibleSecrets] = useState<Record<string, { keyId: string; secret: string }>>(
 		{}
 	);
 	const [loading, setLoading] = useState<string | null>(null);
@@ -267,12 +267,12 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 				rotate: isRotate,
 				agentId,
 			});
-			if (result.secret) {
+			if (result.secret && result.keyId) {
 				setVisibleSecrets((prev) => ({
 					...prev,
-					[result.agentId]: result.secret as string,
+					[result.agentId]: { keyId: result.keyId as string, secret: result.secret as string },
 				}));
-				toast.success("API key rotated successfully");
+				toast.success(isRotate ? "API key rotated successfully" : "Agent created successfully");
 			}
 		} catch (error) {
 			const message =

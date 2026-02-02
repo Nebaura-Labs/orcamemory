@@ -46,6 +46,7 @@ export const issueKey = mutation({
   args: {
     projectId: v.id("projects"),
     rotate: v.optional(v.boolean()),
+    name: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -86,7 +87,7 @@ export const issueKey = mutation({
       agentId = await ctx.db.insert("agents", {
         organizationId: project.organizationId,
         projectId: args.projectId,
-        name: "OpenClaw Agent",
+        name: args.name?.trim() || "Orca Agent",
         status: "pending",
         createdBy: identity.subject,
         createdAt: Date.now(),

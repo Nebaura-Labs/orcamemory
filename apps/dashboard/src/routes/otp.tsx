@@ -98,7 +98,6 @@ function OtpPage() {
           await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/onboarding",
           });
         } catch {
           const message = "We verified your code, but could not sign you in.";
@@ -110,7 +109,8 @@ function OtpPage() {
 
       clearOtpContext();
       toast.success("Verification successful.");
-      await navigate({ to: context.flow === "sign-up" ? "/onboarding" : "/" });
+      // Full reload to sync server-side auth state
+      window.location.href = context.flow === "sign-up" ? "/onboarding" : "/";
     } catch {
       const message = "Invalid or expired code. Try again.";
       setStatusMessage(message);

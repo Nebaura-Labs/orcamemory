@@ -178,12 +178,12 @@ export const getActiveKeyByProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found.");
+			return null;
 		}
 
 		const agent = await ctx.db
@@ -222,12 +222,12 @@ export const getStatusByProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found.");
+			return null;
 		}
 
 		const agent = await ctx.db

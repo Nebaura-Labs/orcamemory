@@ -10,7 +10,7 @@ export const getStats = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		// Get total memories count
@@ -69,7 +69,7 @@ export const getRecentMemories = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const limit = args.limit ?? 5;
@@ -107,7 +107,7 @@ export const getAgentStatus = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const limit = args.limit ?? 4;
@@ -158,7 +158,7 @@ export const searchMemories = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return { memories: [], nextCursor: null, total: 0 };
 		}
 
 		const limit = Math.min(args.limit ?? 50, 100);
@@ -225,7 +225,7 @@ export const getMemoryTypes = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const project = await ctx.db.get(args.projectId);
@@ -244,7 +244,7 @@ export const getAgentsForProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const agents = await ctx.db
@@ -281,7 +281,7 @@ export const getMemoryGraphData = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return { nodes: [], agents: [], sessions: [], retentionDays: null };
 		}
 
 		const limit = Math.min(args.limit ?? 100, 500);
@@ -376,12 +376,12 @@ export const listAgentsForProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found");
+			return [];
 		}
 
 		const agents = await ctx.db
@@ -435,12 +435,12 @@ export const listSessionsForProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return [];
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found");
+			return [];
 		}
 
 		const limit = Math.min(args.limit ?? 50, 100);
@@ -505,12 +505,12 @@ export const getUsageForProject = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found.");
+			return null;
 		}
 
 		// Get organization plan for limits

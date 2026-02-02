@@ -87,7 +87,7 @@ export const getRetentionLimits = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const planDoc = await ctx.db
@@ -116,7 +116,7 @@ export const getForOrganization = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		return await ctx.db
@@ -259,7 +259,7 @@ export const getUsage = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const planDoc = await ctx.db
@@ -290,12 +290,12 @@ export const getAgentLimits = query({
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
 		if (!identity) {
-			throw new Error("Unauthorized");
+			return null;
 		}
 
 		const project = await ctx.db.get(args.projectId);
 		if (!project || project.createdBy !== identity.subject) {
-			throw new Error("Project not found.");
+			return null;
 		}
 
 		const planDoc = await ctx.db

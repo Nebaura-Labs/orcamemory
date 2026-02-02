@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/login-form";
 export const Route = createFileRoute("/sign-in")({
   beforeLoad: ({ context }) => {
     if (context.isAuthenticated) {
-      throw redirect({ to: "/onboarding" });
+      throw redirect({ to: "/" });
     }
   },
   component: SignInPage,

@@ -5,6 +5,7 @@ import { initBklit } from "@bklit/sdk";
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
@@ -17,6 +18,7 @@ import { useEffect } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -151,6 +153,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   }),
 
   component: RootDocument,
+  notFoundComponent: NotFoundPage,
   beforeLoad: async (ctx) => {
     let token: string | null = null;
     try {
@@ -228,5 +231,31 @@ function RootDocument() {
         </body>
       </html>
     </ConvexBetterAuthProvider>
+  );
+}
+
+function NotFoundPage() {
+  const context = useRouteContext({ from: Route.id });
+
+  if (context.isAuthenticated) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
+        <h1 className="text-4xl font-bold">404</h1>
+        <p className="text-muted-foreground">Page not found</p>
+        <Button asChild>
+          <Link to="/">Back to Dashboard</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-background p-8">
+      <h1 className="text-4xl font-bold">404</h1>
+      <p className="text-muted-foreground">Page not found</p>
+      <Button asChild>
+        <Link to="/sign-in">Sign In</Link>
+      </Button>
+    </div>
   );
 }

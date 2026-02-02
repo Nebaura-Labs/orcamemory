@@ -97,7 +97,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
   const [open, setOpen] = useState(false);
   const [pluginUrl, setPluginUrl] = useState(() => {
     if (typeof window === "undefined") {
-      return "https://orcamemory.com/plugins/orca-memory.tgz";
+      return "https://app.orcamemory.com/plugins/orca-memory.tgz";
     }
     return `${window.location.origin}/plugins/orca-memory.tgz`;
   });
@@ -322,7 +322,7 @@ export function LinkAgentDialog({ isConnected = false, onConnected }: LinkAgentD
             </Label>
             <Input
               id="plugin-url"
-              placeholder="https://orcamemory.com/plugins/orca-memory.tgz"
+              placeholder="https://app.orcamemory.com/plugins/orca-memory.tgz"
               className="mt-2 border-dashed"
               value={pluginUrl}
               onChange={(event) => setPluginUrl(event.target.value)}

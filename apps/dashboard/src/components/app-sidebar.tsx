@@ -6,10 +6,9 @@ import {
   Brain,
   History,
   LayoutDashboard,
-  Key,
   Settings2,
   BookOpen,
-  BarChart3,
+  Gauge,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -46,7 +45,7 @@ const data = {
         },
         {
           title: "Graph",
-          url: "/memories/graph",
+          url: "/analytics",
         },
       ],
     },
@@ -69,16 +68,6 @@ const data = {
       title: "Sessions",
       url: "/sessions",
       icon: History,
-      items: [
-        {
-          title: "Session History",
-          url: "/sessions",
-        },
-        {
-          title: "Token Usage",
-          url: "/sessions/usage",
-        },
-      ],
     },
     {
       title: "Settings",
@@ -106,14 +95,9 @@ const data = {
   ],
   quickLinks: [
     {
-      name: "API Keys",
-      url: "/api-keys",
-      icon: Key,
-    },
-    {
-      name: "Analytics",
-      url: "/analytics",
-      icon: BarChart3,
+      name: "Usage",
+      url: "/usage",
+      icon: Gauge,
     },
     {
       name: "Documentation",

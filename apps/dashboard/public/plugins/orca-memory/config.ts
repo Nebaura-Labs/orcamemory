@@ -69,7 +69,7 @@ export function parseConfig(raw: unknown): OrcaMemoryConfig {
   const apiUrl =
     typeof cfg.apiUrl === "string" && cfg.apiUrl.length > 0
       ? resolveEnvVars(cfg.apiUrl)
-      : process.env.ORCA_MEMORY_API_URL;
+      : process.env.ORCA_MEMORY_API_URL ?? "https://app.orcamemory.com/api";
 
   const keyId =
     typeof cfg.keyId === "string" && cfg.keyId.length > 0

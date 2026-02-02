@@ -58,19 +58,12 @@ ORCA_MEMORY_API_KEY=${token}
 openclaw plugins install ${pluginSource}
 \`\`\`
 
-2) Connect your agent:
+2) Install required dependencies:
 \`\`\`
-POST ${apiBase}/agents/connect
-Content-Type: application/json
-Body: {"keyId":"${keyIdentifier}","secret":"${token}"}
+npm install @sinclair/typebox
 \`\`\`
 
-3) Verify the connection:
-\`\`\`
-POST ${apiBase}/agents/health
-Content-Type: application/json
-Body: {"keyId":"${keyIdentifier}","secret":"${token}"}
-\`\`\`
+3) Restart your agent to load the plugin.
 
 4) Test with a simple store + search:
 - Store: "The user prefers dark mode"
@@ -79,9 +72,10 @@ Body: {"keyId":"${keyIdentifier}","secret":"${token}"}
 ## Troubleshooting
 
 - **401 Unauthorized**: Check that ORCA_MEMORY_KEY_ID and ORCA_MEMORY_API_KEY are correct
-- **404 Not Found**: Verify ORCA_MEMORY_API_URL ends with /api
+- **404 Not Found**: Verify ORCA_MEMORY_API_URL ends with /api (should be ${apiBase})
 - **Connection timeout**: Ensure your firewall allows outbound HTTPS
 - **Plugin not found**: Re-run the install command and restart your agent
+- **Missing dependency**: Run \`npm install @sinclair/typebox\` if you see typebox errors
 
 If any step fails, report the exact error message.
 `;

@@ -74,7 +74,7 @@ export const issueKey = mutation({
       )
       .collect();
 
-    if (existingAgents.length > plan.agentsPerProjectLimit) {
+    if (existingAgents.length >= plan.agentsPerProjectLimit) {
       throw new Error("Agent limit exceeded for this project.");
     }
 

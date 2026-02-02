@@ -225,7 +225,7 @@ function LimitReachedView({
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="rounded-md border bg-muted/50 p-4 text-zinc-900 dark:text-zinc-100">
+						<div className="rounded-md border bg-muted/50 p-4">
 							<p className="text-sm">
 								To create more agents, upgrade your plan to get higher limits
 								and additional features.

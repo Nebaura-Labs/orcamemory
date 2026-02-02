@@ -57,11 +57,16 @@ Open-source memory infrastructure for AI agents. Persist memories across session
 
 Workspace-based plans (organization-level billing via Polar):
 
-| Plan | Price | Projects | Agents/Project | Tokens | Searches |
-|------|-------|----------|----------------|--------|----------|
-| **Surface** (Free) | $0/mo | 1 | 1 | 500K | 5K |
-| **Tide** | $24/mo | 10 | 5 | 5M | 200K |
-| **Abyss** | $149/mo | 50 | 20 | 25M | 2M |
+| Plan | Price | Projects | Agents/Project | Tokens | Searches | Memory Retention |
+|------|-------|----------|----------------|--------|----------|------------------|
+| **Surface** (Free) | $0/mo | 1 | 1 | 500K | 5K | 30 days max |
+| **Tide** | $24/mo | 10 | 5 | 5M | 200K | 6 months max |
+| **Abyss** | $149/mo | 50 | 20 | 25M | 2M | Unlimited |
+
+**Memory Retention Options:**
+- 30 Days, 90 Days, Six Months, One Year, Keep Forever
+- Options are gated by plan (e.g., Surface can only select 30 Days)
+- Expired memories are automatically deleted by a daily cleanup cron
 
 **Overages (paid tiers):**
 - Tokens: $0.01 / 1K tokens

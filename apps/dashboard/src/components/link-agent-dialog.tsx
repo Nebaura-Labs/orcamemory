@@ -34,32 +34,56 @@ const buildPrompt = ({
   const pluginSource = pluginUrl || "<ORCA_MEMORY_PLUGIN_URL>";
   const apiBase = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api` : "<ORCA_MEMORY_API_URL>";
 
-  return `This is the Orca Memory plugin. It gives your OpenClaw agent long-term memory (store + search) backed by your workspace.
+  return `# Orca Memory Plugin Setup
 
-Install and enable the plugin, then authenticate it.
+Orca Memory gives your agent persistent long-term memory with semantic search. Your agent can:
+- Store memories (conversations, decisions, preferences, facts)
+- Search memories by meaning, not just keywords
+- Recall context across sessions automatically
 
-1) Install the Orca Memory plugin:
-openclaw plugins install ${pluginSource}
-(If you’re using Clawdbot, use its equivalent plugin install command.)
+## Environment Variables (.env)
 
-2) Configure the plugin:
+Add these to your .env file:
+
+\`\`\`
 ORCA_MEMORY_API_URL=${apiBase}
 ORCA_MEMORY_KEY_ID=${keyIdentifier}
 ORCA_MEMORY_API_KEY=${token}
+\`\`\`
 
-3) Connect the agent:
+## Installation
+
+1) Install the Orca Memory plugin:
+\`\`\`
+openclaw plugins install ${pluginSource}
+\`\`\`
+
+2) Connect your agent:
+\`\`\`
 POST ${apiBase}/agents/connect
+Content-Type: application/json
 Body: {"keyId":"${keyIdentifier}","secret":"${token}"}
+\`\`\`
 
-4) Verify health:
+3) Verify the connection:
+\`\`\`
 POST ${apiBase}/agents/health
+Content-Type: application/json
 Body: {"keyId":"${keyIdentifier}","secret":"${token}"}
+\`\`\`
 
-5) Test memory with a simple write + search:
-- Store: "Hello from OpenClaw"
-- Search: query "Hello"
+4) Test with a simple store + search:
+- Store: "The user prefers dark mode"
+- Search: "user preferences"
 
-If any step fails, report the error output verbatim.
+## Troubleshooting
+
+- **401 Unauthorized**: Check that ORCA_MEMORY_KEY_ID and ORCA_MEMORY_API_KEY are correct
+- **404 Not Found**: Verify ORCA_MEMORY_API_URL ends with /api
+- **Connection timeout**: Ensure your firewall allows outbound HTTPS
+- **Plugin not found**: Re-run the install command and restart your agent
+
+If any step fails, report the exact error message.
 `;
 };
 

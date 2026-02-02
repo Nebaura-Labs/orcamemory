@@ -2,32 +2,6 @@ import { v } from "convex/values"
 
 import { query, mutation } from "./_generated/server"
 
-// Helper to verify user has access to the organization
-async function verifyOrganizationAccess(
-  ctx: { db: any; auth: any },
-  organizationId: string
-): Promise<string> {
-  const identity = await ctx.auth.getUserIdentity()
-  if (!identity) {
-    throw new Error("Unauthorized")
-  }
-
-  const userId = identity.subject
-
-  // Check if user is a member of the organization
-  const membership = await ctx.db
-    .query("member")
-    .withIndex("organizationId", (q: any) => q.eq("organizationId", organizationId))
-    .filter((q: any) => q.eq(q.field("userId"), userId))
-    .first()
-
-  if (!membership) {
-    throw new Error("Access denied: not a member of this organization")
-  }
-
-  return userId
-}
-
 export const getById = query({
   args: {
     memoryId: v.id("memories"),
@@ -43,8 +17,11 @@ export const getById = query({
       return null
     }
 
-    // Verify user has access to this memory's organization
-    await verifyOrganizationAccess(ctx, memory.organizationId)
+    // Verify user has access via project ownership
+    const project = await ctx.db.get(memory.projectId)
+    if (!project || project.createdBy !== identity.subject) {
+      throw new Error("Access denied")
+    }
 
     const agent = await ctx.db.get(memory.agentId)
 
@@ -118,8 +95,11 @@ export const deleteMemory = mutation({
       throw new Error("Memory not found")
     }
 
-    // Verify user has access to this memory's organization
-    await verifyOrganizationAccess(ctx, memory.organizationId)
+    // Verify user has access via project ownership
+    const project = await ctx.db.get(memory.projectId)
+    if (!project || project.createdBy !== identity.subject) {
+      throw new Error("Access denied")
+    }
 
     await ctx.db.delete(args.memoryId)
     return { success: true }

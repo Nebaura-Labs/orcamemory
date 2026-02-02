@@ -1,0 +1,276 @@
+---
+title: Legend
+description: A composable legend component for charts with progress bars, markers, and customizable layouts
+---
+
+import { Legend, LegendItemComponent, LegendLabel, LegendMarker, LegendProgress, LegendValue } from "@bklitui/ui/charts";
+import { LegendSimpleDemo, LegendProgressDemo, LegendHorizontalDemo } from "@/components/docs/legend-demo";
+
+export const sampleData = [
+  { label: "Organic", value: 4250, maxValue: 5000, color: "#0ea5e9" },
+  { label: "Paid", value: 3120, maxValue: 5000, color: "#a855f7" },
+  { label: "Email", value: 2100, maxValue: 5000, color: "#f59e0b" },
+  { label: "Social", value: 1580, maxValue: 5000, color: "#10b981" },
+];
+
+## Preview
+
+<ComponentPreview>
+  <LegendProgressDemo />
+</ComponentPreview>
+
+## Installation
+
+```tsx
+import {
+  Legend,
+  LegendItemComponent,
+  LegendLabel,
+  LegendMarker,
+  LegendProgress,
+  LegendValue,
+} from "@bklitui/ui/charts";
+```
+
+## Usage
+
+The Legend uses a composable API where you define the layout once and it maps to each item in your data:
+
+```tsx
+const data = [
+  { label: "Organic", value: 4250, maxValue: 5000, color: "#0ea5e9" },
+  { label: "Paid", value: 3120, maxValue: 5000, color: "#a855f7" },
+];
+
+<Legend items={data} title="Traffic Sources">
+  <LegendItemComponent>
+    <LegendMarker />
+    <LegendLabel />
+    <LegendValue />
+  </LegendItemComponent>
+</Legend>
+```
+
+## Components
+
+### Legend
+
+The root container that provides context and maps items.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `LegendItemData[]` | required | Array of legend items |
+| `hoveredIndex` | `number \| null` | - | Controlled hover state |
+| `onHoverChange` | `(index: number \| null) => void` | - | Hover callback |
+| `title` | `string` | - | Title above the legend |
+| `titleClassName` | `string` | `"text-sm font-semibold"` | Title styling |
+| `className` | `string` | `""` | Container class |
+
+### LegendItemComponent
+
+Wrapper for each legend item. Handles hover interactions and animations.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | `""` | Item container class |
+
+### LegendMarker
+
+Color indicator dot.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | `"h-2.5 w-2.5"` | Size and styling |
+
+### LegendLabel
+
+Displays the item label.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | `"text-sm font-medium"` | Label styling |
+
+### LegendValue
+
+Displays the item value with optional percentage.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | `"text-sm tabular-nums"` | Value styling |
+| `showPercentage` | `boolean` | `false` | Show percentage |
+| `percentageClassName` | `string` | `"text-xs tabular-nums"` | Percentage styling |
+| `formatValue` | `(value: number) => string` | `toLocaleString()` | Value formatter |
+| `formatPercentage` | `(percentage: number) => string` | `${p.toFixed(0)}%` | Percentage formatter |
+
+### LegendProgress
+
+Progress bar using base-ui Progress component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `height` | `string` | `"h-1.5"` | Track height class |
+| `trackClassName` | `string` | `""` | Track styling |
+| `indicatorClassName` | `string` | `""` | Indicator styling |
+
+## Data Shape
+
+```ts
+interface LegendItemData {
+  label: string;      // Display label
+  value: number;      // Current value
+  maxValue?: number;  // Max value (for progress/percentage)
+  color: string;      // Item color
+}
+```
+
+## Examples
+
+### Simple Legend
+
+<ComponentShowcase code={`<Legend items={data}>
+  <LegendItemComponent className="flex items-center gap-3">
+    <LegendMarker />
+    <LegendLabel className="flex-1" />
+    <LegendValue />
+  </LegendItemComponent>
+</Legend>`}>
+  <LegendSimpleDemo />
+</ComponentShowcase>
+
+### With Progress Bars
+
+<ComponentShowcase code={`<Legend items={data} title="Sessions by Channel">
+  <LegendItemComponent className="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1">
+    <LegendMarker />
+    <LegendLabel />
+    <LegendValue showPercentage />
+    <div className="col-span-full">
+      <LegendProgress />
+    </div>
+  </LegendItemComponent>
+</Legend>`}>
+  <LegendProgressDemo />
+</ComponentShowcase>
+
+### Horizontal Layout
+
+<ComponentShowcase code={`<Legend items={data} className="flex-row flex-wrap gap-4">
+  <LegendItemComponent className="flex items-center gap-2">
+    <LegendMarker className="h-2 w-2" />
+    <LegendLabel className="text-xs" />
+  </LegendItemComponent>
+</Legend>`}>
+  <LegendHorizontalDemo />
+</ComponentShowcase>
+
+### Custom Value Formatting
+
+```tsx
+<Legend items={revenueData}>
+  <LegendItemComponent className="flex items-center gap-3">
+    <LegendMarker />
+    <LegendLabel className="flex-1" />
+    <LegendValue 
+      formatValue={(v) => `$${(v / 1000).toFixed(0)}k`}
+      showPercentage
+      formatPercentage={(p) => `(${p.toFixed(1)}%)`}
+    />
+  </LegendItemComponent>
+</Legend>
+```
+
+### Synced with Chart
+
+Connect the legend to a chart for bidirectional hover interactions:
+
+```tsx
+import { useState } from "react";
+import { RingChart, Ring, RingCenter, Legend, LegendItemComponent, LegendMarker, LegendLabel, LegendValue } from "@bklitui/ui/charts";
+
+function SyncedChart() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  return (
+    <div className="flex items-center gap-8">
+      <RingChart 
+        data={data} 
+        hoveredIndex={hoveredIndex}
+        onHoverChange={setHoveredIndex}
+      >
+        {data.map((_, i) => <Ring key={i} index={i} />)}
+        <RingCenter />
+      </RingChart>
+
+      <Legend 
+        items={data}
+        hoveredIndex={hoveredIndex}
+        onHoverChange={setHoveredIndex}
+      >
+        <LegendItemComponent className="flex items-center gap-3">
+          <LegendMarker />
+          <LegendLabel className="flex-1" />
+          <LegendValue />
+        </LegendItemComponent>
+      </Legend>
+    </div>
+  );
+}
+```
+
+## Hooks
+
+### useLegend
+
+Access the legend context from any child component:
+
+```tsx
+import { useLegend } from "@bklitui/ui/charts";
+
+function CustomComponent() {
+  const { items, hoveredIndex, setHoveredIndex } = useLegend();
+  // ...
+}
+```
+
+### useLegendItem
+
+Access the current item data from within a LegendItemComponent:
+
+```tsx
+import { useLegendItem } from "@bklitui/ui/charts";
+
+function CustomItemContent() {
+  const { item, index, isHovered, isFaded, percentage } = useLegendItem();
+  // ...
+}
+```
+
+## Theming
+
+The Legend uses CSS variables for theming:
+
+```css
+:root {
+  --legend: oklch(1 0 0);
+  --legend-foreground: oklch(0.141 0.005 285.823);
+  --legend-muted: oklch(0.967 0.001 286.375);
+  --legend-muted-foreground: oklch(0.552 0.016 285.938);
+  --legend-track: oklch(0.92 0.004 286.32);
+}
+
+.dark {
+  --legend: oklch(0.21 0.006 285.885);
+  --legend-foreground: oklch(0.985 0 0);
+  --legend-muted: oklch(0.274 0.006 286.033);
+  --legend-muted-foreground: oklch(0.705 0.015 286.067);
+  --legend-track: oklch(0.274 0.006 286.033);
+}
+```
+
+## Dependencies
+
+The LegendProgress component uses base-ui for accessible progress bars:
+
+```bash
+pnpm add @base-ui/react
+```

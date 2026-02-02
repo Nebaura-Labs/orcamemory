@@ -1,0 +1,13 @@
+{
+  "title": "Components",
+  "pages": [
+    "line-chart",
+    "area-chart",
+    "bar-chart",
+    "ring-chart",
+    "pie-chart",
+    "radar-chart",
+    "sankey-chart",
+    "choropleth-chart"
+  ]
+}

@@ -30,7 +30,12 @@ const routeLabels: Record<string, string> = {
   billing: "Billing",
   "api-keys": "API Keys",
   analytics: "Analytics",
+  account: "Account",
 }
+
+// Convex IDs are 32-char alphanumeric strings
+const isConvexId = (segment: string): boolean =>
+  /^[a-z0-9]{32}$/i.test(segment)
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
@@ -41,7 +46,14 @@ export function SiteHeader() {
   const pathSegments = location.pathname.split("/").filter(Boolean)
   const breadcrumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join("/")}`
-    const label = routeLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1)
+    let label: string
+    if (routeLabels[segment]) {
+      label = routeLabels[segment]
+    } else if (isConvexId(segment)) {
+      label = "Details"
+    } else {
+      label = segment.charAt(0).toUpperCase() + segment.slice(1)
+    }
     return { path, label }
   })
 

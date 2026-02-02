@@ -10,6 +10,7 @@ import {
   startSessionAction,
   storeMemoryAction,
 } from "./memory";
+import { findByEmailAction } from "./users";
 import { api } from "./_generated/api";
 import { polar } from "./polar";
 
@@ -125,6 +126,11 @@ http.route({
   path: "/api/sessions/record",
   method: "POST",
   handler: recordSessionAction,
+});
+http.route({
+  path: "/api/admin/users/find-by-email",
+  method: "POST",
+  handler: findByEmailAction,
 });
 
 export default http;

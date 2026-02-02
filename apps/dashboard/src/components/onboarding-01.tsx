@@ -186,7 +186,7 @@ export function Onboarding01({
           <Logo className="h-6 w-auto" />
           ORCA MEMORY
         </div>
-        <div className="w-xl border border-dashed bg-card p-4 text-card-foreground shadow-xs">
+        <div className="w-full border border-dashed bg-card p-4 text-card-foreground shadow-xs">
           <div className="mb-4 mr-2 flex flex-col justify-between sm:flex-row sm:items-center">
             <h3 className="ml-2 font-semibold text-foreground">Let’s get you set up</h3>
             <div className="mt-2 flex items-center justify-end sm:mt-0">

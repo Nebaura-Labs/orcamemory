@@ -13,12 +13,17 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsageIndexRouteImport } from './routes/usage/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SessionsIndexRouteImport } from './routes/sessions/index'
 import { Route as MemoriesIndexRouteImport } from './routes/memories/index'
 import { Route as AnalyticsIndexRouteImport } from './routes/analytics/index'
 import { Route as AgentsIndexRouteImport } from './routes/agents/index'
+import { Route as SettingsTeamRouteImport } from './routes/settings/team'
+import { Route as SettingsRetentionRouteImport } from './routes/settings/retention'
+import { Route as SettingsBillingRouteImport } from './routes/settings/billing'
 import { Route as MemoriesSearchRouteImport } from './routes/memories/search'
 import { Route as MemoriesMemoryIdRouteImport } from './routes/memories/$memoryId'
 import { Route as AgentsNewRouteImport } from './routes/agents/new'
@@ -52,6 +57,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -60,6 +70,11 @@ const IndexRoute = IndexRouteImport.update({
 const UsageIndexRoute = UsageIndexRouteImport.update({
   id: '/usage/',
   path: '/usage/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SessionsIndexRoute = SessionsIndexRouteImport.update({
@@ -80,6 +95,21 @@ const AnalyticsIndexRoute = AnalyticsIndexRouteImport.update({
 const AgentsIndexRoute = AgentsIndexRouteImport.update({
   id: '/agents/',
   path: '/agents/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsTeamRoute = SettingsTeamRouteImport.update({
+  id: '/settings/team',
+  path: '/settings/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRetentionRoute = SettingsRetentionRouteImport.update({
+  id: '/settings/retention',
+  path: '/settings/retention',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsBillingRoute = SettingsBillingRouteImport.update({
+  id: '/settings/billing',
+  path: '/settings/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoriesSearchRoute = MemoriesSearchRouteImport.update({
@@ -145,6 +175,7 @@ const ApiAgentsConnectRoute = ApiAgentsConnectRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/onboarding': typeof OnboardingRoute
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
@@ -152,10 +183,14 @@ export interface FileRoutesByFullPath {
   '/agents/new': typeof AgentsNewRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
   '/memories/search': typeof MemoriesSearchRoute
+  '/settings/billing': typeof SettingsBillingRoute
+  '/settings/retention': typeof SettingsRetentionRoute
+  '/settings/team': typeof SettingsTeamRoute
   '/agents/': typeof AgentsIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
   '/memories/': typeof MemoriesIndexRoute
   '/sessions/': typeof SessionsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
   '/usage/': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -169,6 +204,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/onboarding': typeof OnboardingRoute
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
@@ -176,10 +212,14 @@ export interface FileRoutesByTo {
   '/agents/new': typeof AgentsNewRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
   '/memories/search': typeof MemoriesSearchRoute
+  '/settings/billing': typeof SettingsBillingRoute
+  '/settings/retention': typeof SettingsRetentionRoute
+  '/settings/team': typeof SettingsTeamRoute
   '/agents': typeof AgentsIndexRoute
   '/analytics': typeof AnalyticsIndexRoute
   '/memories': typeof MemoriesIndexRoute
   '/sessions': typeof SessionsIndexRoute
+  '/settings': typeof SettingsIndexRoute
   '/usage': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -194,6 +234,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/onboarding': typeof OnboardingRoute
   '/otp': typeof OtpRoute
   '/sign-in': typeof SignInRoute
@@ -201,10 +242,14 @@ export interface FileRoutesById {
   '/agents/new': typeof AgentsNewRoute
   '/memories/$memoryId': typeof MemoriesMemoryIdRoute
   '/memories/search': typeof MemoriesSearchRoute
+  '/settings/billing': typeof SettingsBillingRoute
+  '/settings/retention': typeof SettingsRetentionRoute
+  '/settings/team': typeof SettingsTeamRoute
   '/agents/': typeof AgentsIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
   '/memories/': typeof MemoriesIndexRoute
   '/sessions/': typeof SessionsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
   '/usage/': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
@@ -220,6 +265,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/onboarding'
     | '/otp'
     | '/sign-in'
@@ -227,10 +273,14 @@ export interface FileRouteTypes {
     | '/agents/new'
     | '/memories/$memoryId'
     | '/memories/search'
+    | '/settings/billing'
+    | '/settings/retention'
+    | '/settings/team'
     | '/agents/'
     | '/analytics/'
     | '/memories/'
     | '/sessions/'
+    | '/settings/'
     | '/usage/'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -244,6 +294,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/onboarding'
     | '/otp'
     | '/sign-in'
@@ -251,10 +302,14 @@ export interface FileRouteTypes {
     | '/agents/new'
     | '/memories/$memoryId'
     | '/memories/search'
+    | '/settings/billing'
+    | '/settings/retention'
+    | '/settings/team'
     | '/agents'
     | '/analytics'
     | '/memories'
     | '/sessions'
+    | '/settings'
     | '/usage'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -268,6 +323,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/onboarding'
     | '/otp'
     | '/sign-in'
@@ -275,10 +331,14 @@ export interface FileRouteTypes {
     | '/agents/new'
     | '/memories/$memoryId'
     | '/memories/search'
+    | '/settings/billing'
+    | '/settings/retention'
+    | '/settings/team'
     | '/agents/'
     | '/analytics/'
     | '/memories/'
     | '/sessions/'
+    | '/settings/'
     | '/usage/'
     | '/api/agents/connect'
     | '/api/agents/health'
@@ -293,6 +353,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   OnboardingRoute: typeof OnboardingRoute
   OtpRoute: typeof OtpRoute
   SignInRoute: typeof SignInRoute
@@ -300,10 +361,14 @@ export interface RootRouteChildren {
   AgentsNewRoute: typeof AgentsNewRoute
   MemoriesMemoryIdRoute: typeof MemoriesMemoryIdRoute
   MemoriesSearchRoute: typeof MemoriesSearchRoute
+  SettingsBillingRoute: typeof SettingsBillingRoute
+  SettingsRetentionRoute: typeof SettingsRetentionRoute
+  SettingsTeamRoute: typeof SettingsTeamRoute
   AgentsIndexRoute: typeof AgentsIndexRoute
   AnalyticsIndexRoute: typeof AnalyticsIndexRoute
   MemoriesIndexRoute: typeof MemoriesIndexRoute
   SessionsIndexRoute: typeof SessionsIndexRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
   UsageIndexRoute: typeof UsageIndexRoute
   ApiAgentsConnectRoute: typeof ApiAgentsConnectRoute
   ApiAgentsHealthRoute: typeof ApiAgentsHealthRoute
@@ -346,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -358,6 +430,13 @@ declare module '@tanstack/react-router' {
       path: '/usage'
       fullPath: '/usage/'
       preLoaderRoute: typeof UsageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sessions/': {
@@ -386,6 +465,27 @@ declare module '@tanstack/react-router' {
       path: '/agents'
       fullPath: '/agents/'
       preLoaderRoute: typeof AgentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/team': {
+      id: '/settings/team'
+      path: '/settings/team'
+      fullPath: '/settings/team'
+      preLoaderRoute: typeof SettingsTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/retention': {
+      id: '/settings/retention'
+      path: '/settings/retention'
+      fullPath: '/settings/retention'
+      preLoaderRoute: typeof SettingsRetentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/billing': {
+      id: '/settings/billing'
+      path: '/settings/billing'
+      fullPath: '/settings/billing'
+      preLoaderRoute: typeof SettingsBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memories/search': {
@@ -477,6 +577,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   OnboardingRoute: OnboardingRoute,
   OtpRoute: OtpRoute,
   SignInRoute: SignInRoute,
@@ -484,10 +585,14 @@ const rootRouteChildren: RootRouteChildren = {
   AgentsNewRoute: AgentsNewRoute,
   MemoriesMemoryIdRoute: MemoriesMemoryIdRoute,
   MemoriesSearchRoute: MemoriesSearchRoute,
+  SettingsBillingRoute: SettingsBillingRoute,
+  SettingsRetentionRoute: SettingsRetentionRoute,
+  SettingsTeamRoute: SettingsTeamRoute,
   AgentsIndexRoute: AgentsIndexRoute,
   AnalyticsIndexRoute: AnalyticsIndexRoute,
   MemoriesIndexRoute: MemoriesIndexRoute,
   SessionsIndexRoute: SessionsIndexRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
   UsageIndexRoute: UsageIndexRoute,
   ApiAgentsConnectRoute: ApiAgentsConnectRoute,
   ApiAgentsHealthRoute: ApiAgentsHealthRoute,

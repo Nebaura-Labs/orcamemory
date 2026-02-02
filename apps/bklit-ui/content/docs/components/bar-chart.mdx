@@ -1,0 +1,417 @@
+---
+title: Bar Chart
+description: A composable bar chart with spring animations, stacked bars, horizontal orientation, and grouped series support
+---
+
+import { BarChart, Bar, BarXAxis, BarYAxis, Grid, ChartTooltip, Legend, LegendItem as LegendItemComponent, LegendMarker, LegendLabel, LinearGradient, PatternLines } from "@bklitui/ui/charts";
+import { BarChartStackedDemo, BarChartHorizontalDemo, BarChart90DaysDemo, BarChartGradientDemo, BarChartPatternDemo } from "@/components/docs/bar-chart-demo";
+
+export const chartData = [
+  { month: "Jan", revenue: 12000, profit: 4500 },
+  { month: "Feb", revenue: 15500, profit: 5200 },
+  { month: "Mar", revenue: 11000, profit: 3800 },
+  { month: "Apr", revenue: 18500, profit: 7100 },
+  { month: "May", revenue: 16800, profit: 5400 },
+  { month: "Jun", revenue: 21200, profit: 8800 },
+];
+
+export const stackedData = [
+  { month: "Jan", desktop: 4000, mobile: 2400 },
+  { month: "Feb", desktop: 5000, mobile: 3000 },
+  { month: "Mar", desktop: 3500, mobile: 2800 },
+  { month: "Apr", desktop: 4200, mobile: 3200 },
+  { month: "May", desktop: 3800, mobile: 2600 },
+  { month: "Jun", desktop: 5500, mobile: 3800 },
+];
+
+export const browserData = [
+  { browser: "Chrome", users: 275 },
+  { browser: "Safari", users: 200 },
+  { browser: "Firefox", users: 187 },
+  { browser: "Edge", users: 173 },
+  { browser: "Other", users: 90 },
+];
+
+export const dailyData = Array.from({ length: 90 }, (_, i) => {
+  const date = new Date(2026, 0, 1);
+  date.setDate(date.getDate() + i);
+  return {
+    day: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    value: Math.floor(Math.random() * 80) + 20 + Math.sin(i / 7) * 30,
+  };
+});
+
+## Preview
+
+<ComponentPreview>
+  <div className="w-full">
+    <BarChart data={chartData} xDataKey="month">
+      <Grid horizontal />
+      <Bar dataKey="revenue" fill="var(--chart-line-primary)" lineCap="round" />
+      <Bar dataKey="profit" fill="var(--chart-line-secondary)" lineCap="round" />
+      <BarXAxis />
+      <ChartTooltip />
+    </BarChart>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+import { BarChart, Bar, BarXAxis, BarYAxis, Grid, ChartTooltip } from "@bklitui/ui/charts";
+```
+
+## Usage
+
+The Bar Chart uses the same composable API as the Line and Area charts. Build charts by combining components:
+
+```tsx
+import { BarChart, Bar, BarXAxis, Grid, ChartTooltip } from "@bklitui/ui/charts";
+
+const data = [
+  { month: "Jan", revenue: 12000, profit: 4500 },
+  { month: "Feb", revenue: 15500, profit: 5200 },
+  // ... more data
+];
+
+export default function RevenueChart() {
+  return (
+    <BarChart data={data} xDataKey="month">
+      <Grid horizontal />
+      <Bar dataKey="revenue" fill="var(--chart-line-primary)" lineCap="round" />
+      <Bar dataKey="profit" fill="var(--chart-line-secondary)" lineCap="round" />
+      <BarXAxis />
+      <ChartTooltip />
+    </BarChart>
+  );
+}
+```
+
+## Stacked Bars
+
+Use the `stacked` prop to stack bars on top of each other. Add `stackGap` to create visual separation between segments, allowing each bar to have its own rounded corners.
+
+<ComponentShowcase code={`<BarChart data={data} xDataKey="month" stacked stackGap={3}>
+  <Grid horizontal />
+  <Bar dataKey="desktop" fill="hsl(217, 91%, 60%)" lineCap={4} stackGap={3} />
+  <Bar dataKey="mobile" fill="hsl(217, 91%, 75%)" lineCap={4} stackGap={3} />
+  <BarXAxis />
+  <ChartTooltip />
+</BarChart>`}>
+  <BarChartStackedDemo />
+</ComponentShowcase>
+
+## Horizontal Bars
+
+Use `orientation="horizontal"` to create horizontal bar charts with categories on the Y-axis.
+
+<ComponentShowcase code={`<BarChart data={data} xDataKey="browser" orientation="horizontal" margin={{ left: 80 }}>
+  <Grid horizontal={false} vertical fadeVertical />
+  <Bar dataKey="users" fill="hsl(217, 91%, 60%)" lineCap={4} />
+  <BarYAxis />
+  <ChartTooltip showCrosshair={false} />
+</BarChart>`}>
+  <BarChartHorizontalDemo />
+</ComponentShowcase>
+
+## 90 Days of Data
+
+A single series bar chart showing 90 days of data with square caps.
+
+<ComponentShowcase code={`<BarChart data={dailyData} xDataKey="day" barGap={0.1}>
+  <Grid horizontal />
+  <Bar dataKey="value" lineCap="butt" />
+  <BarXAxis maxLabels={8} />
+  <ChartTooltip />
+</BarChart>`}>
+  <BarChart90DaysDemo />
+</ComponentShowcase>
+
+## Gradients and Patterns
+
+Use visx gradient and pattern components to create custom bar fills. Place them as children of `BarChart` and reference them by ID.
+
+### Gradient Fill
+
+Use the `stroke` prop to set the tooltip dot color when using gradient fills.
+
+<ComponentShowcase code={`import { LinearGradient } from "@bklitui/ui/charts";
+
+<BarChart data={data} xDataKey="month">
+  <LinearGradient id="barGradient" from="hsl(217, 91%, 60%)" to="hsl(280, 87%, 65%)" />
+  <Grid horizontal />
+  <Bar dataKey="revenue" fill="url(#barGradient)" stroke="hsl(217, 91%, 60%)" lineCap={4} />
+  <BarXAxis />
+  <ChartTooltip />
+</BarChart>`}>
+  <BarChartGradientDemo />
+</ComponentShowcase>
+
+### Pattern Fill
+
+Use the `stroke` prop to set a solid tooltip dot color when using pattern fills.
+
+<ComponentShowcase code={`import { PatternLines } from "@bklitui/ui/charts";
+
+<BarChart data={data} xDataKey="month">
+  <PatternLines
+    id="barPattern"
+    height={8}
+    width={8}
+    stroke="hsl(217, 91%, 60%)"
+    strokeWidth={2}
+    orientation={["diagonal"]}
+  />
+  <Grid horizontal />
+  <Bar dataKey="revenue" fill="url(#barPattern)" stroke="hsl(217, 91%, 60%)" lineCap={4} />
+  <BarXAxis />
+  <ChartTooltip />
+</BarChart>`}>
+  <BarChartPatternDemo />
+</ComponentShowcase>
+
+### Available Fills
+
+**Gradients** (from `@visx/gradient`):
+- `LinearGradient` - Custom linear gradient with `from`, `to`, and optional `fromOpacity`/`toOpacity`
+- `RadialGradient` - Radial gradient with `from`, `to`, and `r` (radius)
+- Pre-built: `GradientDarkgreenGreen`, `GradientOrangeRed`, `GradientPinkBlue`, `GradientPurpleTeal`, `GradientTealBlue`, etc.
+
+**Patterns** (from `@visx/pattern`):
+- `PatternLines` - Diagonal, horizontal, or vertical lines
+- `PatternCircles` - Dot pattern
+- `PatternHexagons` - Hexagonal pattern
+- `PatternWaves` - Wave pattern
+
+## Components
+
+### BarChart
+
+The root component that provides context to all children.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `Record<string, unknown>[]` | required | Array of data points |
+| `xDataKey` | `string` | `"name"` | Key in data for categorical axis values |
+| `margin` | `Partial<Margin>` | `{ top: 40, right: 40, bottom: 40, left: 40 }` | Chart margins |
+| `animationDuration` | `number` | `1100` | Animation duration in ms |
+| `aspectRatio` | `string` | `"2 / 1"` | CSS aspect ratio |
+| `barGap` | `number` | `0.2` | Gap between bar groups (0-1 fraction of band width) |
+| `barWidth` | `number` | - | Fixed bar width in pixels (auto-sizes if not set) |
+| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Bar chart orientation |
+| `stacked` | `boolean` | `false` | Stack bars instead of grouping them |
+| `stackGap` | `number` | `0` | Gap between stacked bar segments in pixels |
+| `className` | `string` | `""` | Additional CSS class |
+
+### Bar
+
+Renders a bar for each data point with configurable styling and animations.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `dataKey` | `string` | required | Key in data for values |
+| `fill` | `string` | `var(--chart-line-primary)` | Bar fill color (can be gradient/pattern url) |
+| `stroke` | `string` | - | Tooltip dot color. Use when fill is a gradient/pattern |
+| `lineCap` | `"round" \| "butt" \| number` | `"round"` | Bar end cap style or custom radius |
+| `animate` | `boolean` | `true` | Enable animation |
+| `animationType` | `"grow" \| "fade"` | `"grow"` | Animation style |
+| `fadedOpacity` | `number` | `0.3` | Opacity when another bar is hovered |
+| `staggerDelay` | `number` | auto | Delay between bars (auto-calculated based on bar count) |
+| `stackGap` | `number` | `0` | Gap between stacked bars in pixels |
+
+### BarXAxis
+
+Displays categorical labels along the x-axis (for vertical bar charts).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tickerHalfWidth` | `number` | `50` | Width of ticker for fade calculation |
+| `showAllLabels` | `boolean` | `false` | Show all labels (may crowd) |
+| `maxLabels` | `number` | `12` | Maximum labels to show |
+
+### BarYAxis
+
+Displays categorical labels along the y-axis (for horizontal bar charts).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showAllLabels` | `boolean` | `true` | Show all labels |
+| `maxLabels` | `number` | `20` | Maximum labels to show |
+
+### Grid
+
+The Grid component now supports `fadeVertical` for vertical grid lines.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `horizontal` | `boolean` | `true` | Show horizontal grid lines |
+| `vertical` | `boolean` | `false` | Show vertical grid lines |
+| `fadeHorizontal` | `boolean` | `true` | Fade horizontal lines at left/right edges |
+| `fadeVertical` | `boolean` | `false` | Fade vertical lines at top/bottom edges |
+
+## Animation
+
+Bars animate with the same easing as Line charts (`cubic-bezier(0.85, 0, 0.15, 1)`) for a smooth, organic feel. The stagger delay is automatically calculated based on the number of bars to ensure all animations complete within the total animation duration (~1.2s).
+
+### Grow Animation (Default)
+
+Bars grow from zero to their final size:
+
+```tsx
+<Bar dataKey="revenue" animationType="grow" />
+```
+
+### Fade Animation
+
+Bars fade in with a blur effect:
+
+```tsx
+<Bar dataKey="revenue" animationType="fade" />
+```
+
+### Custom Stagger
+
+Stagger is calculated automatically, but you can override it:
+
+```tsx
+// Override automatic stagger with custom delay
+<Bar dataKey="revenue" staggerDelay={0.02} />
+
+// No stagger (all bars animate together)
+<Bar dataKey="revenue" staggerDelay={0} />
+```
+
+## Line Cap Styles
+
+Control the bar end style:
+
+```tsx
+// Rounded caps (default) - full rounding
+<Bar dataKey="revenue" lineCap="round" />
+
+// Square caps - no rounding
+<Bar dataKey="revenue" lineCap="butt" />
+
+// Custom radius in pixels
+<Bar dataKey="revenue" lineCap={4} />
+<Bar dataKey="revenue" lineCap={8} />
+```
+
+## Examples
+
+### Stacked with Legend
+
+```tsx
+<div>
+  <BarChart data={data} xDataKey="month" stacked>
+    <Grid horizontal />
+    <Bar dataKey="desktop" fill="hsl(217, 91%, 60%)" lineCap={4} />
+    <Bar dataKey="mobile" fill="hsl(217, 91%, 75%)" lineCap={4} />
+    <BarXAxis />
+  </BarChart>
+  <Legend className="mt-4 justify-center">
+    <LegendItemComponent dataKey="desktop">
+      <LegendMarker />
+      <LegendLabel>Desktop</LegendLabel>
+    </LegendItemComponent>
+    <LegendItemComponent dataKey="mobile">
+      <LegendMarker />
+      <LegendLabel>Mobile</LegendLabel>
+    </LegendItemComponent>
+  </Legend>
+</div>
+```
+
+### Narrow Gaps
+
+```tsx
+<BarChart data={data} xDataKey="month" barGap={0.1}>
+  <Bar dataKey="revenue" fill="var(--chart-line-primary)" />
+  <BarXAxis />
+</BarChart>
+```
+
+### Custom Tooltip
+
+```tsx
+<BarChart data={data} xDataKey="month">
+  <Grid horizontal />
+  <Bar dataKey="revenue" fill="var(--chart-line-primary)" />
+  <BarXAxis />
+  <ChartTooltip
+    rows={(point) => [
+      {
+        color: "var(--chart-line-primary)",
+        label: "Revenue",
+        value: `$${point.revenue?.toLocaleString()}`,
+      },
+    ]}
+  />
+</BarChart>
+```
+
+### Dashboard Metrics Card
+
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, BarXAxis } from "@bklitui/ui/charts";
+
+export function MetricsCard({ title, data, dataKey, color }) {
+  const total = data.reduce((sum, d) => sum + (d[dataKey] ?? 0), 0);
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        <div className="text-2xl font-bold">
+          ${total.toLocaleString()}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <BarChart
+          data={data}
+          xDataKey="month"
+          aspectRatio="3 / 1"
+          margin={{ top: 5, right: 5, bottom: 20, left: 5 }}
+        >
+          <Bar dataKey={dataKey} fill={color} lineCap="round" />
+          <BarXAxis maxLabels={6} />
+        </BarChart>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## Theming
+
+The Bar Chart uses the same CSS variables as other charts:
+
+```css
+:root {
+  --chart-background: oklch(1 0 0);
+  --chart-foreground: oklch(0.145 0.004 285);
+  --chart-foreground-muted: oklch(0.55 0.014 260);
+  --chart-line-primary: oklch(0.623 0.214 255);
+  --chart-line-secondary: oklch(0.705 0.015 265);
+  --chart-crosshair: oklch(0.4 0.1828 274.34);
+  --chart-grid: oklch(0.9 0 0);
+}
+
+.dark {
+  --chart-background: oklch(0.145 0 0);
+  --chart-foreground: oklch(0.45 0 0);
+  --chart-crosshair: oklch(0.45 0 0);
+  --chart-grid: oklch(0.25 0 0);
+}
+```
+
+## Dependencies
+
+This component requires the same packages as the other charts:
+
+```bash
+pnpm add @visx/shape @visx/scale @visx/responsive @visx/event @visx/grid d3-array motion react-use-measure
+```

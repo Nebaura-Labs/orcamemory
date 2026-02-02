@@ -1,12 +1,16 @@
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
 import { emailOTPClient, organizationClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-import { env } from "@moltcity/env/web";
 
-// Use Convex site URL for auth (where Better Auth runs)
-const baseUrl = env.VITE_CONVEX_SITE_URL;
+// Use frontend origin - auth requests go through the SSR proxy at /api/auth/*
+const resolveBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return "";
+};
 
 export const authClient = createAuthClient({
-  baseURL: baseUrl ? `${baseUrl}/api/auth` : undefined,
+  baseURL: `${resolveBaseUrl()}/api/auth`,
   plugins: [convexClient(), emailOTPClient(), organizationClient()],
 });

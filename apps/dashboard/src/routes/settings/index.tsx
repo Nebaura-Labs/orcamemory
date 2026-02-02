@@ -246,7 +246,7 @@ function SettingsForm({ projectId }: { projectId: Id<"projects"> }) {
 							API Endpoint
 						</Label>
 						<div className="rounded-md bg-muted px-3 py-2 font-mono text-sm">
-							https://api.orcamemory.com/v1
+							https://orcamemory.com/v1
 						</div>
 					</div>
 				</CardContent>

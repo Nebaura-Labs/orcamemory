@@ -1,11 +1,22 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "quill",
+  "name": "OrcaMemory",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#5AABF0",
+    "light": "#7BBFF5",
+    "dark": "#3A8BD0"
+  },
+  "background": {
+    "style": "grid"
+  },
+  "font": {
+    "headings": {
+      "family": "Geist"
+    },
+    "body": {
+      "family": "Geist"
+    }
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -71,14 +82,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Discord",
+          "href": "https://discord.gg/gVWzPuWa3N",
+          "icon": "discord"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/Nebaura-Labs/orcamemory",
+          "icon": "github"
         }
       ]
     }
@@ -91,32 +102,33 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@orcamemory.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.orcamemory.com"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/orcamemory",
+      "github": "https://github.com/Nebaura-Labs/orcamemory",
+      "discord": "https://discord.gg/gVWzPuWa3N"
     }
-  }
+  },
+  "rounded": "sharp"
 }

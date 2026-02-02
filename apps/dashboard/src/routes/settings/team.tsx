@@ -20,7 +20,7 @@ function TeamPage() {
 		if (isPending) {
 			return;
 		}
-		if (!organizations?.length) {
+		if (organizations != null && organizations.length === 0) {
 			navigate({ to: "/onboarding" });
 		}
 	}, [isPending, navigate, organizations]);

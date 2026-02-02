@@ -1,7 +1,6 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router"
 import { useQuery, useMutation } from "convex/react"
 import {
-  ArrowLeft,
   Bot,
   Calendar,
   Tag,
@@ -17,6 +16,14 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -89,9 +96,8 @@ function MemoryDetailPage() {
       <main className="flex-1 p-6">
         <div className="flex flex-col items-center justify-center py-12">
           <p className="text-muted-foreground">Memory not found</p>
-          <Button variant="outline" className="mt-4" onClick={() => navigate({ to: "/memories" })}>
-            <ArrowLeft className="mr-2 size-4" />
-            Back to Memories
+          <Button variant="outline" className="mt-4" asChild>
+            <Link to="/memories">Back to Memories</Link>
           </Button>
         </div>
       </main>
@@ -114,17 +120,19 @@ function MemoryDetailPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon-sm" onClick={() => navigate({ to: "/memories" })}>
-              <ArrowLeft className="size-4" />
-            </Button>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">Memory Details</h1>
-              <p className="text-muted-foreground text-sm">
-                View complete memory information
-              </p>
-            </div>
-          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/memories">Memories</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Details</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
           <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
             <DialogTrigger asChild>

@@ -87,9 +87,10 @@ export function ProjectSwitcher({ onProjectChange }: ProjectSwitcherProps) {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2">
+        <DropdownMenuItem className="gap-2" disabled>
           <Plus className="size-4" />
           <span>Create project</span>
+          <span className="ml-auto text-muted-foreground text-xs">Soon</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

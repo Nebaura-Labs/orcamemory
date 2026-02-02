@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const { data: organizations, isPending } = authClient.useListOrganizations();
+  const { data: organizations, isPending: isOrgsPending } = authClient.useListOrganizations();
   const organizationId = organizations?.[0]?.id ?? "";
 
   const stats = useQuery(
@@ -39,13 +39,15 @@ function DashboardPage() {
   );
 
   useEffect(() => {
-    if (isPending) return;
-    if (!organizations?.length) {
+    // Wait for organizations to finish loading
+    if (isOrgsPending) return;
+    // Only redirect if loaded and empty (not just undefined)
+    if (organizations !== undefined && organizations.length === 0) {
       void navigate({ to: "/onboarding" });
     }
-  }, [isPending, navigate, organizations]);
+  }, [isOrgsPending, navigate, organizations]);
 
-  const isLoading = isPending || stats === undefined;
+  const isLoading = isOrgsPending || stats === undefined;
 
   return (
     <main className="flex-1 p-6">

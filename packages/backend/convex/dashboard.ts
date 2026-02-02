@@ -426,3 +426,189 @@ export const listAgentsForProject = query({
 		return agentData;
 	},
 });
+
+export const listSessionsForProject = query({
+	args: {
+		projectId: v.id("projects"),
+		limit: v.optional(v.number()),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("Unauthorized");
+		}
+
+		const project = await ctx.db.get(args.projectId);
+		if (!project || project.createdBy !== identity.subject) {
+			throw new Error("Project not found");
+		}
+
+		const limit = Math.min(args.limit ?? 50, 100);
+
+		const sessions = await ctx.db
+			.query("sessions")
+			.withIndex("projectId", (q) => q.eq("projectId", args.projectId))
+			.order("desc")
+			.take(limit);
+
+		// Get unique agent IDs
+		const agentIds = [...new Set(sessions.map((s) => s.agentId))];
+		const agentsData = await Promise.all(agentIds.map((id) => ctx.db.get(id)));
+		const agentMap = new Map(
+			agentsData.filter(Boolean).map((a) => [a!._id, a!.name])
+		);
+
+		// Get event counts and token usage for each session
+		const sessionData = await Promise.all(
+			sessions.map(async (session) => {
+				const events = await ctx.db
+					.query("sessionEvents")
+					.withIndex("sessionId", (q) => q.eq("sessionId", session._id))
+					.collect();
+
+				const memories = await ctx.db
+					.query("memories")
+					.withIndex("projectId", (q) => q.eq("projectId", args.projectId))
+					.filter((q) => q.eq(q.field("sessionId"), session._id))
+					.collect();
+
+				const totalTokens = events.reduce(
+					(sum, e) => sum + (e.tokensTotal ?? 0),
+					0
+				);
+
+				return {
+					_id: session._id,
+					name: session.name,
+					model: session.model ?? null,
+					agentId: session.agentId,
+					agentName: agentMap.get(session.agentId) ?? "Unknown",
+					eventCount: events.length,
+					memoryCount: memories.length,
+					totalTokens,
+					startedAt: session.startedAt,
+					lastActivityAt: session.lastActivityAt,
+					endedAt: session.endedAt ?? null,
+					isActive: !session.endedAt,
+				};
+			})
+		);
+
+		return sessionData;
+	},
+});
+
+export const getUsageForProject = query({
+	args: {
+		projectId: v.id("projects"),
+	},
+	handler: async (ctx, args) => {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error("Unauthorized");
+		}
+
+		const project = await ctx.db.get(args.projectId);
+		if (!project || project.createdBy !== identity.subject) {
+			throw new Error("Project not found.");
+		}
+
+		// Get organization plan for limits
+		const planDoc = await ctx.db
+			.query("organizationPlans")
+			.withIndex("organizationId", (q) =>
+				q.eq("organizationId", project.organizationId)
+			)
+			.first();
+
+		const plan = (planDoc?.plan as "surface" | "tide" | "abyss") ?? "surface";
+		const tokensUsed = planDoc?.tokensUsed ?? 0;
+		const tokensLimit = planDoc?.tokensLimit ?? 500_000;
+		const searchesUsed = planDoc?.searchesUsed ?? 0;
+		const searchesLimit = planDoc?.searchesLimit ?? 5000;
+
+		// Get agents for this project
+		const agents = await ctx.db
+			.query("agents")
+			.withIndex("projectId", (q) => q.eq("projectId", args.projectId))
+			.collect();
+
+		const agentMap = new Map(agents.map((a) => [a._id, a.name]));
+
+		// Get usage logs for this project
+		const usageLogs = await ctx.db
+			.query("usageLogs")
+			.withIndex("projectId", (q) => q.eq("projectId", args.projectId))
+			.collect();
+
+		// Aggregate by agent
+		const byAgent = new Map<
+			string,
+			{ agentId: string; agentName: string; tokens: number; searches: number }
+		>();
+		for (const log of usageLogs) {
+			const agentId = log.agentId;
+			const existing = byAgent.get(agentId) ?? {
+				agentId,
+				agentName: agentMap.get(agentId) ?? "Unknown",
+				tokens: 0,
+				searches: 0,
+			};
+			existing.tokens += log.tokens;
+			existing.searches += log.searches;
+			byAgent.set(agentId, existing);
+		}
+
+		// Aggregate by day (last 30 days)
+		const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+		const byDay = new Map<
+			string,
+			{ date: string; tokens: number; searches: number }
+		>();
+
+		for (const log of usageLogs) {
+			if (log.createdAt < thirtyDaysAgo) continue;
+			const date = new Date(log.createdAt).toISOString().split("T")[0];
+			const existing = byDay.get(date) ?? { date, tokens: 0, searches: 0 };
+			existing.tokens += log.tokens;
+			existing.searches += log.searches;
+			byDay.set(date, existing);
+		}
+
+		// Sort by date
+		const dailyUsage = [...byDay.values()].sort((a, b) =>
+			a.date.localeCompare(b.date)
+		);
+
+		// Aggregate by kind
+		const byKind = new Map<
+			string,
+			{ kind: string; tokens: number; searches: number; count: number }
+		>();
+		for (const log of usageLogs) {
+			const existing = byKind.get(log.kind) ?? {
+				kind: log.kind,
+				tokens: 0,
+				searches: 0,
+				count: 0,
+			};
+			existing.tokens += log.tokens;
+			existing.searches += log.searches;
+			existing.count += 1;
+			byKind.set(log.kind, existing);
+		}
+
+		return {
+			plan,
+			tokensUsed,
+			tokensLimit,
+			searchesUsed,
+			searchesLimit,
+			tokensPercent: Math.min(100, (tokensUsed / tokensLimit) * 100),
+			searchesPercent: Math.min(100, (searchesUsed / searchesLimit) * 100),
+			agentUsage: [...byAgent.values()].sort((a, b) => b.tokens - a.tokens),
+			dailyUsage,
+			kindUsage: [...byKind.values()].sort((a, b) => b.tokens - a.tokens),
+		};
+	},
+});

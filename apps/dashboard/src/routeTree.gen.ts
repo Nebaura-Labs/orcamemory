@@ -14,6 +14,8 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as OtpRouteImport } from './routes/otp'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UsageIndexRouteImport } from './routes/usage/index'
+import { Route as SessionsIndexRouteImport } from './routes/sessions/index'
 import { Route as MemoriesIndexRouteImport } from './routes/memories/index'
 import { Route as AnalyticsIndexRouteImport } from './routes/analytics/index'
 import { Route as AgentsIndexRouteImport } from './routes/agents/index'
@@ -53,6 +55,16 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsageIndexRoute = UsageIndexRouteImport.update({
+  id: '/usage/',
+  path: '/usage/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessionsIndexRoute = SessionsIndexRouteImport.update({
+  id: '/sessions/',
+  path: '/sessions/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoriesIndexRoute = MemoriesIndexRouteImport.update({
@@ -143,6 +155,8 @@ export interface FileRoutesByFullPath {
   '/agents/': typeof AgentsIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
   '/memories/': typeof MemoriesIndexRoute
+  '/sessions/': typeof SessionsIndexRoute
+  '/usage/': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -165,6 +179,8 @@ export interface FileRoutesByTo {
   '/agents': typeof AgentsIndexRoute
   '/analytics': typeof AnalyticsIndexRoute
   '/memories': typeof MemoriesIndexRoute
+  '/sessions': typeof SessionsIndexRoute
+  '/usage': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -188,6 +204,8 @@ export interface FileRoutesById {
   '/agents/': typeof AgentsIndexRoute
   '/analytics/': typeof AnalyticsIndexRoute
   '/memories/': typeof MemoriesIndexRoute
+  '/sessions/': typeof SessionsIndexRoute
+  '/usage/': typeof UsageIndexRoute
   '/api/agents/connect': typeof ApiAgentsConnectRoute
   '/api/agents/health': typeof ApiAgentsHealthRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -212,6 +230,8 @@ export interface FileRouteTypes {
     | '/agents/'
     | '/analytics/'
     | '/memories/'
+    | '/sessions/'
+    | '/usage/'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -234,6 +254,8 @@ export interface FileRouteTypes {
     | '/agents'
     | '/analytics'
     | '/memories'
+    | '/sessions'
+    | '/usage'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -256,6 +278,8 @@ export interface FileRouteTypes {
     | '/agents/'
     | '/analytics/'
     | '/memories/'
+    | '/sessions/'
+    | '/usage/'
     | '/api/agents/connect'
     | '/api/agents/health'
     | '/api/auth/$'
@@ -279,6 +303,8 @@ export interface RootRouteChildren {
   AgentsIndexRoute: typeof AgentsIndexRoute
   AnalyticsIndexRoute: typeof AnalyticsIndexRoute
   MemoriesIndexRoute: typeof MemoriesIndexRoute
+  SessionsIndexRoute: typeof SessionsIndexRoute
+  UsageIndexRoute: typeof UsageIndexRoute
   ApiAgentsConnectRoute: typeof ApiAgentsConnectRoute
   ApiAgentsHealthRoute: typeof ApiAgentsHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -325,6 +351,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/usage/': {
+      id: '/usage/'
+      path: '/usage'
+      fullPath: '/usage/'
+      preLoaderRoute: typeof UsageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sessions/': {
+      id: '/sessions/'
+      path: '/sessions'
+      fullPath: '/sessions/'
+      preLoaderRoute: typeof SessionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memories/': {
@@ -447,6 +487,8 @@ const rootRouteChildren: RootRouteChildren = {
   AgentsIndexRoute: AgentsIndexRoute,
   AnalyticsIndexRoute: AnalyticsIndexRoute,
   MemoriesIndexRoute: MemoriesIndexRoute,
+  SessionsIndexRoute: SessionsIndexRoute,
+  UsageIndexRoute: UsageIndexRoute,
   ApiAgentsConnectRoute: ApiAgentsConnectRoute,
   ApiAgentsHealthRoute: ApiAgentsHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

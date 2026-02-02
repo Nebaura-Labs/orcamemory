@@ -1,0 +1,86 @@
+---
+title: API Overview
+description: Integrate Orca Memory directly via API
+---
+
+## Base URL
+
+All API requests use the following base URL:
+
+```
+https://app.orcamemory.com/api/v1
+```
+
+For self-hosted deployments, replace with your own domain.
+
+## Authentication
+
+All API endpoints require authentication via API key. Include your credentials in the headers:
+
+```bash
+X-Key-Id: omk_your_key_id
+X-Api-Key: oms_your_api_key
+```
+
+Get your credentials from the dashboard at **Link Agent** or **Settings → General**.
+
+## Plugin vs Direct API
+
+Most users don't need to call the API directly. The [OpenClaw plugin](https://docs.openclaw.ai/plugin#plugins) handles everything automatically:
+
+- **Auto-Recall** - Fetches relevant memories before each turn
+- **Auto-Capture** - Stores important info after each turn
+- **Tools** - Your Claw can call `orca_memory_store`, `orca_memory_search`, etc.
+
+Use the direct API only if you're building custom integrations or non-OpenClaw applications.
+
+## Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/memory/store` | Store a new memory |
+| `POST` | `/memory/search` | Search memories semantically |
+| `POST` | `/memory/recent` | Get recent memories |
+| `DELETE` | `/memory/:id` | Delete a memory |
+
+## Response Format
+
+All responses are JSON:
+
+```json
+{
+  "success": true,
+  "data": { ... }
+}
+```
+
+Error responses:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid API key"
+  }
+}
+```
+
+## Rate Limits
+
+Rate limits are based on your plan's token and search quotas:
+
+| Plan | Tokens/month | Searches/month |
+|------|--------------|----------------|
+| Surface | 500K | 5K |
+| Tide | 5M | 200K |
+| Abyss | 25M | 2M |
+
+<CardGroup cols={2}>
+  <Card title="Memories API" icon="brain" href="/api-reference/memories">
+    Store, search, and delete memories
+  </Card>
+  <Card title="Sessions API" icon="clock" href="/api-reference/sessions">
+    Manage conversation sessions
+  </Card>
+</CardGroup>

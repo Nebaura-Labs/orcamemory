@@ -1,0 +1,150 @@
+---
+title: Docker Deployment
+description: Deploy Orca Memory using Docker
+---
+
+## Quick Start
+
+The fastest way to self-host Orca Memory is with Docker Compose.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Nebaura-Labs/orcamemory.git
+cd orcamemory
+```
+
+### 2. Configure Environment
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your configuration. See [Environment Variables](/self-hosting/environment) for all options.
+
+### 3. Start Services
+
+```bash
+docker-compose up -d
+```
+
+This starts:
+- Dashboard (port 3000)
+- Embeddings service (port 8000)
+
+### 4. Initialize Convex
+
+In a separate terminal, deploy the Convex backend:
+
+```bash
+cd packages/backend
+npx convex deploy
+```
+
+Follow the prompts to connect to your Convex project.
+
+## Docker Compose Configuration
+
+The default `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_CONVEX_URL=${CONVEX_URL}
+    restart: unless-stopped
+
+  embeddings:
+    build:
+      context: ./apps/embeddings
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+    restart: unless-stopped
+```
+
+## Production Deployment
+
+For production, consider:
+
+### Reverse Proxy
+
+Use nginx or Traefik as a reverse proxy:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name orcamemory.yourdomain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+    }
+}
+```
+
+### Health Checks
+
+The embeddings service exposes a health endpoint:
+
+```bash
+curl http://localhost:8000/health
+```
+
+### Scaling
+
+For high availability:
+- Run multiple dashboard instances behind a load balancer
+- The embeddings service can be scaled horizontally
+- Convex handles scaling automatically
+
+## Updating
+
+To update to the latest version:
+
+```bash
+git pull origin main
+docker-compose build
+docker-compose up -d
+```
+
+Then update Convex:
+
+```bash
+cd packages/backend
+npx convex deploy
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Container won't start">
+    Check logs with `docker-compose logs -f`. Common issues:
+    - Missing environment variables
+    - Port conflicts
+    - Insufficient memory
+  </Accordion>
+  <Accordion title="Can't connect to Convex">
+    Ensure your `CONVEX_URL` is correct and the Convex project is deployed.
+  </Accordion>
+  <Accordion title="Embeddings service slow">
+    The first request loads the model into memory. Subsequent requests are faster. Consider a GPU-enabled instance for better performance.
+  </Accordion>
+</AccordionGroup>

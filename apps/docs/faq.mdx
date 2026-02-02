@@ -1,0 +1,127 @@
+---
+title: FAQ
+description: Frequently asked questions about Orca Memory
+---
+
+## General
+
+<AccordionGroup>
+  <Accordion title="What is Orca Memory?">
+    Orca Memory is a memory plugin for [OpenClaw](https://openclaw.ai). It enables your Claw to remember context across sessions - your preferences, past decisions, code patterns, and project knowledge.
+  </Accordion>
+  
+  <Accordion title="How does it work with OpenClaw?">
+    Orca Memory is an [OpenClaw plugin](https://docs.openclaw.ai/plugin#plugins). Once installed and configured, it:
+    - **Auto-Recall**: Injects relevant memories before each AI turn
+    - **Auto-Capture**: Stores important information after each turn
+    - **Tools**: Provides manual memory management tools to your Claw
+  </Accordion>
+  
+  <Accordion title="Is my data secure?">
+    Yes. All data is encrypted in transit (TLS) and at rest. We use Convex for data storage, which provides enterprise-grade security. For maximum control, you can self-host Orca Memory.
+  </Accordion>
+  
+  <Accordion title="Can I use Orca Memory offline?">
+    The cloud version requires internet connectivity. For offline use, you can self-host Orca Memory on your local network.
+  </Accordion>
+</AccordionGroup>
+
+## Cloud
+
+<AccordionGroup>
+  <Accordion title="How do I get started?">
+    1. Sign up at [app.orcamemory.com](https://app.orcamemory.com)
+    2. Create a project
+    3. Get your API keys (Key ID + API Key)
+    4. Install the Orca Memory plugin in OpenClaw
+    5. Configure with your credentials
+    
+    See the [Quickstart](/cloud/quickstart) for details.
+  </Accordion>
+  
+  <Accordion title="What happens if I hit my plan limits?">
+    On the Free plan, requests beyond the daily limit will be rejected. Consider upgrading to Tide or Abyss for higher limits.
+  </Accordion>
+  
+  <Accordion title="Can I delete my data?">
+    Yes. You can delete individual memories, entire projects, or your account. All data is permanently removed within 30 days per our retention policy.
+  </Accordion>
+  
+  <Accordion title="Do you offer a free trial of paid plans?">
+    New accounts start with a 14-day Tide trial. No credit card required.
+  </Accordion>
+</AccordionGroup>
+
+## Self-Hosting
+
+<AccordionGroup>
+  <Accordion title="What do I need to self-host?">
+    - A Convex account (free tier works)
+    - Docker and Docker Compose
+    - A server with at least 1GB RAM
+    
+    See [Requirements](/self-hosting/requirements) for full details.
+  </Accordion>
+  
+  <Accordion title="Is self-hosting free?">
+    The Orca Memory software is open source and free to self-host. You'll only pay for your own infrastructure (hosting, Convex usage if beyond free tier).
+  </Accordion>
+  
+  <Accordion title="Can I use my own embedding model?">
+    Yes. The embeddings service supports sentence-transformer models. Configure it via the `EMBEDDING_MODEL` environment variable. Default is `intfloat/e5-base-v2`.
+  </Accordion>
+  
+  <Accordion title="How do I update self-hosted Orca Memory?">
+    Pull the latest code and rebuild:
+    ```bash
+    git pull origin main
+    docker-compose build
+    docker-compose up -d
+    npx convex deploy
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My Claw isn't storing memories">
+    Check that:
+    1. The plugin is installed and enabled in OpenClaw
+    2. Your API URL, Key ID, and API Key are correct
+    3. Auto-Capture is enabled (or use tools manually)
+    4. Your plan hasn't exceeded its limits
+  </Accordion>
+  
+  <Accordion title="Auto-Recall isn't working">
+    Ensure:
+    1. Auto-Recall is enabled in plugin settings
+    2. You have existing memories stored
+    3. The conversation has enough context for semantic matching
+    4. Check `maxRecallResults` isn't set to 0
+  </Accordion>
+  
+  <Accordion title="Search isn't returning relevant results">
+    Semantic search works best with:
+    - Descriptive, natural language queries
+    - Memories that have clear, detailed content
+    - Appropriate tags for filtering
+    
+    Try rephrasing your query or lowering the similarity threshold.
+  </Accordion>
+  
+  <Accordion title="I'm getting rate limited">
+    If you're hitting rate limits:
+    - Surface (Free): 500K tokens, 5K searches/month
+    - Upgrade to Tide or Abyss for higher limits
+    - Consider reducing `profileFrequency` to inject less often
+  </Accordion>
+</AccordionGroup>
+
+## Contact
+
+Still have questions? Reach out:
+
+- **Discord**: [Join our community](https://discord.gg/gVWzPuWa3N)
+- **Email**: support@orcamemory.com
+- **GitHub**: [Open an issue](https://github.com/Nebaura-Labs/orcamemory/issues)

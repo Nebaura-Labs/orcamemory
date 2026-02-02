@@ -1,0 +1,76 @@
+---
+title: Quickstart
+description: Get started with Orca Memory Cloud in under 5 minutes
+---
+
+## 1. Create an Account
+
+Go to [app.orcamemory.com](https://app.orcamemory.com) and sign up with your email.
+
+## 2. Create a Project
+
+After signing in, you'll be prompted to create your first project.
+
+1. Click **Create Project**
+2. Enter a project name (e.g., "My App")
+3. Click **Create**
+
+Your project comes pre-configured with all four memory types enabled.
+
+## 3. Link Your Agent
+
+Click **Link Agent** on your project. You'll see a prompt with your credentials pre-configured.
+
+## 4. Install the Plugin
+
+<Steps>
+  <Step title="Copy the Prompt">
+    In the Link Agent dialog, click **Copy** to copy the full configuration prompt.
+  </Step>
+  <Step title="Paste into OpenClaw">
+    Paste the prompt into your OpenClaw agent's rules or system prompt. The prompt includes:
+    - Your API credentials
+    - Plugin configuration
+    - Instructions for your Claw to use memory
+  </Step>
+  <Step title="Start Coding">
+    Your Claw now has memory! It will automatically store and retrieve context as you work.
+  </Step>
+</Steps>
+
+That's it. The prompt handles everything.
+
+## Plugin Settings
+
+These settings are pre-configured in the prompt, but can be adjusted:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `autoRecall` | `true` | Inject relevant memories before every AI turn |
+| `autoCapture` | `true` | Automatically store important information after each turn |
+| `maxRecallResults` | `10` | Maximum memories injected per turn |
+| `profileFrequency` | `1` | Inject memory profile every N turns |
+| `captureMode` | `all` | `all` filters noise, `everything` captures all |
+| `debug` | `false` | Enable debug logging |
+
+## Available Tools
+
+Once installed, your Claw has access to these tools:
+
+| Tool | Description |
+|------|-------------|
+| `orca_memory_store` | Manually store a memory |
+| `orca_memory_search` | Search existing memories |
+| `orca_memory_forget` | Delete a specific memory |
+| `orca_memory_profile` | View the current memory profile |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Guide" icon="gauge" href="/cloud/dashboard">
+    Learn how to manage memories and view analytics
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Integrate Orca Memory directly via API
+  </Card>
+</CardGroup>

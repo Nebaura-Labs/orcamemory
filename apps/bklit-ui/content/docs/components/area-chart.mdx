@@ -1,0 +1,360 @@
+---
+title: Area Chart
+description: A composable area chart with gradient fills, tooltips, and hover interactions
+---
+
+import { AreaChart, Area, Grid, XAxis, ChartTooltip } from "@bklitui/ui/charts";
+import { AreaTooltipDemo } from "@/components/docs/area-tooltip-demo";
+
+export const chartData = [
+  { date: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000), revenue: 12000, costs: 8500 },
+  { date: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000), revenue: 13500, costs: 9200 },
+  { date: new Date(Date.now() - 27 * 24 * 60 * 60 * 1000), revenue: 11000, costs: 7800 },
+  { date: new Date(Date.now() - 26 * 24 * 60 * 60 * 1000), revenue: 14500, costs: 10100 },
+  { date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000), revenue: 13800, costs: 9400 },
+  { date: new Date(Date.now() - 24 * 24 * 60 * 60 * 1000), revenue: 15200, costs: 10800 },
+  { date: new Date(Date.now() - 23 * 24 * 60 * 60 * 1000), revenue: 16000, costs: 11200 },
+  { date: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000), revenue: 14800, costs: 10500 },
+  { date: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000), revenue: 15500, costs: 10900 },
+  { date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), revenue: 14200, costs: 9800 },
+  { date: new Date(Date.now() - 19 * 24 * 60 * 60 * 1000), revenue: 16800, costs: 11800 },
+  { date: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000), revenue: 17500, costs: 12400 },
+  { date: new Date(Date.now() - 17 * 24 * 60 * 60 * 1000), revenue: 16200, costs: 11500 },
+  { date: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000), revenue: 15800, costs: 11200 },
+  { date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), revenue: 17200, costs: 12100 },
+  { date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), revenue: 18500, costs: 13200 },
+  { date: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000), revenue: 17800, costs: 12600 },
+  { date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000), revenue: 16500, costs: 11700 },
+  { date: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000), revenue: 19200, costs: 13800 },
+  { date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), revenue: 18800, costs: 13400 },
+  { date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000), revenue: 17500, costs: 12400 },
+  { date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000), revenue: 19800, costs: 14200 },
+  { date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), revenue: 20500, costs: 14800 },
+  { date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), revenue: 19200, costs: 13600 },
+  { date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), revenue: 21000, costs: 15200 },
+  { date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), revenue: 21800, costs: 15800 },
+  { date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), revenue: 20500, costs: 14600 },
+  { date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), revenue: 22500, costs: 16200 },
+  { date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), revenue: 23200, costs: 16800 },
+  { date: new Date(), revenue: 24000, costs: 17400 },
+];
+
+## Preview
+
+<ComponentPreview>
+  <div className="w-full">
+    <AreaChart data={chartData}>
+      <Grid horizontal />
+      <Area dataKey="revenue" fill="var(--chart-line-primary)" fillOpacity={0.3} fadeEdges />
+      <Area dataKey="costs" fill="var(--chart-line-secondary)" fillOpacity={0.3} fadeEdges />
+      <XAxis />
+      <AreaTooltipDemo />
+    </AreaChart>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+import { AreaChart, Area, Grid, XAxis, ChartTooltip } from "@bklitui/ui/charts";
+```
+
+## Usage
+
+The Area Chart uses the same composable API as the Line Chart. Build charts by combining components:
+
+```tsx
+import { AreaChart, Area, Grid, XAxis, ChartTooltip } from "@bklitui/ui/charts";
+
+const data = [
+  { date: new Date("2025-01-01"), revenue: 12000, costs: 8500 },
+  { date: new Date("2025-01-02"), revenue: 13500, costs: 9200 },
+  // ... more data
+];
+
+export default function RevenueChart() {
+  return (
+    <AreaChart data={data}>
+      <Grid horizontal />
+      <Area dataKey="revenue" fill="var(--chart-line-primary)" />
+      <Area dataKey="costs" fill="var(--chart-line-secondary)" />
+      <XAxis />
+      <ChartTooltip />
+    </AreaChart>
+  );
+}
+```
+
+## Components
+
+### AreaChart
+
+The root component that provides context to all children. It shares the same props as `LineChart`.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `Record<string, unknown>[]` | required | Array of data points |
+| `xDataKey` | `string` | `"date"` | Key in data for x-axis values |
+| `margin` | `Partial<Margin>` | `{ top: 40, right: 40, bottom: 40, left: 40 }` | Chart margins |
+| `animationDuration` | `number` | `1100` | Animation duration in ms |
+| `aspectRatio` | `string` | `"2 / 1"` | CSS aspect ratio |
+| `className` | `string` | `""` | Additional CSS class |
+
+### Area
+
+Renders a filled area on the chart with a gradient fill.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `dataKey` | `string` | required | Key in data for y values |
+| `fill` | `string` | `var(--chart-line-primary)` | Gradient fill color |
+| `fillOpacity` | `number` | `0.4` | Fill opacity at the top |
+| `stroke` | `string` | Same as `fill` | Line stroke color |
+| `strokeWidth` | `number` | `2` | Line stroke width |
+| `curve` | `CurveFactory` | `curveMonotoneX` | D3 curve function |
+| `animate` | `boolean` | `true` | Enable grow animation |
+| `showLine` | `boolean` | `true` | Show stroke line on top |
+| `showHighlight` | `boolean` | `true` | Show highlight on hover |
+| `gradientToOpacity` | `number` | `0` | Opacity at bottom of gradient |
+
+## Examples
+
+### Single Area
+
+A minimal area chart with one metric:
+
+```tsx
+<AreaChart data={data}>
+  <Area dataKey="value" fill="#3b82f6" />
+  <ChartTooltip />
+</AreaChart>
+```
+
+### Stacked Appearance
+
+Layer multiple areas to show composition. Note: This creates a visual layering effect, not true stacking:
+
+```tsx
+<AreaChart data={data}>
+  <Grid horizontal />
+  <Area
+    dataKey="total"
+    fill="var(--chart-line-primary)"
+    fillOpacity={0.2}
+  />
+  <Area
+    dataKey="completed"
+    fill="#10b981"
+    fillOpacity={0.4}
+  />
+  <XAxis />
+  <ChartTooltip />
+</AreaChart>
+```
+
+### Custom Gradient
+
+Control the gradient fade with `gradientToOpacity`:
+
+```tsx
+// Solid fill (no gradient fade)
+<Area
+  dataKey="revenue"
+  fill="#3b82f6"
+  fillOpacity={0.3}
+  gradientToOpacity={0.3}
+/>
+
+// Soft gradient (default)
+<Area
+  dataKey="revenue"
+  fill="#3b82f6"
+  fillOpacity={0.4}
+  gradientToOpacity={0}
+/>
+
+// Strong contrast gradient
+<Area
+  dataKey="revenue"
+  fill="#3b82f6"
+  fillOpacity={0.6}
+  gradientToOpacity={0.05}
+/>
+```
+
+### Area Without Stroke Line
+
+Hide the top line for a softer appearance:
+
+```tsx
+<AreaChart data={data}>
+  <Area
+    dataKey="value"
+    fill="var(--chart-line-primary)"
+    fillOpacity={0.5}
+    showLine={false}
+  />
+  <ChartTooltip />
+</AreaChart>
+```
+
+### Different Curves
+
+The Area component supports different curve interpolations:
+
+```tsx
+import { curveMonotoneX, curveLinear, curveStep, curveBasis } from "@visx/curve";
+
+// Smooth monotonic (default) - prevents overshooting
+<Area dataKey="value" curve={curveMonotoneX} />
+
+// Linear - straight lines between points
+<Area dataKey="value" curve={curveLinear} />
+
+// Step - discrete steps
+<Area dataKey="value" curve={curveStep} />
+
+// Basis - very smooth, may not pass through points
+<Area dataKey="value" curve={curveBasis} />
+```
+
+### With Custom Tooltip
+
+```tsx
+<AreaChart data={data}>
+  <Grid horizontal />
+  <Area dataKey="revenue" fill="var(--chart-line-primary)" />
+  <XAxis />
+  <ChartTooltip
+    rows={(point) => [
+      {
+        color: "var(--chart-line-primary)",
+        label: "Revenue",
+        value: `$${point.revenue?.toLocaleString()}`,
+      },
+    ]}
+  />
+</AreaChart>
+```
+
+### Dashboard Metrics Card
+
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AreaChart, Area, ChartTooltip } from "@bklitui/ui/charts";
+
+export function MetricsCard({ title, data, dataKey, color }) {
+  const latestValue = data[data.length - 1]?.[dataKey] ?? 0;
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        <div className="text-2xl font-bold">
+          ${latestValue.toLocaleString()}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <AreaChart
+          data={data}
+          aspectRatio="3 / 1"
+          margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
+        >
+          <Area
+            dataKey={dataKey}
+            fill={color}
+            fillOpacity={0.3}
+            strokeWidth={1.5}
+            showHighlight={false}
+          />
+          <ChartTooltip showDatePill={false} />
+        </AreaChart>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Comparison Chart
+
+Compare two time series with different colored areas:
+
+```tsx
+<AreaChart data={comparisonData}>
+  <Grid horizontal />
+  <Area
+    dataKey="thisYear"
+    fill="var(--chart-line-primary)"
+    fillOpacity={0.4}
+    strokeWidth={2}
+  />
+  <Area
+    dataKey="lastYear"
+    fill="var(--chart-line-secondary)"
+    fillOpacity={0.2}
+    strokeWidth={1.5}
+  />
+  <XAxis />
+  <ChartTooltip
+    rows={(point) => [
+      { color: "var(--chart-line-primary)", label: "This Year", value: point.thisYear },
+      { color: "var(--chart-line-secondary)", label: "Last Year", value: point.lastYear },
+    ]}
+  />
+</AreaChart>
+```
+
+## Combining with Line Chart
+
+You can mix `Area` and `Line` components in the same chart using the `LineChart` container:
+
+```tsx
+import { LineChart, Line, Area, Grid, ChartTooltip } from "@bklitui/ui/charts";
+
+<LineChart data={data}>
+  <Grid horizontal />
+  {/* Background area for context */}
+  <Area
+    dataKey="baseline"
+    fill="var(--chart-grid)"
+    fillOpacity={0.3}
+    showLine={false}
+  />
+  {/* Main line for the primary metric */}
+  <Line dataKey="actual" stroke="var(--chart-line-primary)" />
+  <ChartTooltip />
+</LineChart>
+```
+
+## Theming
+
+The Area Chart uses the same CSS variables as the Line Chart:
+
+```css
+:root {
+  --chart-background: oklch(1 0 0);
+  --chart-foreground: oklch(0.145 0.004 285);
+  --chart-foreground-muted: oklch(0.55 0.014 260);
+  --chart-line-primary: oklch(0.623 0.214 255);
+  --chart-line-secondary: oklch(0.705 0.015 265);
+  --chart-crosshair: oklch(0.4 0.1828 274.34);
+  --chart-grid: oklch(0.9 0 0);
+}
+
+.dark {
+  --chart-background: oklch(0.145 0 0);
+  --chart-foreground: oklch(0.45 0 0);
+  --chart-crosshair: oklch(0.45 0 0);
+  --chart-grid: oklch(0.25 0 0);
+}
+```
+
+## Dependencies
+
+This component requires the same packages as the Line Chart:
+
+```bash
+pnpm add @visx/shape @visx/curve @visx/scale @visx/gradient @visx/responsive @visx/event @visx/grid d3-array motion react-use-measure
+```

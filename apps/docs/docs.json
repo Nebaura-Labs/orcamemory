@@ -1,0 +1,129 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "Orca Memory",
+  "colors": {
+    "primary": "#5AABF0",
+    "light": "#7BBFF5",
+    "dark": "#3A8BD0"
+  },
+  "background": {
+    "style": "grid"
+  },
+  "font": {
+    "headings": {
+      "family": "Geist"
+    },
+    "body": {
+      "family": "Geist"
+    }
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "concepts"
+            ]
+          },
+          {
+            "group": "Cloud",
+            "pages": [
+              "cloud/quickstart",
+              "cloud/dashboard",
+              "cloud/pricing"
+            ]
+          },
+          {
+            "group": "Self-Hosting",
+            "pages": [
+              "self-hosting/requirements",
+              "self-hosting/docker",
+              "self-hosting/environment"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/memories",
+              "api-reference/sessions"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Discord",
+          "href": "https://discord.gg/gVWzPuWa3N",
+          "icon": "discord"
+        },
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/Nebaura-Labs/orcamemory",
+          "icon": "github"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@orcamemory.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.orcamemory.com"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/orcamemory",
+      "github": "https://github.com/Nebaura-Labs/orcamemory",
+      "discord": "https://discord.gg/gVWzPuWa3N"
+    }
+  },
+  "rounded": "sharp"
+}

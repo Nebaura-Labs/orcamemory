@@ -4,6 +4,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@media (prefers-color-scheme: dark) {
+  .dark-icon {
+    color: var(--primary);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .dark-icon {
+    color: var(--foreground);
+  }
+}
+
 :root {
   --background: oklch(0.9900 0 0);
   --foreground: oklch(0 0 0);
@@ -40,7 +52,7 @@
   --font-sans: Geist, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
-  --radius: 0.5rem;
+  --radius: 0rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
   --shadow-blur: 2px;
@@ -149,7 +161,7 @@
   --chart-3: oklch(0.5033 0.0839 219.7091);
   --chart-4: oklch(0.4209 0.0680 218.1217);
   --chart-5: oklch(0.3320 0.0517 219.3544);
-  --sidebar: oklch(0.1591 0 0);
+  --sidebar: oklch(0.1400 0 0);
   --sidebar-foreground: oklch(1 0 0);
   --sidebar-primary: oklch(1 0 0);
   --sidebar-primary-foreground: oklch(0 0 0);
@@ -339,5 +351,14 @@ input:-webkit-autofill:active {
 @media (prefers-color-scheme: dark) {
   .waitlist-input {
     background-color: rgb(0 0 0 / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

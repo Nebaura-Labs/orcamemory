@@ -1,0 +1,75 @@
+---
+title: Requirements
+description: What you need to self-host Orca Memory
+---
+
+## Overview
+
+Orca Memory is built on modern infrastructure that you can deploy to your own environment. This guide covers what you'll need.
+
+## Stack
+
+Orca Memory consists of:
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Dashboard | React + Vite | Web interface |
+| Backend | Convex | Database, auth, real-time |
+| Embeddings | Python + FastAPI | Vector embeddings for search |
+| Auth | Better Auth | Authentication |
+
+## Prerequisites
+
+### Convex Account
+
+Orca Memory uses [Convex](https://convex.dev) as its backend. You'll need:
+
+1. A Convex account (free tier available)
+2. A new Convex project for Orca Memory
+
+Convex handles:
+- Database storage
+- Real-time subscriptions
+- Serverless functions
+- File storage
+
+### Embedding Service
+
+For semantic search, you need an embedding service. Options:
+
+- **Self-hosted** - Run our Python embeddings service
+- **OpenAI** - Use OpenAI's embedding API
+- **Other providers** - Any service that returns vector embeddings
+
+### Domain & SSL
+
+For production deployment:
+- A domain name
+- SSL certificate (use Let's Encrypt or your provider)
+
+## Hardware Requirements
+
+### Minimum (Development)
+
+- 1 CPU core
+- 1 GB RAM
+- 10 GB storage
+
+### Recommended (Production)
+
+- 2+ CPU cores
+- 4 GB RAM
+- 50 GB SSD storage
+
+The embeddings service is the most resource-intensive component. Consider running it on a GPU-enabled instance for better performance.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Docker Deployment" icon="docker" href="/self-hosting/docker">
+    Deploy using Docker Compose
+  </Card>
+  <Card title="Environment Variables" icon="key" href="/self-hosting/environment">
+    Configure your deployment
+  </Card>
+</CardGroup>

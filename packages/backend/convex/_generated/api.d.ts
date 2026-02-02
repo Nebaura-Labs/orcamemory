@@ -13,8 +13,10 @@ import type * as agentAuth from "../agentAuth.js";
 import type * as agents from "../agents.js";
 import type * as auth from "../auth.js";
 import type * as crons from "../crons.js";
+import type * as dashboard from "../dashboard.js";
 import type * as emails_waitlistConfirmation from "../emails/waitlistConfirmation.js";
 import type * as http from "../http.js";
+import type * as memories from "../memories.js";
 import type * as memory from "../memory.js";
 import type * as plans from "../plans.js";
 import type * as polar from "../polar.js";
@@ -22,6 +24,7 @@ import type * as polar_actions from "../polar_actions.js";
 import type * as projects from "../projects.js";
 import type * as users from "../users.js";
 import type * as waitlist from "../waitlist.js";
+import type * as workspaces from "../workspaces.js";
 
 import type {
   ApiFromModules,
@@ -35,8 +38,10 @@ declare const fullApi: ApiFromModules<{
   agents: typeof agents;
   auth: typeof auth;
   crons: typeof crons;
+  dashboard: typeof dashboard;
   "emails/waitlistConfirmation": typeof emails_waitlistConfirmation;
   http: typeof http;
+  memories: typeof memories;
   memory: typeof memory;
   plans: typeof plans;
   polar: typeof polar;
@@ -44,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   projects: typeof projects;
   users: typeof users;
   waitlist: typeof waitlist;
+  workspaces: typeof workspaces;
 }>;
 
 /**

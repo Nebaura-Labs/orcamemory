@@ -1,0 +1,191 @@
+---
+title: Sessions API
+description: Manage conversation sessions
+---
+
+## Create Session
+
+Start a new session to log a conversation.
+
+<ParamField body="agentId" type="string">
+  Optional agent identifier
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata
+</ParamField>
+
+### Request
+
+```bash
+curl -X POST https://app.orcamemory.com/api/v1/sessions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "metadata": {
+      "workspace": "my-project",
+      "branch": "main"
+    }
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "sess_xyz789",
+    "status": "active",
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+---
+
+## List Sessions
+
+Retrieve all sessions for your project.
+
+<ParamField query="status" type="string">
+  Filter by status: `active` or `completed`
+</ParamField>
+
+<ParamField query="limit" type="number" default="20">
+  Number of results
+</ParamField>
+
+### Request
+
+```bash
+curl https://app.orcamemory.com/api/v1/sessions?limit=10 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "sessions": [
+      {
+        "id": "sess_xyz789",
+        "status": "completed",
+        "messageCount": 24,
+        "createdAt": "2024-01-15T10:30:00Z",
+        "endedAt": "2024-01-15T11:45:00Z"
+      }
+    ],
+    "total": 1,
+    "hasMore": false
+  }
+}
+```
+
+---
+
+## Get Session
+
+Retrieve a specific session with full conversation transcript.
+
+### Request
+
+```bash
+curl https://app.orcamemory.com/api/v1/sessions/sess_xyz789 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "sess_xyz789",
+    "status": "completed",
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I set up authentication?",
+        "timestamp": "2024-01-15T10:30:00Z"
+      },
+      {
+        "role": "assistant",
+        "content": "I'll help you set up authentication using Better Auth...",
+        "timestamp": "2024-01-15T10:30:05Z"
+      }
+    ],
+    "metadata": {
+      "workspace": "my-project"
+    },
+    "createdAt": "2024-01-15T10:30:00Z",
+    "endedAt": "2024-01-15T11:45:00Z"
+  }
+}
+```
+
+---
+
+## Add Message
+
+Append a message to an active session.
+
+<ParamField body="role" type="string" required>
+  Message role: `user` or `assistant`
+</ParamField>
+
+<ParamField body="content" type="string" required>
+  Message content
+</ParamField>
+
+### Request
+
+```bash
+curl -X POST https://app.orcamemory.com/api/v1/sessions/sess_xyz789/messages \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "user",
+    "content": "Thanks, that worked!"
+  }'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "messageId": "msg_001",
+    "sessionId": "sess_xyz789"
+  }
+}
+```
+
+---
+
+## End Session
+
+Mark a session as completed.
+
+### Request
+
+```bash
+curl -X POST https://app.orcamemory.com/api/v1/sessions/sess_xyz789/end \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "sess_xyz789",
+    "status": "completed",
+    "endedAt": "2024-01-15T11:45:00Z"
+  }
+}
+```

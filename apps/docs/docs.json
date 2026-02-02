@@ -125,5 +125,8 @@
       "discord": "https://discord.gg/gVWzPuWa3N"
     }
   },
+  "mcp": {
+    "enabled": true
+  },
   "rounded": "sharp"
 }

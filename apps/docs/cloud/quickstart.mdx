@@ -17,55 +17,32 @@ After signing in, you'll be prompted to create your first project.
 
 Your project comes pre-configured with all four memory types enabled.
 
-## 3. Get Your API Keys
+## 3. Link Your Agent
 
-Click **Link Agent** on your project to get your credentials:
-
-- **API URL**: `https://app.orcamemory.com/api/v1`
-- **Key ID**: `omk_...`
-- **API Key**: `oms_...`
+Click **Link Agent** on your project. You'll see a prompt with your credentials pre-configured.
 
 ## 4. Install the Plugin
 
-In OpenClaw, install the Orca Memory plugin:
-
 <Steps>
-  <Step title="Open Plugin Settings">
-    Go to your OpenClaw settings and find the Plugins section.
+  <Step title="Copy the Prompt">
+    In the Link Agent dialog, click **Copy** to copy the full configuration prompt.
   </Step>
-  <Step title="Add Orca Memory">
-    Add the Orca Memory plugin from the plugin registry, or install from URL:
-    ```
-    https://app.orcamemory.com/plugins/orca-memory
-    ```
-  </Step>
-  <Step title="Configure">
-    Enter your credentials:
-    
-    | Setting | Value |
-    |---------|-------|
-    | API URL | `https://app.orcamemory.com/api/v1` |
-    | Key ID | Your `omk_...` key |
-    | API Key | Your `oms_...` secret |
-    | Auto-Recall | ✓ Enabled |
-    | Auto-Capture | ✓ Enabled |
+  <Step title="Paste into OpenClaw">
+    Paste the prompt into your OpenClaw agent's rules or system prompt. The prompt includes:
+    - Your API credentials
+    - Plugin configuration
+    - Instructions for your Claw to use memory
   </Step>
   <Step title="Start Coding">
     Your Claw now has memory! It will automatically store and retrieve context as you work.
   </Step>
 </Steps>
 
-## Environment Variables
-
-You can also configure via environment variables:
-
-```bash
-ORCA_MEMORY_API_URL=https://app.orcamemory.com/api/v1
-ORCA_MEMORY_KEY_ID=omk_...
-ORCA_MEMORY_API_KEY=oms_...
-```
+That's it. The prompt handles everything.
 
 ## Plugin Settings
+
+These settings are pre-configured in the prompt, but can be adjusted:
 
 | Setting | Default | Description |
 |---------|---------|-------------|

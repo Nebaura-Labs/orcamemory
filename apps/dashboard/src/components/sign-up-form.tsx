@@ -1,4 +1,3 @@
-import { env } from "@moltcity/env/web";
 import {
 	EnvelopeSimple,
 	Eye,
@@ -249,17 +248,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 					</Field>
 					<FieldSeparator>Or continue with</FieldSeparator>
 					<Field>
-						<Button
-							onClick={() => {
-								// Redirect directly to avoid CORS issues
-								const callbackURL = encodeURIComponent(window.location.origin);
-								window.location.href = `${env.VITE_CONVEX_SITE_URL}/api/auth/sign-in/social?provider=github&callbackURL=${callbackURL}`;
-							}}
-							type="button"
-							variant="outline"
-						>
+						<Button disabled type="button" variant="outline">
 							<GithubLogo className="mr-2 h-4 w-4" weight="fill" />
-							Continue with GitHub
+							GitHub (coming soon)
 						</Button>
 					</Field>
 					<FieldDescription className="text-center">

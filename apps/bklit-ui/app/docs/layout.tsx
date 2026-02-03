@@ -4,27 +4,27 @@ import { DocsLayout } from "@/components/docs/docs-layout";
 import { source } from "@/lib/source";
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return (
-    <NextProvider>
-      <DocsLayout
-        nav={{
-          links: [
-            {
-              text: "Introduction",
-              url: "/docs",
-            },
-            {
-              text: "Components",
-              url: "/docs/components",
-            },
-          ],
-          githubUrl: "https://github.com/bklit/bklit-ui",
-          discordUrl: "https://discord.com/invite/9yyK8FwPcU",
-        }}
-        tree={source.pageTree}
-      >
-        {children}
-      </DocsLayout>
-    </NextProvider>
-  );
+	return (
+		<NextProvider>
+			<DocsLayout
+				nav={{
+					links: [
+						{
+							text: "Introduction",
+							url: "/docs",
+						},
+						{
+							text: "Components",
+							url: "/docs/components",
+						},
+					],
+					githubUrl: "https://github.com/bklit/bklit-ui",
+					discordUrl: "https://discord.com/invite/9yyK8FwPcU",
+				}}
+				tree={source.pageTree}
+			>
+				{children}
+			</DocsLayout>
+		</NextProvider>
+	);
 }

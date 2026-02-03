@@ -28,6 +28,10 @@ import { Route as SettingsBillingRouteImport } from './routes/settings/billing'
 import { Route as MemoriesSearchRouteImport } from './routes/memories/search'
 import { Route as MemoriesMemoryIdRouteImport } from './routes/memories/$memoryId'
 import { Route as AgentsNewRouteImport } from './routes/agents/new'
+import { Route as ApiV1StoreRouteImport } from './routes/api/v1/store'
+import { Route as ApiV1SearchRouteImport } from './routes/api/v1/search'
+import { Route as ApiV1ProfileRouteImport } from './routes/api/v1/profile'
+import { Route as ApiV1ForgetRouteImport } from './routes/api/v1/forget'
 import { Route as ApiSessionsStartRouteImport } from './routes/api/sessions/start'
 import { Route as ApiSessionsRecordRouteImport } from './routes/api/sessions/record'
 import { Route as ApiMemoryStoreRouteImport } from './routes/api/memory/store'
@@ -133,6 +137,26 @@ const AgentsNewRoute = AgentsNewRouteImport.update({
   path: '/agents/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1StoreRoute = ApiV1StoreRouteImport.update({
+  id: '/api/v1/store',
+  path: '/api/v1/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SearchRoute = ApiV1SearchRouteImport.update({
+  id: '/api/v1/search',
+  path: '/api/v1/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ProfileRoute = ApiV1ProfileRouteImport.update({
+  id: '/api/v1/profile',
+  path: '/api/v1/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ForgetRoute = ApiV1ForgetRouteImport.update({
+  id: '/api/v1/forget',
+  path: '/api/v1/forget',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSessionsStartRoute = ApiSessionsStartRouteImport.update({
   id: '/api/sessions/start',
   path: '/api/sessions/start',
@@ -208,6 +232,10 @@ export interface FileRoutesByFullPath {
   '/api/memory/store': typeof ApiMemoryStoreRoute
   '/api/sessions/record': typeof ApiSessionsRecordRoute
   '/api/sessions/start': typeof ApiSessionsStartRoute
+  '/api/v1/forget': typeof ApiV1ForgetRoute
+  '/api/v1/profile': typeof ApiV1ProfileRoute
+  '/api/v1/search': typeof ApiV1SearchRoute
+  '/api/v1/store': typeof ApiV1StoreRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -238,6 +266,10 @@ export interface FileRoutesByTo {
   '/api/memory/store': typeof ApiMemoryStoreRoute
   '/api/sessions/record': typeof ApiSessionsRecordRoute
   '/api/sessions/start': typeof ApiSessionsStartRoute
+  '/api/v1/forget': typeof ApiV1ForgetRoute
+  '/api/v1/profile': typeof ApiV1ProfileRoute
+  '/api/v1/search': typeof ApiV1SearchRoute
+  '/api/v1/store': typeof ApiV1StoreRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -269,6 +301,10 @@ export interface FileRoutesById {
   '/api/memory/store': typeof ApiMemoryStoreRoute
   '/api/sessions/record': typeof ApiSessionsRecordRoute
   '/api/sessions/start': typeof ApiSessionsStartRoute
+  '/api/v1/forget': typeof ApiV1ForgetRoute
+  '/api/v1/profile': typeof ApiV1ProfileRoute
+  '/api/v1/search': typeof ApiV1SearchRoute
+  '/api/v1/store': typeof ApiV1StoreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -301,6 +337,10 @@ export interface FileRouteTypes {
     | '/api/memory/store'
     | '/api/sessions/record'
     | '/api/sessions/start'
+    | '/api/v1/forget'
+    | '/api/v1/profile'
+    | '/api/v1/search'
+    | '/api/v1/store'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -331,6 +371,10 @@ export interface FileRouteTypes {
     | '/api/memory/store'
     | '/api/sessions/record'
     | '/api/sessions/start'
+    | '/api/v1/forget'
+    | '/api/v1/profile'
+    | '/api/v1/search'
+    | '/api/v1/store'
   id:
     | '__root__'
     | '/'
@@ -361,6 +405,10 @@ export interface FileRouteTypes {
     | '/api/memory/store'
     | '/api/sessions/record'
     | '/api/sessions/start'
+    | '/api/v1/forget'
+    | '/api/v1/profile'
+    | '/api/v1/search'
+    | '/api/v1/store'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -392,6 +440,10 @@ export interface RootRouteChildren {
   ApiMemoryStoreRoute: typeof ApiMemoryStoreRoute
   ApiSessionsRecordRoute: typeof ApiSessionsRecordRoute
   ApiSessionsStartRoute: typeof ApiSessionsStartRoute
+  ApiV1ForgetRoute: typeof ApiV1ForgetRoute
+  ApiV1ProfileRoute: typeof ApiV1ProfileRoute
+  ApiV1SearchRoute: typeof ApiV1SearchRoute
+  ApiV1StoreRoute: typeof ApiV1StoreRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -529,6 +581,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/store': {
+      id: '/api/v1/store'
+      path: '/api/v1/store'
+      fullPath: '/api/v1/store'
+      preLoaderRoute: typeof ApiV1StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/search': {
+      id: '/api/v1/search'
+      path: '/api/v1/search'
+      fullPath: '/api/v1/search'
+      preLoaderRoute: typeof ApiV1SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/profile': {
+      id: '/api/v1/profile'
+      path: '/api/v1/profile'
+      fullPath: '/api/v1/profile'
+      preLoaderRoute: typeof ApiV1ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/forget': {
+      id: '/api/v1/forget'
+      path: '/api/v1/forget'
+      fullPath: '/api/v1/forget'
+      preLoaderRoute: typeof ApiV1ForgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/sessions/start': {
       id: '/api/sessions/start'
       path: '/api/sessions/start'
@@ -624,6 +704,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMemoryStoreRoute: ApiMemoryStoreRoute,
   ApiSessionsRecordRoute: ApiSessionsRecordRoute,
   ApiSessionsStartRoute: ApiSessionsStartRoute,
+  ApiV1ForgetRoute: ApiV1ForgetRoute,
+  ApiV1ProfileRoute: ApiV1ProfileRoute,
+  ApiV1SearchRoute: ApiV1SearchRoute,
+  ApiV1StoreRoute: ApiV1StoreRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,8 +1,9 @@
-import type { FormEvent } from "react";
-
-import { useEffect, useState } from "react";
+import { api } from "@moltcity/backend/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -23,9 +24,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
-import { api } from "@moltcity/backend/convex/_generated/api";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 
 type CreateProjectDialogProps = {
 	onCreated?: () => void;
@@ -71,16 +69,16 @@ export function CreateProjectDialog({ onCreated }: CreateProjectDialogProps) {
 	}, [allowedOptions, retention]);
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
 				<Button onClick={() => setOpen(true)}>Create project</Button>
 			</DialogTrigger>
-			<DialogContent className="border border-dashed border-primary p-0 sm:max-w-lg">
+			<DialogContent className="border border-primary border-dashed p-0 sm:max-w-lg">
 				<DialogHeader className="px-6 pt-4">
-					<DialogTitle className="text-lg font-semibold text-foreground">
+					<DialogTitle className="font-semibold text-foreground text-lg">
 						Create project
 					</DialogTitle>
-					<DialogDescription className="mt-2 text-sm leading-6 text-muted-foreground">
+					<DialogDescription className="mt-2 text-muted-foreground text-sm leading-6">
 						Projects keep your agents, data sources, and memory settings
 						organized.
 					</DialogDescription>
@@ -129,75 +127,75 @@ export function CreateProjectDialog({ onCreated }: CreateProjectDialogProps) {
 				>
 					<div className="space-y-4 px-6 pb-4">
 						<div>
-							<Label htmlFor="project-name" className="text-sm font-medium">
+							<Label className="font-medium text-sm" htmlFor="project-name">
 								Project name<span className="text-destructive">*</span>
 							</Label>
 							<Input
-								type="text"
+								className="mt-2"
 								id="project-name"
 								name="project-name"
-								placeholder="Memory Ops"
-								className="mt-2"
-								required
-								value={projectName}
 								onChange={(event) => setProjectName(event.target.value)}
+								placeholder="Memory Ops"
+								required
+								type="text"
+								value={projectName}
 							/>
 						</div>
 						<div>
 							<Label
+								className="font-medium text-sm"
 								htmlFor="project-description"
-								className="text-sm font-medium"
 							>
 								Description
 							</Label>
 							<Textarea
+								className="mt-2 min-h-[96px] border-dashed"
 								id="project-description"
 								name="project-description"
-								placeholder="What is this project for?"
-								className="mt-2 min-h-[96px] border-dashed"
-								value={projectDescription}
 								onChange={(event) => setProjectDescription(event.target.value)}
+								placeholder="What is this project for?"
+								value={projectDescription}
 							/>
 						</div>
 						<div>
-							<Label htmlFor="retention-policy" className="text-sm font-medium">
+							<Label className="font-medium text-sm" htmlFor="retention-policy">
 								Memory retention
 								{retentionLimits?.maxDays && (
-									<span className="ml-2 text-xs text-muted-foreground">
+									<span className="ml-2 text-muted-foreground text-xs">
 										(max {retentionLimits.maxDays} days on{" "}
 										{retentionLimits.plan} plan)
 									</span>
 								)}
 							</Label>
-							<Select value={retention} onValueChange={setRetention}>
+							<Select onValueChange={setRetention} value={retention}>
 								<SelectTrigger
-									id="retention-policy"
 									className="mt-2 w-full border-dashed"
+									id="retention-policy"
 								>
 									<SelectValue placeholder="Select a policy" />
 								</SelectTrigger>
 								<SelectContent
-									side="bottom"
-									sideOffset={8}
 									align="start"
 									alignItemWithTrigger={false}
-									className="bg-card !border !border-dashed !border-input !ring-0 !shadow-none"
+									className="!border !border-dashed !border-input !ring-0 !shadow-none bg-card"
+									side="bottom"
+									sideOffset={8}
 								>
 									{allRetentionOptions.map((option) => {
 										const isAllowed = allowedOptions.includes(option.value);
 										return (
 											<SelectItem
+												className={isAllowed ? "" : "opacity-50"}
+												disabled={!isAllowed}
 												key={option.value}
 												value={option.value}
-												disabled={!isAllowed}
-												className={!isAllowed ? "opacity-50" : ""}
 											>
 												<span className="flex items-center gap-2">
 													{option.label}
 													{!isAllowed && (
 														<Badge
+															className="px-1 py-0 text-[10px]"
 															variant="outline"
-															className="text-[10px] px-1 py-0"
 														>
 															Upgrade
 														</Badge>
@@ -210,9 +208,9 @@ export function CreateProjectDialog({ onCreated }: CreateProjectDialogProps) {
 							</Select>
 						</div>
 						{statusMessage ? (
-							<p className="text-xs text-destructive">{statusMessage}</p>
+							<p className="text-destructive text-xs">{statusMessage}</p>
 						) : null}
-						<Button type="submit" className="w-full" disabled={isSubmitting}>
+						<Button className="w-full" disabled={isSubmitting} type="submit">
 							{isSubmitting ? "Creating..." : "Create project"}
 						</Button>
 					</div>

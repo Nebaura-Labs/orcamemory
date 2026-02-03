@@ -40,7 +40,8 @@ function TeamPage() {
 					<Construction className="size-12 text-muted-foreground/50" />
 					<h2 className="mt-4 font-medium text-lg">Coming Soon</h2>
 					<p className="mt-1 max-w-sm text-center text-muted-foreground text-sm">
-						Invite team members, manage roles, and collaborate on your AI memory projects.
+						Invite team members, manage roles, and collaborate on your AI memory
+						projects.
 					</p>
 				</div>
 			</div>

@@ -26,18 +26,11 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "index",
-              "concepts"
-            ]
+            "pages": ["index", "concepts"]
           },
           {
             "group": "Cloud",
-            "pages": [
-              "cloud/quickstart",
-              "cloud/dashboard",
-              "cloud/pricing"
-            ]
+            "pages": ["cloud/quickstart", "cloud/dashboard", "cloud/pricing"]
           },
           {
             "group": "Self-Hosting",
@@ -49,9 +42,7 @@
           },
           {
             "group": "Resources",
-            "pages": [
-              "faq"
-            ]
+            "pages": ["faq"]
           }
         ]
       },
@@ -60,16 +51,11 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "api-reference/introduction"
-            ]
+            "pages": ["api-reference/introduction"]
           },
           {
             "group": "Endpoints",
-            "pages": [
-              "api-reference/memories",
-              "api-reference/sessions"
-            ]
+            "pages": ["api-reference/memories", "api-reference/sessions"]
           }
         ]
       }
@@ -78,7 +64,7 @@
       "anchors": [
         {
           "anchor": "Discord",
-          "href": "https://discord.gg/gVWzPuWa3N",
+          "href": "https://discord.gg/DptEDf3n",
           "icon": "discord"
         },
         {
@@ -122,7 +108,7 @@
     "socials": {
       "x": "https://x.com/orcamemory",
       "github": "https://github.com/Nebaura-Labs/orcamemory",
-      "discord": "https://discord.gg/gVWzPuWa3N"
+      "discord": "https://discord.gg/DptEDf3n"
     }
   },
   "mcp": {

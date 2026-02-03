@@ -1,6 +1,14 @@
 "use client";
 
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	lazy,
+	Suspense,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -98,7 +106,7 @@ export function MemoryNetworkGraph({
 
 	// Handle resize
 	useEffect(() => {
-		if (!containerRef.current || !mounted) return;
+		if (!(containerRef.current && mounted)) return;
 
 		const updateDimensions = () => {
 			if (containerRef.current) {
@@ -141,7 +149,7 @@ export function MemoryNetworkGraph({
 
 	// Calculate expiration threshold
 	const expirationThreshold = useMemo(() => {
-		if (!mounted || !retentionDays) return null;
+		if (!(mounted && retentionDays)) return null;
 		const now = Date.now();
 		return now - (retentionDays - EXPIRING_SOON_DAYS) * MS_PER_DAY;
 	}, [mounted, retentionDays]);
@@ -270,7 +278,7 @@ export function MemoryNetworkGraph({
 			const source = graphLink.source as GraphNode;
 			const target = graphLink.target as GraphNode;
 
-			if (!source.x || !source.y || !target.x || !target.y) return;
+			if (!(source.x && source.y && target.x && target.y)) return;
 
 			ctx.beginPath();
 			ctx.moveTo(source.x, source.y);
@@ -320,7 +328,10 @@ export function MemoryNetworkGraph({
 	if (!mounted || dimensions.width === 0) {
 		return (
 			<div
-				className={cn("flex h-[500px] w-full items-center justify-center", className)}
+				className={cn(
+					"flex h-[500px] w-full items-center justify-center",
+					className
+				)}
 				ref={containerRef}
 			>
 				<p className="text-muted-foreground">Loading graph...</p>
@@ -329,7 +340,10 @@ export function MemoryNetworkGraph({
 	}
 
 	return (
-		<div className={cn("relative w-full min-w-0 overflow-hidden", className)} ref={containerRef}>
+		<div
+			className={cn("relative w-full min-w-0 overflow-hidden", className)}
+			ref={containerRef}
+		>
 			<div
 				className="w-full overflow-hidden rounded-lg border border-dashed bg-background/50"
 				style={{ height: 500 }}
@@ -342,11 +356,15 @@ export function MemoryNetworkGraph({
 					}
 				>
 					<ForceGraph2D
-						ref={graphRef}
-						graphData={graphData}
-						width={dimensions.width}
-						height={500}
 						backgroundColor="transparent"
+						cooldownTicks={100}
+						d3AlphaDecay={0.02}
+						d3VelocityDecay={0.3}
+						enablePanInteraction={true}
+						enableZoomInteraction={true}
+						graphData={graphData}
+						height={500}
+						linkCanvasObject={paintLink}
 						nodeCanvasObject={paintNode}
 						nodePointerAreaPaint={(node, color, ctx) => {
 							const size = 8;
@@ -355,36 +373,32 @@ export function MemoryNetworkGraph({
 							ctx.arc(node.x ?? 0, node.y ?? 0, size, 0, 2 * Math.PI);
 							ctx.fill();
 						}}
-						linkCanvasObject={paintLink}
 						onNodeHover={handleNodeHover}
-						cooldownTicks={100}
-						d3AlphaDecay={0.02}
-						d3VelocityDecay={0.3}
-						enableZoomInteraction={true}
-						enablePanInteraction={true}
+						ref={graphRef}
+						width={dimensions.width}
 					/>
 				</Suspense>
 			</div>
 
 			{/* Tooltip */}
 			{hoveredNode && (
-				<div className="bg-popover text-popover-foreground pointer-events-none absolute left-4 top-4 z-50 max-w-xs rounded-lg border p-3 shadow-lg">
+				<div className="pointer-events-none absolute top-4 left-4 z-50 max-w-xs rounded-lg border bg-popover p-3 text-popover-foreground shadow-lg">
 					<div className="mb-1 flex items-center gap-2">
 						<div
 							className="size-2.5 rounded-full"
 							style={{ backgroundColor: hoveredNode.color }}
 						/>
-						<p className="text-sm font-medium">{hoveredNode.data.agentName}</p>
+						<p className="font-medium text-sm">{hoveredNode.data.agentName}</p>
 					</div>
-					<p className="text-muted-foreground mb-2 line-clamp-3 text-xs">
+					<p className="mb-2 line-clamp-3 text-muted-foreground text-xs">
 						{hoveredNode.data.content}
 					</p>
 					{hoveredNode.data.tags.length > 0 && (
 						<div className="flex flex-wrap gap-1">
 							{hoveredNode.data.tags.slice(0, 5).map((tag) => (
 								<span
+									className="rounded bg-muted px-1.5 py-0.5 text-xs"
 									key={tag}
-									className="bg-muted rounded px-1.5 py-0.5 text-xs"
 								>
 									{tag}
 								</span>
@@ -397,22 +411,22 @@ export function MemoryNetworkGraph({
 						</div>
 					)}
 					{hoveredNode.isRecent && !hoveredNode.isExpiringSoon && (
-						<p className="mt-1 text-xs text-green-500">✦ New memory</p>
+						<p className="mt-1 text-green-500 text-xs">✦ New memory</p>
 					)}
 					{hoveredNode.isExpiringSoon && (
-						<p className="mt-1 text-xs text-amber-500">⚠ Expiring soon</p>
+						<p className="mt-1 text-amber-500 text-xs">⚠ Expiring soon</p>
 					)}
 				</div>
 			)}
 
 			{/* Legend */}
-			<div className="absolute bottom-4 right-4 flex flex-col gap-1 rounded-lg border bg-background/80 p-3 text-xs backdrop-blur-sm">
+			<div className="absolute right-4 bottom-4 flex flex-col gap-1 rounded-lg border bg-background/80 p-3 text-xs backdrop-blur-sm">
 				<div className="flex items-center gap-2">
 					<div className="h-0.5 w-4 bg-green-500/60" />
 					<span className="text-muted-foreground">Session link</span>
 				</div>
 				<div className="flex items-center gap-2">
-					<div className="h-0.5 w-4 border-t border-dashed border-purple-500/60" />
+					<div className="h-0.5 w-4 border-purple-500/60 border-t border-dashed" />
 					<span className="text-muted-foreground">Tag link</span>
 				</div>
 				<div className="mt-1 flex items-center gap-2">

@@ -2,7 +2,14 @@ import { api } from "@moltcity/backend/convex/_generated/api";
 import type { Id } from "@moltcity/backend/convex/_generated/dataModel";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "convex/react";
-import { AlertCircle, Clock, Hourglass, Info, Loader2, Save } from "lucide-react";
+import {
+	AlertCircle,
+	Clock,
+	Hourglass,
+	Info,
+	Loader2,
+	Save,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -74,7 +81,8 @@ function RetentionPage() {
 		}
 	}, [projects, activeProjectId]);
 
-	const isLoading = isPending || projects === undefined || !activeProjectId || !organizationId;
+	const isLoading =
+		isPending || projects === undefined || !activeProjectId || !organizationId;
 
 	return (
 		<main className="flex-1 p-6">
@@ -94,7 +102,10 @@ function RetentionPage() {
 						<div className="h-48 animate-pulse rounded-lg bg-card ring-1 ring-foreground/10" />
 					</div>
 				) : (
-					<RetentionForm projectId={activeProjectId} organizationId={organizationId} />
+					<RetentionForm
+						organizationId={organizationId}
+						projectId={activeProjectId}
+					/>
 				)}
 			</div>
 		</main>
@@ -109,7 +120,9 @@ function RetentionForm({
 	organizationId: string;
 }) {
 	const project = useQuery(api.projects.get, { projectId });
-	const retentionLimits = useQuery(api.plans.getRetentionLimits, { organizationId });
+	const retentionLimits = useQuery(api.plans.getRetentionLimits, {
+		organizationId,
+	});
 	const updateProject = useMutation(api.projects.update);
 
 	const [retention, setRetention] = useState("");
@@ -138,7 +151,7 @@ function RetentionForm({
 		}
 	};
 
-	if (!project || !retentionLimits) {
+	if (!(project && retentionLimits)) {
 		return (
 			<div className="flex items-center justify-center py-12">
 				<Loader2 className="size-6 animate-spin text-muted-foreground" />
@@ -148,8 +161,12 @@ function RetentionForm({
 
 	const hasChanges = retention !== project.memoryRetention;
 	const allowedOptions = retentionLimits.allowedOptions;
-	const currentOption = ALL_RETENTION_OPTIONS.find((o) => o.value === retention);
-	const planName = retentionLimits.plan.charAt(0).toUpperCase() + retentionLimits.plan.slice(1);
+	const currentOption = ALL_RETENTION_OPTIONS.find(
+		(o) => o.value === retention
+	);
+	const planName =
+		retentionLimits.plan.charAt(0).toUpperCase() +
+		retentionLimits.plan.slice(1);
 
 	return (
 		<div className="space-y-6">
@@ -161,7 +178,8 @@ function RetentionForm({
 						Retention Policy
 					</CardTitle>
 					<CardDescription>
-						Choose how long to keep memories before they are automatically deleted
+						Choose how long to keep memories before they are automatically
+						deleted
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-6">
@@ -195,7 +213,8 @@ function RetentionForm({
 						</Select>
 						{currentOption && currentOption.days !== null && (
 							<p className="text-muted-foreground text-sm">
-								Memories older than {currentOption.days} days will be automatically deleted
+								Memories older than {currentOption.days} days will be
+								automatically deleted
 							</p>
 						)}
 						{currentOption && currentOption.days === null && (
@@ -209,8 +228,9 @@ function RetentionForm({
 						<Alert className="border-dashed">
 							<Hourglass className="size-4" />
 							<AlertDescription>
-								<span className="font-medium">Want longer retention?</span> Upgrade your plan to
-								access extended retention periods including unlimited storage.
+								<span className="font-medium">Want longer retention?</span>{" "}
+								Upgrade your plan to access extended retention periods including
+								unlimited storage.
 							</AlertDescription>
 						</Alert>
 					)}
@@ -242,9 +262,7 @@ function RetentionForm({
 					<div className="flex items-center justify-between rounded-lg border border-dashed p-4">
 						<div>
 							<p className="font-medium">Current Plan</p>
-							<p className="text-muted-foreground text-sm">
-								{planName} Plan
-							</p>
+							<p className="text-muted-foreground text-sm">{planName} Plan</p>
 						</div>
 						<Badge variant="secondary">{planName}</Badge>
 					</div>
@@ -285,17 +303,19 @@ function RetentionForm({
 				</CardHeader>
 				<CardContent className="space-y-3 text-muted-foreground text-sm">
 					<p>
-						Memory retention controls how long your agent memories are stored in the system.
-						When a memory exceeds the retention period, it is automatically deleted during
-						the next cleanup cycle.
+						Memory retention controls how long your agent memories are stored in
+						the system. When a memory exceeds the retention period, it is
+						automatically deleted during the next cleanup cycle.
 					</p>
 					<p>
-						Cleanup runs periodically to remove expired memories. This helps manage storage
-						costs and keeps your memory database lean and relevant.
+						Cleanup runs periodically to remove expired memories. This helps
+						manage storage costs and keeps your memory database lean and
+						relevant.
 					</p>
 					<p className="font-medium text-foreground">
-						Note: Changing the retention period only affects future cleanup cycles. Existing
-						memories that exceed the new retention period will be deleted in the next cycle.
+						Note: Changing the retention period only affects future cleanup
+						cycles. Existing memories that exceed the new retention period will
+						be deleted in the next cycle.
 					</p>
 				</CardContent>
 			</Card>

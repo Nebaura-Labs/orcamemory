@@ -84,7 +84,11 @@ function AgentKeyActions({
 		return (
 			<div className="flex gap-1">
 				<Button
-					onClick={() => onCopy(`Key ID: ${visibleData.keyId}\nAPI Key: ${visibleData.secret}`)}
+					onClick={() =>
+						onCopy(
+							`Key ID: ${visibleData.keyId}\nAPI Key: ${visibleData.secret}`
+						)
+					}
 					size="icon-sm"
 					title="Copy credentials"
 					variant="ghost"
@@ -254,9 +258,9 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 		| Agent[]
 		| undefined;
 	const issueKey = useMutation(api.agents.issueKey);
-	const [visibleSecrets, setVisibleSecrets] = useState<Record<string, { keyId: string; secret: string }>>(
-		{}
-	);
+	const [visibleSecrets, setVisibleSecrets] = useState<
+		Record<string, { keyId: string; secret: string }>
+	>({});
 	const [loading, setLoading] = useState<string | null>(null);
 
 	const handleIssueKey = async (isRotate: boolean, agentId?: Id<"agents">) => {
@@ -270,9 +274,16 @@ export function AgentsTable({ projectId }: AgentsTableProps) {
 			if (result.secret && result.keyId) {
 				setVisibleSecrets((prev) => ({
 					...prev,
-					[result.agentId]: { keyId: result.keyId as string, secret: result.secret as string },
+					[result.agentId]: {
+						keyId: result.keyId as string,
+						secret: result.secret as string,
+					},
 				}));
-				toast.success(isRotate ? "API key rotated successfully" : "Agent created successfully");
+				toast.success(
+					isRotate
+						? "API key rotated successfully"
+						: "Agent created successfully"
+				);
 			}
 		} catch (error) {
 			const message =

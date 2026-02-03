@@ -2,11 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Loader2, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -32,7 +28,8 @@ export const Route = createFileRoute("/account")({
 function AccountPage() {
 	const navigate = useNavigate();
 	const { data: session, isPending } = authClient.useSession();
-	const { data: organizations, isPending: isOrgsPending } = authClient.useListOrganizations();
+	const { data: organizations, isPending: isOrgsPending } =
+		authClient.useListOrganizations();
 
 	const [name, setName] = useState("");
 	const [isSaving, setIsSaving] = useState(false);
@@ -85,12 +82,13 @@ function AccountPage() {
 		);
 	}
 
-	const initials = user.name
-		?.split(" ")
-		.map((n) => n[0])
-		.join("")
-		.toUpperCase()
-		.slice(0, 2) || "?";
+	const initials =
+		user.name
+			?.split(" ")
+			.map((n) => n[0])
+			.join("")
+			.toUpperCase()
+			.slice(0, 2) || "?";
 
 	const hasChanges = name !== (user.name ?? "");
 
@@ -111,14 +109,12 @@ function AccountPage() {
 							<User className="size-5" />
 							Profile
 						</CardTitle>
-						<CardDescription>
-							Your personal information
-						</CardDescription>
+						<CardDescription>Your personal information</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-6">
 						<div className="flex items-center gap-4">
 							<Avatar className="size-16">
-								<AvatarImage src={user.image ?? undefined} alt={user.name} />
+								<AvatarImage alt={user.name} src={user.image ?? undefined} />
 								<AvatarFallback className="text-lg">{initials}</AvatarFallback>
 							</Avatar>
 							<div>
@@ -175,7 +171,9 @@ function AccountPage() {
 							</div>
 						</div>
 						<div className="space-y-2">
-							<Label className="text-muted-foreground text-xs">Account Created</Label>
+							<Label className="text-muted-foreground text-xs">
+								Account Created
+							</Label>
 							<div className="text-sm">
 								{new Date(user.createdAt).toLocaleDateString("en-US", {
 									year: "numeric",

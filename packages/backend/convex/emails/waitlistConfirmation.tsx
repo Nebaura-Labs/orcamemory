@@ -1,130 +1,172 @@
-import * as React from "react";
 import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Section,
-  Tailwind,
-  Text,
+	Body,
+	Button,
+	Column,
+	Container,
+	Head,
+	Heading,
+	Hr,
+	Html,
+	Img,
+	Link,
+	Row,
+	Section,
+	Tailwind,
+	Text,
 } from "@react-email/components";
 
-const WaitlistConfirmationEmail = () => {
-  return (
-    <Html lang="en" dir="ltr">
-      <Tailwind>
-        <Head />
-        <Body className="bg-black font-sans py-[40px]">
-          <Container className="bg-[#090909] rounded-[8px] p-[32px] max-w-[600px] mx-auto border border-gray-800">
-            <Section className="text-center mb-[32px]">
-              <Img
-                src="https://di867tnz6fwga.cloudfront.net/brand-kits/3c944035-7983-47ec-af14-a67d15ad8b13/primary/0f2cc255-cd58-454d-9709-c1f776ed8278.png"
-                alt="Orca Memory"
-                className="w-full h-auto object-cover max-w-[200px] mx-auto"
-              />
-            </Section>
+const OrcaMemoryBetaLaunch = () => {
+	return (
+		<Html dir="ltr" lang="en">
+			<Tailwind>
+				<Head />
+				<Body className="bg-[#000000] py-[40px] font-sans">
+					<Container className="mx-auto max-w-[600px] px-[40px]">
+						{/* Header with Logo */}
+						<Section className="mb-[32px] text-center">
+							<Img
+								alt="Orca Memory"
+								className="mx-auto h-auto w-full max-w-[200px]"
+								src="https://di867tnz6fwga.cloudfront.net/brand-kits/3c944035-7983-47ec-af14-a67d15ad8b13/primary/0f2cc255-cd58-454d-9709-c1f776ed8278.png"
+							/>
+						</Section>
 
-            <Section className="text-center mb-[32px]">
-              <Heading className="text-[32px] font-bold text-white m-0 mb-[16px]">
-                Welcome to the Future of AI Memory
-              </Heading>
-              <Text className="text-[18px] text-gray-300 m-0">
-                You're now part of something revolutionary
-              </Text>
-            </Section>
+						{/* Main Content */}
+						<Section className="mb-[32px]">
+							<Heading className="mb-[24px] text-center font-bold text-[#ffffff] text-[28px] leading-[1.2]">
+								🎉 Beta is Live!
+							</Heading>
 
-            <Section className="mb-[32px]">
-              <Text className="text-[16px] text-gray-300 leading-[24px] m-0 mb-[16px]">
-                Thank you for joining the Orca Memory waitlist. You've taken the first step
-                toward transforming how OpenClaw agents remember, learn, and evolve.
-              </Text>
+							<Text className="mb-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								We moved fast, and it's finally here. Your beta access to Orca
+								Memory is ready.
+							</Text>
 
-              <Text className="text-[16px] text-gray-300 leading-[24px] m-0 mb-[24px]">
-                Here's what awaits you:
-              </Text>
+							<Text className="mb-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								You joined our waitlist believing in the vision of persistent
+								memory for AI agents. Today, that vision becomes reality. It's
+								time to give your OpenClaw agents the memory infrastructure they
+								deserve.
+							</Text>
 
-              <Section className="bg-black rounded-[8px] p-[24px] mb-[24px] border border-gray-800">
-                <Text className="text-[16px] text-gray-300 leading-[24px] m-0 mb-[12px]">
-                  <span className="text-[#29d4ff] font-semibold">🧠 Persistent Memory:</span>{" "}
-                  Your agents will remember across sessions, building intelligence over time
-                </Text>
-                <Text className="text-[16px] text-gray-300 leading-[24px] m-0 mb-[12px]">
-                  <span className="text-[#29d4ff] font-semibold">🔍 Semantic Search:</span>{" "}
-                  Find relevant memories instantly with advanced AI-powered search
-                </Text>
-                <Text className="text-[16px] text-gray-300 leading-[24px] m-0">
-                  <span className="text-[#29d4ff] font-semibold">⚡ Early Access:</span> Be among
-                  the first to experience the future of AI memory infrastructure
-                </Text>
-              </Section>
+							<Text className="mb-[32px] text-[#ffffff] text-[16px] leading-[1.6]">
+								<strong>What you get today:</strong>
+							</Text>
 
-              <Text className="text-[16px] text-gray-300 leading-[24px] m-0 mb-[24px]">
-                We're building more than just a platform – we're creating the foundation for
-                truly intelligent AI agents. Your early support fuels this vision, and we can't
-                wait to show you what's possible when memory becomes limitless.
-              </Text>
+							<Text className="mb-[16px] ml-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								• <strong>Persistent Memory:</strong> Your agents remember
+								across every session
+							</Text>
+							<Text className="mb-[16px] ml-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								• <strong>Semantic Search:</strong> Find the right memories
+								instantly
+							</Text>
+							<Text className="mb-[32px] ml-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								• <strong>Context Continuity:</strong> Conversations that build
+								on themselves
+							</Text>
+						</Section>
 
-              <Section className="text-center mb-[24px]">
-                <Button
-                  href="https://orcamemory.com"
-                  className="bg-[#29d4ff] text-black px-[24px] py-[12px] rounded-[8px] text-[16px] font-semibold no-underline box-border hover:bg-[#1fc4ef]"
-                >
-                  Explore Orca Memory
-                </Button>
-              </Section>
+						{/* CTA Button */}
+						<Section className="mb-[40px] text-center">
+							<Button
+								className="box-border inline-block rounded-[8px] bg-[#29d4ff] px-[32px] py-[16px] font-semibold text-[16px] text-black no-underline"
+								href="https://app.orcamemory.com"
+							>
+								Start Building with Memory
+							</Button>
+						</Section>
 
-              <Text className="text-[16px] text-gray-300 leading-[24px] m-0 text-center">
-                Stay connected and follow our journey as we revolutionize AI memory:
-              </Text>
+						<Hr className="my-[32px] border-[#333333] border-solid" />
 
-              <Section className="text-center mt-[16px] mb-[24px]">
-                <Link href="https://x.com/orcamemoryai" className="inline-block mx-[8px]">
-                  <Img
-                    src="https://new.email/static/emails/social/social-x.png"
-                    alt="Follow us on X"
-                    className="w-[32px] h-[32px]"
-                  />
-                </Link>
-                <Link
-                  href="https://github.com/Nebaura-Labs/orcamemory"
-                  className="inline-block mx-[8px]"
-                >
-                  <Img
-                    src="https://new.email/static/emails/social/social-github.png"
-                    alt="Star us on GitHub"
-                    className="w-[32px] h-[32px]"
-                  />
-                </Link>
-              </Section>
-            </Section>
+						{/* Beta Community Section */}
+						<Section className="mb-[32px]">
+							<Text className="mb-[20px] text-[#ffffff] text-[16px] leading-[1.6]">
+								This is beta, which means you're part of something special. Your
+								feedback shapes the future of AI agent memory infrastructure.
+								Every insight you share helps us build something extraordinary.
+							</Text>
 
-            <Hr className="border-gray-800 my-[32px]" />
+							<Text className="mb-[24px] text-[#ffffff] text-[16px] leading-[1.6]">
+								Join our Discord community to connect with other beta users,
+								share your experiences, and help us perfect the platform. Get
+								your exclusive{" "}
+								<strong className="text-[#29d4ff]">@Beta Tester</strong> role
+								and be part of the conversation.
+							</Text>
 
-            <Section className="text-center">
-              <Text className="text-[14px] text-gray-400 leading-[20px] m-0 mb-[8px]">
-                Persistent memory for OpenClaw agents.
-              </Text>
-              <Text className="text-[14px] text-gray-400 leading-[20px] m-0 mb-[16px]">
-                Questions? Reply to this email – we'd love to hear your thoughts on the future
-                of AI memory.
-              </Text>
-              <Text className="text-[12px] text-gray-500 leading-[16px] m-0">
-                <Link href="#" className="text-gray-500 underline">
-                  Unsubscribe
-                </Link>{" "}
-                | © 2026 Nebaura Labs - All rights reserved.
-              </Text>
-            </Section>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
-  );
+							<Section className="mb-[20px] text-center">
+								<Button
+									className="box-border inline-block rounded-[8px] bg-[#5865F2] px-[24px] py-[12px] font-semibold text-[14px] text-white no-underline"
+									href="https://discord.gg/DptEDf3n"
+								>
+									Join Discord Community
+								</Button>
+							</Section>
+
+							<Text className="text-[#ffffff] text-[16px] leading-[1.6]">
+								Ready to transform how your agents remember? Let's build the
+								future together.
+							</Text>
+						</Section>
+
+						<Hr className="my-[32px] border-[#333333] border-solid" />
+
+						{/* Footer */}
+						<Section>
+							<Text className="mb-[16px] text-center text-[#888888] text-[14px]">
+								Persistent memory for OpenClaw agents.
+							</Text>
+
+							{/* Social Links */}
+							<Row className="mb-[20px] text-center">
+								<Column className="text-center">
+									<Link className="mx-[8px]" href="https://x.com/orcamemoryai">
+										<Img
+											alt="X (Twitter)"
+											className="inline-block"
+											height="24"
+											src="https://new.email/static/emails/social/social-x.png"
+											width="24"
+										/>
+									</Link>
+									<Link
+										className="mx-[8px]"
+										href="https://github.com/Nebaura-Labs/orcamemory"
+									>
+										<Img
+											alt="GitHub"
+											className="inline-block"
+											height="24"
+											src="https://new.email/static/emails/social/social-github.png"
+											width="24"
+										/>
+									</Link>
+								</Column>
+							</Row>
+
+							<Text className="m-0 mb-[8px] text-center text-[#666666] text-[12px]">
+								© 2026 Nebaura Labs
+							</Text>
+
+							<Text className="m-0 text-center text-[#666666] text-[12px]">
+								<Link
+									className="text-[#29d4ff] no-underline"
+									href="https://orcamemory.com"
+								>
+									orcamemory.com
+								</Link>
+								{" • "}
+								<Link className="text-[#29d4ff] no-underline" href="#">
+									Unsubscribe
+								</Link>
+							</Text>
+						</Section>
+					</Container>
+				</Body>
+			</Tailwind>
+		</Html>
+	);
 };
 
-export default WaitlistConfirmationEmail;
+export default OrcaMemoryBetaLaunch;

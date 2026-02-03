@@ -40,7 +40,8 @@ function BillingPage() {
 					<Construction className="size-12 text-muted-foreground/50" />
 					<h2 className="mt-4 font-medium text-lg">Coming Soon</h2>
 					<p className="mt-1 max-w-sm text-center text-muted-foreground text-sm">
-						View your current plan, manage subscriptions, and update payment details.
+						View your current plan, manage subscriptions, and update payment
+						details.
 					</p>
 				</div>
 			</div>

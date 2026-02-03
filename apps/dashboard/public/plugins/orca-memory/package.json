@@ -11,10 +11,14 @@
     "openclaw": ">=2026.1.29"
   },
   "openclaw": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./index.ts"
+    ]
   },
   "clawdbot": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./index.ts"
+    ]
   },
   "files": [
     "index.ts",

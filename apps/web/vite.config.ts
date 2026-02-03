@@ -1,32 +1,32 @@
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { nitro } from "nitro/vite";
 
 export default defineConfig({
-  plugins: [
-    nitro({
-      moduleSideEffects: ["react-dom/server"],
-    }),
-    tsconfigPaths(),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact(),
-  ],
-  server: {
-    port: 3001,
-  },
-  preview: {
-    allowedHosts: ["orcamemory.com"],
-  },
-  build: {
-    outDir: "dist",
-    sourcemap: false,
-    minify: true,
-  },
-  ssr: {
-    noExternal: ["@convex-dev/better-auth"],
-  },
+	plugins: [
+		nitro({
+			moduleSideEffects: ["react-dom/server"],
+		}),
+		tsconfigPaths(),
+		tailwindcss(),
+		tanstackStart(),
+		viteReact(),
+	],
+	server: {
+		port: 3001,
+	},
+	preview: {
+		allowedHosts: ["orcamemory.com"],
+	},
+	build: {
+		outDir: "dist",
+		sourcemap: false,
+		minify: true,
+	},
+	ssr: {
+		noExternal: ["@convex-dev/better-auth"],
+	},
 });

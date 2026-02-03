@@ -4,8 +4,8 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  transpilePackages: ["@bklitui/ui"],
+	reactStrictMode: true,
+	transpilePackages: ["@bklitui/ui"],
 };
 
 export default withMDX(nextConfig);
